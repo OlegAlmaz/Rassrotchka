@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Windows;
 using Rassrotchka.Properties;
 using Rassrotchka.NedoimkaDataSetTableAdapters;
 using GemBox.Spreadsheet;
@@ -14,13 +15,28 @@ namespace Rassrotchka.FilesCommon
 	{
 		private DataTable _tableBase;
 		private DataTable _tableFile;
+		private DictPropName dict;
 		public ArgumentDebitPay Argument { get; set; }
+
+		public DataTable TableBase
+		{
+			get { return _tableBase; }
+			set { _tableBase = value; }
+		}
+
+		public DataTable TableFile
+		{
+			get { return _tableFile; }
+			set { _tableFile = value; }
+		}
 
 		public FillTablesPayes(ArgumentDebitPay arg)
 		{
 			Argument = arg;
-			_tableBase = new DataTable("TableBaseTemp");
-			_tableFile = new DataTable("TableFileTemp");
+			TableBase = new DataTable("TableBaseTemp");
+			TableFile = new DataTable("TableFileTemp");
+			dict = new DictPropName();
+
 
 		}
 
@@ -87,7 +103,6 @@ namespace Rassrotchka.FilesCommon
 		private void ReoderTable(DataTable debitPayTable, DataTable debitPayTableGemBox)
 		{
 			string mess = "";
-			var dict = new DictPropName();
 			//проверяем по идентификатору есть ли решение о рассрочке либо отсрочке в базе данных
 			for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
 			{
@@ -111,27 +126,58 @@ namespace Rassrotchka.FilesCommon
 				}
 				else//проверяем есть ли изменения данных в существующих в базе строках
 				{
-					DataRow row = debitPayTable.Rows.Find(ident);//получаем строку c имеющимися в базе данными
-					int id = debitPayTable.Rows.IndexOf(row);//получаем индекс данной строки в таблице из базы данных
-					for (int k = 0; k < debitPayTableGemBox.Columns.Count; k++)//проверяем каждую ячейку этой строки на наличие изменений
+					UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Обновление информации уже имеющихся данных таблицы рассрочек
+		/// </summary>
+		/// <param name="debitPayTable">таблица из базы данных</param>
+		/// <param name="debitPayTableGemBox">таблица с данными из файла excel</param>
+		/// <param name="ident">код решения о рассрочке </param>
+		/// <param name="rowNumb">номер рядка таблицы debitPayTableGemBox</param>
+		private void UpdateDates(DataTable debitPayTable, DataTable debitPayTableGemBox, long ident, int rowNumb)
+		{
+			DataRow row = debitPayTable.Rows.Find(ident); //получаем строку c имеющимися в базе данными
+			int id = debitPayTable.Rows.IndexOf(row); //получаем индекс данной строки в таблице из базы данных
+			for (int k = 0; k < debitPayTableGemBox.Columns.Count; k++) //проверяем каждую ячейку этой строки на наличие изменений
+			{
+				string colName = debitPayTableGemBox.Columns[k].ColumnName; //имя колонки в таблице excel файла
+				string colNameTableBase; //имя колонки в таблице базы данных
+				if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+				{
+					//если не равна, то перезаписываем
+					if (debitPayTable.Rows[id][colNameTableBase] != debitPayTableGemBox.Rows[rowNumb][colName])
 					{
-						string colName = debitPayTableGemBox.Columns[k].ColumnName;//имя колонки в таблице excel файла
-						string colNameTableBase;//имя колонки в таблице базы данных
-						if (dict.TryGetValue(colName, out colNameTableBase))//если есть такая
+						//TableBase.Rows.Add(debitPayTable.Rows[id]);
+						//TableFile.Rows.Add(debitPayTableGemBox.Rows[rowNumb]);
+
+						string inform1 = string.Format("&/tбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"							
+							, debitPayTable.Rows[id]["Kod_Payer"]
+							, debitPayTable.Rows[id]["Name"]
+							, debitPayTable.Rows[id]["Date_Decis"]
+							, debitPayTable.Rows[id]["Summa_Decis"]
+							, debitPayTable.Rows[id][colNameTableBase]);
+						string inform2 = string.Format("&/tстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}" +
+													   "стали: "
+							, debitPayTableGemBox.Rows[rowNumb]["3"]
+							, debitPayTableGemBox.Rows[rowNumb]["2"]
+							, debitPayTableGemBox.Rows[rowNumb]["4"]
+							, debitPayTableGemBox.Rows[rowNumb]["6"]
+							, debitPayTableGemBox.Rows[rowNumb][colName]);
+							
+						MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2);
+						if (result == MessageBoxResult.OK)
 						{
-							//если не равна, то перезаписываем
-							if (debitPayTable.Rows[id][colNameTableBase] != debitPayTableGemBox.Rows[i][colName])
-							{
-								_tableBase.Rows.Add(debitPayTable.Rows[id]);
-								_tableFile.Rows.Add(debitPayTableGemBox.Rows[i]);
-								//debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[i][colName];
-							}
+							debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[rowNumb][colName];
 						}
 					}
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// заполнение таблиц базы даных из объектов DataTable информацией о рассрочках
 		/// </summary>
