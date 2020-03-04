@@ -1,28 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.OleDb;
 using System.Data.SqlClient;
-using System.Globalization;
-using System.Reflection;
-using Rassrotchka;
-using Rassrotchka.FilesCommon;
 using Rassrotchka.Properties;
 using Rassrotchka.NedoimkaDataSetTableAdapters;
 using GemBox.Spreadsheet;
 
-namespace Nedoimka.FilesCommon
+namespace Rassrotchka.FilesCommon
 {
 	/// <summary>
 	/// Класс, заполняющий таблицу выданных рассрочек
 	/// </summary>
 	public class FillTablesPayes
 	{
+		private DataTable _tableBase;
+		private DataTable _tableFile;
 		public ArgumentDebitPay Argument { get; set; }
 
 		public FillTablesPayes(ArgumentDebitPay arg)
 		{
 			Argument = arg;
+			_tableBase = new DataTable("TableBaseTemp");
+			_tableFile = new DataTable("TableFileTemp");
+
 		}
 
 		/// <summary>
@@ -85,11 +84,8 @@ namespace Nedoimka.FilesCommon
 		/// </summary>
 		/// <param name="debitPayTable">таблица данных из базы данных Nedoimka</param>
 		/// <param name="debitPayTableGemBox"></param>
-		private static void ReoderTable(DataTable debitPayTable, DataTable debitPayTableGemBox)
+		private void ReoderTable(DataTable debitPayTable, DataTable debitPayTableGemBox)
 		{
-			//var keys = new DataColumn[1];
-			//keys[0] = debitPayTable.Columns["Id_dpg"];
-			//debitPayTable.PrimaryKey = keys;
 			string mess = "";
 			var dict = new DictPropName();
 			//проверяем по идентификатору есть ли решение о рассрочке либо отсрочке в базе данных
@@ -113,26 +109,27 @@ namespace Nedoimka.FilesCommon
 					}
 					debitPayTable.Rows.Add(row);
 				}
-				//else//проверяем есть ли изменения данных в существующих в базе строках
-				//{
-				//    DataRow row = debitPayTable.Rows.Find(ident);//получаем строку c имеющимися в базе данными
-				//    int id = debitPayTable.Rows.IndexOf(row);
-				//    for (int k = 0; k < debitPayTableGemBox.Columns.Count; k++)
-				//    {
-				//        string colName = debitPayTableGemBox.Columns[k].ColumnName;//имя колонки в таблице excel файла
-				//        string colNameTableBase;//имя колонки в таблице базы данных
-				//        if (dict.TryGetValue(colName, out colNameTableBase))//если есть такая
-				//        {
-				//            //если не равна, то перезаписываем
-				//            if (debitPayTable.Rows[id][colNameTableBase] != debitPayTableGemBox.Rows[i][colName])
-				//            {
-				//                debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[i][colName];
-				//            }
-				//        }
-				//    }
-				//}
+				else//проверяем есть ли изменения данных в существующих в базе строках
+				{
+					DataRow row = debitPayTable.Rows.Find(ident);//получаем строку c имеющимися в базе данными
+					int id = debitPayTable.Rows.IndexOf(row);//получаем индекс данной строки в таблице из базы данных
+					for (int k = 0; k < debitPayTableGemBox.Columns.Count; k++)//проверяем каждую ячейку этой строки на наличие изменений
+					{
+						string colName = debitPayTableGemBox.Columns[k].ColumnName;//имя колонки в таблице excel файла
+						string colNameTableBase;//имя колонки в таблице базы данных
+						if (dict.TryGetValue(colName, out colNameTableBase))//если есть такая
+						{
+							//если не равна, то перезаписываем
+							if (debitPayTable.Rows[id][colNameTableBase] != debitPayTableGemBox.Rows[i][colName])
+							{
+								_tableBase.Rows.Add(debitPayTable.Rows[id]);
+								_tableFile.Rows.Add(debitPayTableGemBox.Rows[i]);
+								//debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[i][colName];
+							}
+						}
+					}
+				}
 			}
-			return;
 		}
 		
 		/// <summary>
