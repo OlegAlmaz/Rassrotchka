@@ -112,14 +112,18 @@ namespace Rassrotchka.FilesCommon
 				if (notHave == false)//если не существует
 				{
 					DataRow row = debitPayTable.NewRow();
-					for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
+
+					if (RowValidationError(row))
 					{
-						string colName = debitPayTableGemBox.Columns[j].ColumnName;//имя колонки в таблице excel файла
-						string colNameTableBase;//имя колонки в таблице базы данных
-						if (dict.TryGetValue(colName, out colNameTableBase))//если есть такая
+						for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
 						{
-							object val = debitPayTableGemBox.Rows[i][colName];
-							row[colNameTableBase] = val;
+							string colName = debitPayTableGemBox.Columns[j].ColumnName; //имя колонки в таблице excel файла
+							string colNameTableBase; //имя колонки в таблице базы данных
+							if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+							{
+								object val = debitPayTableGemBox.Rows[i][colName];
+								row[colNameTableBase] = val;
+							}
 						}
 					}
 					debitPayTable.Rows.Add(row);
@@ -129,6 +133,12 @@ namespace Rassrotchka.FilesCommon
 					UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
 				}
 			}
+		}
+
+		private bool RowValidationError(DataRow row)
+		{
+			//
+			return true;
 		}
 
 		/// <summary>
