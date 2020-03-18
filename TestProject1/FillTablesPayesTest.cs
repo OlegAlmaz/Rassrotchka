@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using Rassrotchka;
 using Rassrotchka.FilesCommon;
@@ -179,56 +180,37 @@ namespace TestProject1
 			Assert.AreEqual(expected, actual);
 		}
 
-	    #region Тестирование метода RowValidationError(DataRow row)
-
-	    public DataTable  Table { get; set; }
-		private bool RowValidationError(DataRow row)
+		#region Тестирование метода IsDecisDateNotRange(DateTime dateDecis)
+		/// <summary>
+		/// Проверяет дату решения о рассрочке на вхождениие в интервал
+		/// от 35 дней до текущей даты и 6 дней от нее
+		/// </summary>
+		/// <param name="dateDecis">дата решения об отсрочке</param>
+		/// <returns>возвращает true, если дата в нужном диапазоне</returns>
+		private bool IsDecisDateNotRange(DateTime dateDecis)
 		{
-			bool flag;
-			//Table = new DataTable();
-
-			//Проверка даты решения
-			var date = (DateTime) row["4"];
-			//положительное значение, если дата решение в интервале от -5 месяцев и до 5 дней от текущей даты
-			flag = (date >= DateTime.Now.AddMonths(-5) && date <= DateTime.Now.AddDays(5));
-			if (!flag)
-			{
-
+			DateTime dateMin = DateTime.Now.AddDays(-35);
+			DateTime dateMax = DateTime.Now.AddDays(6);
+			if (dateDecis >= dateMin && dateDecis <= dateMax )
 				return false;
-				
-			}
-			//проверка даты первой уплаты
 			return true;
 		}
 
-
-	    #endregion
-
-		[TestMethod()]
-		public void RowValidationErrorTest()
+	    
+		[TestMethod]
+		public void ValidateDecisDateTest()
 		{
-			var table = new DataTable();
-			var column = new DataColumn("4", Type.GetType("System.DateTime"));
-			table.Columns.Add(column);
+			DateTime date = DateTime.Now.AddDays(-36);
+			Assert.AreEqual(true, IsDecisDateNotRange(date));
 
-			DataRow row = table.NewRow();
-			row["4"] = DateTime.Now.AddMonths(-6);
+			date = DateTime.Now.AddDays(-35);
+			Assert.AreEqual(false, IsDecisDateNotRange(date));
 
-			bool expected = false;
-			bool actual = RowValidationError(row);
-			Assert.AreEqual(expected, actual);
-
-			row["4"] = DateTime.Now.AddDays(6);
-			Assert.AreEqual(false, RowValidationError(row));
-
-			row["4"] = DateTime.Now.AddDays(-5);
-			Assert.AreEqual(true, RowValidationError(row));
-
-			row["4"] = DateTime.Now.AddDays(5);
-			Assert.AreEqual(true, RowValidationError(row));
+			date = DateTime.Now.AddDays(7);
+			Assert.AreEqual(true, IsDecisDateNotRange(date));
 		}
 
-
+	    #endregion
 
 		/// <summary>
 		///Тест для UpdateSqlTableDebitPayGen
@@ -250,6 +232,28 @@ namespace TestProject1
 			actual = target.UpdateSqlTableDebitPayGen();
 			Assert.AreEqual(expected, actual);
 			Assert.Inconclusive("Проверьте правильность этого метода теста.");
+		}
+
+		/// <summary>
+		///Тест для IsContinue
+		///</summary>
+		[TestMethod()]
+		public void IsContinueTest()
+		{
+			var arg = new ArgumentDebitPay()
+			{
+				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
+			};
+			var target = new FillTablesPayes(arg);
+			DataTable debitPayTableGemBox = target.GetDebitPayTableGemBox();
+			long id = 158769;
+			string expression = string.Format("[0] = {0}", id);
+			IEnumerable<DataRow> rows = debitPayTableGemBox.Select(expression);
+			DataTable table = rows.CopyToDataTable();
+			table.DefaultView.RowFilter = "[0] = " + id;
+			string mess = "Вы хотите добавить эту строку";
+			Assert.AreEqual(true, target.IsContinue(table.DefaultView, mess));//нажимаем кнопку "Да"
+			Assert.AreEqual(false, target.IsContinue(table.DefaultView, mess));//нажимаем кнопку "Нет"
 		}
 	}
 }
