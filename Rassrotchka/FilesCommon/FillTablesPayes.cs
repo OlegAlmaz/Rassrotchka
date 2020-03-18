@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace Rassrotchka.FilesCommon
 		private DataTable _tableBase;
 		private DataTable _tableFile;
 		private DictPropName dict;
+		private RowValidationError _validError;
 		public ArgumentDebitPay Argument { get; set; }
 
 		public DataTable TableBase
@@ -30,14 +32,14 @@ namespace Rassrotchka.FilesCommon
 			set { _tableFile = value; }
 		}
 
+		//Конструктор
 		public FillTablesPayes(ArgumentDebitPay arg)
 		{
 			Argument = arg;
 			TableBase = new DataTable("TableBaseTemp");
 			TableFile = new DataTable("TableFileTemp");
 			dict = new DictPropName();
-
-
+			_validError = new RowValidationError();
 		}
 
 		/// <summary>
@@ -54,6 +56,7 @@ namespace Rassrotchka.FilesCommon
 				adapter1.Fill(dataSet.DebitPayGen);
 				using (var debitPayTableGemBox = GetDebitPayTableGemBox())//извлекаем данные из excel файла
 				{
+					_validError.TableFile = debitPayTableGemBox.Clone();//копируем стркутуру таблицы
 					ReoderTable(dataSet.DebitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
 				}
 				int rowCount = adapter1.Update(dataSet.DebitPayGen);//обновляем данные  в базе о вынесенных решениях
@@ -107,26 +110,26 @@ namespace Rassrotchka.FilesCommon
 			for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
 			{
 				var ident = Convert.ToInt64(debitPayTableGemBox.Rows[i]["0"]);
-				bool notHave;
-				notHave = debitPayTable.Rows.Contains(ident);
+				bool notHave = debitPayTable.Rows.Contains(ident);
 				if (notHave == false)//если не существует
 				{
-					DataRow row = debitPayTable.NewRow();
-
-					if (RowValidationError(row))
+					//Проверяем запись нового решения в интервале между отставанием от
+					//текущей даты на 35 дней и опережением на 6 дней
+					if (IsDecisDateNotRange((DateTime)debitPayTableGemBox.Rows[i]["4"]))
 					{
-						for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
+						debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
+						string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
+						if (IsContinue(debitPayTableGemBox.DefaultView, message))//спрашиваем
 						{
-							string colName = debitPayTableGemBox.Columns[j].ColumnName; //имя колонки в таблице excel файла
-							string colNameTableBase; //имя колонки в таблице базы данных
-							if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
-							{
-								object val = debitPayTableGemBox.Rows[i][colName];
-								row[colNameTableBase] = val;
-							}
+							//Проверяем строку на ошибки и добавляем в таблицу из базы данных
+							ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
 						}
 					}
-					debitPayTable.Rows.Add(row);
+					else
+					{
+						//Проверяем строку на ошибки и добавляем в таблицу из базы данных
+						ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+					}
 				}
 				else//проверяем есть ли изменения данных в существующих в базе строках
 				{
@@ -135,9 +138,67 @@ namespace Rassrotchka.FilesCommon
 			}
 		}
 
+		/// <summary>
+		/// Если дата решения вне заданного диапазона: от -35 до +6 дней от текущей даты
+		/// </summary>
+		/// <param name="dateDecis">дата решения об отсрочке</param>
+		/// <returns>возвращает true, если дата вне заданного диапазона</returns>
+		private bool IsDecisDateNotRange(DateTime dateDecis)
+		{
+			DateTime dateMin = DateTime.Now.AddDays(-35);
+			DateTime dateMax = DateTime.Now.AddDays(6);
+			if (dateDecis >= dateMin && dateDecis <= dateMax)
+				return false;
+			return true;
+		}
+
+		/// <summary>
+		/// Метод, спрашивает о том, вносить ли в базу данных информацию о рассрочке либо отсрочке
+		/// </summary>
+		/// <param name="rows">Извлекаемый рядок из таблицы файлы</param>
+		/// <param name="ident"></param>
+		/// <returns>возвращает true при нажатии на кнопку ДА, иначе - false</returns>
+		public bool IsContinue(DataView rows, string mess)
+		{
+			var window = new WindowDateNoRange
+				{
+					DataGrid1 = {ItemsSource = rows},
+					TextBlockField = {Text = mess},
+				};
+			var showdialog = window.ShowDialog();
+			var showDialogResultOkCancel = showdialog;
+			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
+		}
+
+		/// <summary>
+		/// Проверка новой строки на ошибки и добавление ее в таблицу для обновления базы данных
+		/// </summary>
+		/// <param name="debitPayTable">таблица из базы данных</param>
+		/// <param name="debitPayTableGemBox">таблица из excel файла</param>
+		/// <param name="row">текущая строка</param>
+		/// <param name="i"></param>	
+		private void ValidateAndAddRow(DataTable debitPayTable, DataTable debitPayTableGemBox, int i)
+		{
+			DataRow row = debitPayTable.NewRow();
+			if (_validError.ValidationError(debitPayTableGemBox.Rows[i])) //проверка новой строки на ошибки
+			{
+				for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
+				{
+					string colName = debitPayTableGemBox.Columns[j].ColumnName; //имя колонки в таблице excel файла
+					string colNameTableBase; //имя колонки в таблице базы данных
+					if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+					{
+						object val = debitPayTableGemBox.Rows[i][colName];
+						row[colNameTableBase] = val;
+					}
+				}
+				debitPayTable.Rows.Add(row);
+			}
+		}
+
 		private bool RowValidationError(DataRow row)
 		{
-			//
+			//Todo реализовать метод
 			return true;
 		}
 
@@ -585,7 +646,7 @@ namespace Rassrotchka.FilesCommon
 		//}
 
 
-		private static int GetPay(DateTime dateFirst, DateTime dateEnd)
+		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
 		{
 			int deltaYar = dateEnd.Year - dateFirst.Year;
 			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar*12 + 1;
