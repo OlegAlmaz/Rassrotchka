@@ -1,6 +1,8 @@
 ﻿<Window x:Class="Rassrotchka.WindowDateNoRange"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Rassrotchka.ValidationFiles"
+        xml:lang="ru-Ru"
         Title="Предупреждение" Margin="5" Loaded="Window_Loaded" FontSize="14">
     <Window.Background>
         <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
@@ -10,21 +12,120 @@
     </Window.Background>
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="Width" Value="40"/>
             <Setter Property="Margin" Value="20,2,10,2"/>
         </Style>
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>
+        </Style>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="LightBlue"/>
+            <Setter Property="Foreground" Value="Blue"/>
+            <Setter Property="FontSize" Value="14" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridColumnHeader, AncestorLevel=1}, Path=Column.Header}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Window.Resources>
     <StackPanel>
         <TextBlock Name="TextBlockField" Text="Какой то текст" 
                    TextAlignment="Justify" Margin="5" />
         <DataGrid Name="DataGrid1" ItemsSource="{Binding}"
-                  AutoGenerateColumns="True" 
+                  AutoGenerateColumns="False" 
                   HorizontalAlignment="Left" Margin="5" 
-                  VerticalAlignment="Top" MinWidth="300" MinHeight="50" FontSize="12" />
+                  VerticalAlignment="Top" MinWidth="300" MinHeight="50" 
+                  FontSize="14" ColumnWidth="SizeToCells"
+                Style="{StaticResource DataGridStyle1}">
+            <DataGrid.Resources>
+                <Style x:Key="ErrorStyle" TargetType="{x:Type TextBox}">
+                    <Setter Property="Validation.ErrorTemplate">
+                        <Setter.Value>
+                            <ControlTemplate>
+                                <DockPanel LastChildFill="True">
+                                    <TextBlock DockPanel.Dock="Right" Foreground="Red" 
+                                       FontSize="4" FontWeight="Bold"
+                                       ToolTip="{Binding ElementName=adornerPlaceholder, 
+                                       Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" >*</TextBlock>
+                                    <Border BorderBrush="Green" BorderThickness="l">
+                                        <AdornedElementPlaceholder Name="adornerPlaceholder"></AdornedElementPlaceholder>
+                                    </Border>
+                                </DockPanel>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style x:Key="ElementSyle" TargetType="TextBlock">
+                    <Setter Property="TextAlignment" Value="Right"/>
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.RowValidationRules>
+                <local:ValidDateDecis DateMin="-35" DateMax="6" ValidatesOnTargetUpdated="True" ValidationStep="UpdatedValue"/>
+            </DataGrid.RowValidationRules>
+            <!--<DataGrid.RowValidationErrorTemplate>
+                <ControlTemplate>
+                    <Grid Margin="0,-2,0,-2"
+                            ToolTip="{Binding RelativeSource={RelativeSource
+                            FindAncestor, AncestorType={x:Type DataGridRow}},
+                            Path=(Validation.Errors)[0].ErrorContent}">
+                        <Ellipse StrokeThickness="0" Fill="Red" 
+                                  Width="{TemplateBinding FontSize}" 
+                                  Height="{TemplateBinding FontSize}" />
+                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
+                                  FontWeight="Bold" Foreground="White" 
+                                  HorizontalAlignment="Center"  />
+                    </Grid>
+                </ControlTemplate>
+            </DataGrid.RowValidationErrorTemplate>-->
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Идентиф." Binding="{Binding Path=Id_dpg}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="ГНИ" Binding="{Binding Path=Kod_GNI}"/>
+                <DataGridTextColumn Header="Плательщик" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Код" Binding="{Binding Path=Kod_Payer}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Дата реш." ElementStyle="{StaticResource ErrorStyle}"
+                                    EditingElementStyle="{StaticResource ErrorStyle}">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="Date_Decis">
+                            <Binding.ValidationRules>
+                                <local:ValidDateDecis DateMin="-35" DateMax="6"  />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Ном. реш." Binding="{Binding Path=Numb_Decis}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Орг. прин. реш." Binding="{Binding Path=GniOrGKNS}"/>
+                <DataGridTextColumn Header="Сумма реш." 
+                                    Binding="{Binding Path=Summa_Decis, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Код платежа" Binding="{Binding Path=Kod_Paying}"/>
+                <DataGridTextColumn Header="Дата первого платежа" Binding="{Binding Path=Date_first, StringFormat=\{0:d\}}"/>
+                <DataGridTextColumn Header="Дата последнего платежа" Binding="{Binding Path=Date_end, StringFormat=\{0:d\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Количество платежей" Binding="{Binding Path=Count_Mount}"
+                                    ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Сумма ежемесячного платежа" 
+                                    Binding="{Binding Path=Summa_Payer, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Тип решения" Binding="{Binding Path=Type_Decis}"
+                                    ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Дата до которой продлена рассрочка" Binding="{Binding Path=Date_prolong, StringFormat=\{0:d\}}"/>
+                <DataGridTextColumn Header="Примечание" Binding="{Binding Path=Note}"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <StackPanel Orientation="Horizontal">
-            <Button Content="Да" IsDefault="True"
+            <Button Content="OK" IsDefault="True"
                     Click="ButtonYes_Click" />
-            <Button Content="Нет" IsCancel="True"/>
+            <Button Content="Удалить" />
         </StackPanel>
     </StackPanel>
 </Window>
