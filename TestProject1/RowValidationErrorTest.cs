@@ -130,6 +130,62 @@ namespace TestProject1
 
 			Assert.IsTrue(actual);
 		}
+
+		/// <summary>
+		///Тест для CodePayersValidation
+		///</summary>
+		[TestMethod()]
+		public void CodePayersValidationTest1()
+		{
+			var arg = new ArgumentDebitPay
+			{
+				FilePath =
+						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
+				ExcelParametrs = { StartRow = 2 }
+			};
+			var payes = new FillTablesPayes(arg);
+			DataTable table = payes.GetDebitPayTableGemBox();
+			var col = table.Columns["0"];
+			DataColumn[] columns = new[] { col };
+			table.PrimaryKey = columns;
+			object idRow = 4735943;//код тестируемого решения
+			DataRow row = table.Rows.Find(idRow); // получаем искомый для проверки рядок
+
+			var target = new RowValidationError(); // 
+			bool actual;
+			actual = target.CodePayersValidation(row);
 	
+			Assert.IsTrue(actual);
+
+
+		}
+
+		/// <summary>
+		///Тест для CodePaymentsValidation
+		///</summary>
+		[TestMethod()]
+		public void CodePaymentsValidationTest()
+		{
+			var arg = new ArgumentDebitPay
+			{
+				FilePath =
+						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
+				ExcelParametrs = { StartRow = 2 }
+			};
+			var payes = new FillTablesPayes(arg);
+			DataTable table = payes.GetDebitPayTableGemBox();
+			var col = table.Columns["0"];
+			DataColumn[] columns = new[] { col };
+			table.PrimaryKey = columns;
+			object idRow = 4735944;//код тестируемого решения
+			DataRow row = table.Rows.Find(idRow); // получаем искомый для проверки рядок
+
+			var target = new RowValidationError(); // 
+			bool actual;
+			actual = target.CodePaymentsValidation(row);
+
+			Assert.IsTrue(actual);
+
+		}
 	}
 }
