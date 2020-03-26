@@ -74,24 +74,62 @@ namespace TestProject1
 		{
 			var arg = new ArgumentDebitPay
 				{
-					FilePath = @"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
+					FilePath = 
+							@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
 					ExcelParametrs = {StartRow = 2}
 				};
 			var payes = new FillTablesPayes(arg);
 			var target = new RowValidationError(); //
 			DataTable table = payes.GetDebitPayTableGemBox();
+			table.AcceptChanges();
 			var col = table.Columns["0"];
 			DataColumn[] columns = new[] {col};
 			table.PrimaryKey = columns;
 			target.TableFile = table.Clone();
 			object idRow = 2111748;//код тестируемого решения
 			DataRow row = table.Rows.Find(idRow); // получаем искомый для проверки рядок
-			bool expected = false;
+
 			bool actual;
 			actual = target.ValidationError(row);
-			string mess = "Данная строка имеет ошибки";
-			payes.IsContinue(target.TableFile.DefaultView, mess);
-			Assert.AreEqual(expected, actual);
+			payes.VisualErrorRow(table);
+			//string mess = "Данная строка имеет ошибки";
+			//payes.IsContinue(target.TableFile.DefaultView, mess);
+			
+			Assert.IsTrue(actual);
 		}
+
+		/// <summary>
+		///Тест для ValidationError
+		/// Проверка правильности количества платежей рассрочки
+		///</summary>
+		[TestMethod()]
+		public void ValidationErrorTest_1()
+		{
+			var arg = new ArgumentDebitPay
+			{
+				FilePath =
+						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
+				ExcelParametrs = { StartRow = 2 }
+			};
+			var payes = new FillTablesPayes(arg);
+			var target = new RowValidationError(); //
+			DataTable table = payes.GetDebitPayTableGemBox();
+			table.AcceptChanges();
+			var col = table.Columns["0"];
+			DataColumn[] columns = new[] { col };
+			table.PrimaryKey = columns;
+			//target.TableFile = table.Clone();
+			object idRow = 4735942;//код тестируемого решения
+			DataRow row = table.Rows.Find(idRow); // получаем искомый для проверки рядок
+
+			bool actual;
+			actual = target.ValidationError(row);
+			payes.VisualErrorRow(table);
+			//string mess = "Данная строка имеет ошибки";
+			//payes.IsContinue(target.TableFile.DefaultView, mess);
+
+			Assert.IsTrue(actual);
+		}
+	
 	}
 }
