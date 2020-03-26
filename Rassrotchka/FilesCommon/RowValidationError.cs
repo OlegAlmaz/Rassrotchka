@@ -39,7 +39,7 @@ namespace Rassrotchka.FilesCommon
 		public bool ValidationError(DataRow row)
 		{
 			//проверка кода плательщика налогов
-			IsError = CodeValidation(row);
+			IsError = CodePayersValidation(row);
 
 			//проверка всех дат
 			IsError = DatesValidation(row);
@@ -55,7 +55,7 @@ namespace Rassrotchka.FilesCommon
 		}
 
 		//Проверка кода плательщика налогов
-		private bool CodeValidation(DataRow row)
+		public bool CodePayersValidation(DataRow row)
 		{
 			bool isError = false;//нет ошибок
 			Int64 code = Convert.ToInt64(row[CdPaer]);
@@ -83,6 +83,9 @@ namespace Rassrotchka.FilesCommon
 				var adapter = new SqlDataAdapter(selectCommad, connection);
 				var table = new DataTable();
 				adapter.Fill(table);
+				DataColumn column = table.Columns[0];
+				var columns = new[] {column};
+				table.PrimaryKey = columns;
 				return table;
 			}
 		}
@@ -159,12 +162,25 @@ namespace Rassrotchka.FilesCommon
 			}			
 
 			//===============Проверка суммы ежемесячного платежа
-			decimal sumPayExpected = sumDecis/expected; //расчетное значение
 			decimal sumPayActual = Convert.ToDecimal(row[SumPay].ToString()); // по факту
-			if (Math.Abs(sumPayExpected - sumPayActual) >= 1000)
+			decimal sumPayExpected; //расчетное значение
+			if ((string)row[TypDec] == "отсрочка")
 			{
-				row.SetColumnError(SumPay, @"Ошибка в cумме ежемесячного платежа, расчетное значение: " + sumPayExpected);
-				isError = true;
+				if (sumPayActual != sumDecis)
+				{
+					row.SetColumnError(SumPay, @"Ошибка в сумме ежемесячного платежа, правильное значение: " + sumDecis);
+					isError = true;
+				}
+			}
+			else// рассрочка
+			{
+				sumPayExpected = sumDecis / expected;
+
+				if (Math.Abs(sumPayExpected - sumPayActual) >= 1000)
+				{
+					row.SetColumnError(SumPay, @"Ошибка в cумме ежемесячного платежа, расчетное значение: " + sumPayExpected);
+					isError = true;
+				}
 			}
 			return isError;
 		}
