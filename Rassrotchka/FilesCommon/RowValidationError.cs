@@ -15,6 +15,8 @@ namespace Rassrotchka.FilesCommon
 		private const string PayCnt = "10";//колонка количества платежей рассрочки
 		private const string SumDcs = "6"; //колонка cуммы по решение о рассрочке или отсрочке
 		private const string SumPay = "11"; //колонка cуммы по решение о рассрочке или отсрочке
+		private const string DtPrlg = "111"; //колонка cуммы по решение о рассрочке или отсрочке
+		
 
 		/// <summary>
 		/// Таблица из файла excel
@@ -56,6 +58,7 @@ namespace Rassrotchka.FilesCommon
 			var dateDecis = (DateTime) row[DtDec]; //дата решения
 			var dateFirst = (DateTime) row[DtFrs]; //дата первой уплаты
 			var dateEnd = (DateTime) row[DtEnd]; //дата последней уплаты
+			var dateProlong = (DateTime) row[DtPrlg]; //дата до 
 
 			//===========Проверка даты первой уплаты
 
@@ -86,6 +89,11 @@ namespace Rassrotchka.FilesCommon
 				row.SetColumnError(DtEnd, @"Ошибка в дате последнего платежа по рассрочке!");
 				isError = true;
 			}
+
+			//============Проверка даты до которой продлен срок действия рассрочки
+			//=========== должна быть равна дате последней уплаты
+			if (dateProlong != dateEnd)
+				row[DtPrlg] = row[DtEnd];
 			return isError;
 		}
 
