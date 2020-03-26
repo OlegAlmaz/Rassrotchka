@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -8,14 +9,15 @@ namespace Rassrotchka.FilesCommon
 {
 	public class RowValidationError
 	{
+		private const string CdPaer = "3"; //колонка кодов плательщиков налогов
 		private const string DtDec = "4"; //колонка даты решения
 		private const string DtFrs = "8"; //колонка даты решения
 		private const string DtEnd = "9"; //колонка даты решения
 		private const string TypDec = "12"; //колонка типа решения (отсрочка либо отсрочка)
 		private const string PayCnt = "10";//колонка количества платежей рассрочки
 		private const string SumDcs = "6"; //колонка cуммы по решение о рассрочке или отсрочке
-		private const string SumPay = "11"; //колонка cуммы по решение о рассрочке или отсрочке
-		private const string DtPrlg = "111"; //колонка cуммы по решение о рассрочке или отсрочке
+		private const string SumPay = "11"; //колонка cуммы ежемесячного платежа
+		private const string DtPrlg = "111"; //колонка даты до которой продлен срок действия договора
 		
 
 		/// <summary>
@@ -36,6 +38,9 @@ namespace Rassrotchka.FilesCommon
 
 		public bool ValidationError(DataRow row)
 		{
+			//проверка кода плательщика налогов
+			IsError = CodeValidation(row);
+
 			//проверка всех дат
 			IsError = DatesValidation(row);
 
@@ -47,6 +52,39 @@ namespace Rassrotchka.FilesCommon
 				row.SetModified();
 			}
 			return IsError;
+		}
+
+		//Проверка кода плательщика налогов
+		private bool CodeValidation(DataRow row)
+		{
+			bool isError = false;//нет ошибок
+			Int64 code = Convert.ToInt64(row[CdPaer]);
+			string select;
+			if(code <= 99999999)
+				select = @"SELECT KOD FROM Name_Plat";
+			else
+				select = @"SELECT [Код плательщика] FROM Name_Plat_fiz";
+			DataTable table = GetCodes(select);
+			if (table.Rows.Contains(code) == false)
+			{
+				isError = true;
+				row.SetColumnError(CdPaer, @"Плательщик с таким кодом отсутствует в базе данных.");
+			}
+			return isError;
+
+		}
+
+		private DataTable GetCodes(string selectCommad)
+		{
+			var conn = Properties.Settings.Default.NedoimkaConnectionString;
+			using (var connection = new SqlConnection(conn))
+			{
+				connection.Open();
+				var adapter = new SqlDataAdapter(selectCommad, connection);
+				var table = new DataTable();
+				adapter.Fill(table);
+				return table;
+			}
 		}
 
 		//проверка дат решения, а также первой и последней уплаты на соответствие
