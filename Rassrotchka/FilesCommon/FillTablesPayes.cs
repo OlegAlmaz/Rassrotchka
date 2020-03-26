@@ -56,6 +56,7 @@ namespace Rassrotchka.FilesCommon
 				adapter1.Fill(dataSet.DebitPayGen);
 				using (var debitPayTableGemBox = GetDebitPayTableGemBox())//извлекаем данные из excel файла
 				{
+					debitPayTableGemBox.AcceptChanges();
 					_validError.TableFile = debitPayTableGemBox.Clone();//копируем стркутуру таблицы
 					ReoderTable(dataSet.DebitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
 				}
@@ -170,12 +171,20 @@ namespace Rassrotchka.FilesCommon
 			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
 		}
 
+		public void VisualErrorRow(DataTable tableGembox)
+		{
+			var view = tableGembox.DefaultView;
+			view.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
+			var form = new Form1 {dataGridView1 = {DataSource = view}};
+			form.ShowDialog();
+
+		}
+
 		/// <summary>
 		/// Проверка новой строки на ошибки и добавление ее в таблицу для обновления базы данных
 		/// </summary>
 		/// <param name="debitPayTable">таблица из базы данных</param>
 		/// <param name="debitPayTableGemBox">таблица из excel файла</param>
-		/// <param name="row">текущая строка</param>
 		/// <param name="i"></param>	
 		private void ValidateAndAddRow(DataTable debitPayTable, DataTable debitPayTableGemBox, int i)
 		{
@@ -194,12 +203,6 @@ namespace Rassrotchka.FilesCommon
 				}
 				debitPayTable.Rows.Add(row);
 			}
-		}
-
-		private bool RowValidationError(DataRow row)
-		{
-			//Todo реализовать метод
-			return true;
 		}
 
 		/// <summary>
