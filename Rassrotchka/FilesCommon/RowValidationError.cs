@@ -10,6 +10,7 @@ namespace Rassrotchka.FilesCommon
 	public class RowValidationError
 	{
 		private const string CdPaer = "3"; //колонка кодов плательщиков налогов
+		private const string CdPayng = "7"; //колонка кодов вида платежа
 		private const string DtDec = "4"; //колонка даты решения
 		private const string DtFrs = "8"; //колонка даты решения
 		private const string DtEnd = "9"; //колонка даты решения
@@ -41,6 +42,8 @@ namespace Rassrotchka.FilesCommon
 			//проверка кода плательщика налогов
 			IsError = CodePayersValidation(row);
 
+			//проверка кода платежа
+			IsError = CodePaymentsValidation(row);
 			//проверка всех дат
 			IsError = DatesValidation(row);
 
@@ -52,6 +55,21 @@ namespace Rassrotchka.FilesCommon
 				row.SetModified();
 			}
 			return IsError;
+		}
+
+		public bool CodePaymentsValidation(DataRow row)
+		{
+			bool isError = false;//нет ошибок
+			Int64 code = Convert.ToInt64(row[CdPayng]);
+			var select = @"SELECT Kod_Pay FROM Payments";
+			DataTable table = GetCodes(select);
+			if (table.Rows.Contains(code) == false)
+			{
+				isError = true;
+				row.SetColumnError(CdPayng, @"Такой код платежа отсутствует в базе данных.");
+			}
+
+			return isError;
 		}
 
 		//Проверка кода плательщика налогов
