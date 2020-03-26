@@ -255,5 +255,40 @@ namespace TestProject1
 			Assert.AreEqual(true, target.IsContinue(table.DefaultView, mess));//нажимаем кнопку "Да"
 			Assert.AreEqual(false, target.IsContinue(table.DefaultView, mess));//нажимаем кнопку "Нет"
 		}
+
+		/// <summary>
+		///Тест для VisualAddedRows
+		///</summary>
+		[TestMethod()]
+		public void VisualAddedRowsTest()
+		{
+			var arg = new ArgumentDebitPay()
+			{
+				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
+			};
+			var target = new FillTablesPayes(arg);
+
+			var debitPayTable = new NedoimkaDataSet.DebitPayGenTestDataTable();
+			var adapter = new DebitPayGenTestTableAdapter();
+			adapter.Fill(debitPayTable);
+			using (var debitPayTableGemBox = target.GetDebitPayTableGemBox())
+			{
+				for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
+				{
+					var ident = Convert.ToInt64(debitPayTableGemBox.Rows[i]["0"]);
+					bool notHave = debitPayTable.Rows.Contains(ident);
+					if (notHave == false) //если не существует
+					{
+//						target.AddRow(debitPayTable, debitPayTableGemBox, i);//todo изменить
+					}
+				}
+			}
+			DataView view = debitPayTable.DefaultView;
+			view.RowStateFilter = DataViewRowState.Added;
+//			FillTablesPayes.VisualAddedRows(view);//todo изменить
+			int expected = 5;
+			int actual = debitPayTable.Select("", "", DataViewRowState.Added).Length;
+			Assert.AreEqual(expected, actual);
+		}
 	}
 }
