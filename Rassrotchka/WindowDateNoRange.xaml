@@ -123,9 +123,9 @@
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal">
-            <Button Content="OK" IsDefault="True"
+            <Button Content="Да" IsDefault="True"
                     Click="ButtonYes_Click" />
-            <Button Content="Удалить" />
+            <Button Content="Нет" />
         </StackPanel>
     </StackPanel>
 </Window>
