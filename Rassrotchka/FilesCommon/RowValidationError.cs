@@ -9,86 +9,130 @@ namespace Rassrotchka.FilesCommon
 {
 	public class RowValidationError
 	{
+		#region закрытые поля
+
 		private const string CdPaer = "3"; //колонка кодов плательщиков налогов
 		private const string CdPayng = "7"; //колонка кодов вида платежа
 		private const string DtDec = "4"; //колонка даты решения
-		private const string DtFrs = "8"; //колонка даты решения
-		private const string DtEnd = "9"; //колонка даты решения
+		private const string DtFrs = "8"; //колонка даты первой уплаты
+		private const string DtEnd = "9"; //колонка даты последней уплаты
 		private const string TypDec = "12"; //колонка типа решения (отсрочка либо отсрочка)
-		private const string PayCnt = "10";//колонка количества платежей рассрочки
+		private const string PayCnt = "10"; //колонка количества платежей рассрочки
 		private const string SumDcs = "6"; //колонка cуммы по решение о рассрочке или отсрочке
 		private const string SumPay = "11"; //колонка cуммы ежемесячного платежа
 		private const string DtPrlg = "111"; //колонка даты до которой продлен срок действия договора
+
+		#endregion
 		
-
-		/// <summary>
-		/// Таблица из файла excel
-		/// </summary>
-		public DataTable TableFile { get; set; }
-
 		/// <summary>
 		/// уведомление об ошибке исли значение равно true
 		/// </summary>
-		public bool IsError { get; private set; }
+		public bool IsNotError { get; private set; }
 
 		public RowValidationError()
 		{
-			TableFile = new DataTable();
-			IsError = true;
+			//IsNotError = true;
 		}
 
 		public bool ValidationError(DataRow row)
 		{
-			//проверка кода плательщика налогов
-			IsError = CodePayersValidation(row);
-
-			//проверка кода платежа
-			IsError = CodePaymentsValidation(row);
-			//проверка всех дат
-			IsError = DatesValidation(row);
-
-			IsError = PaysCounValidation(row);
-
-			if (IsError)
+			IsNotError = true;
+			//проверка на пустые ячейки
+			IsNotError = IsNotEmtyValidation(row);
+			if (IsNotError == false)
 			{
 				row.RowError = @"Ошибка в строке";
-				row.SetModified();
+				row.SetAdded();
+				return IsNotError;
 			}
-			return IsError;
+
+			//проверка кода плательщика налогов
+			if (CodePayersValidation(row) == false)
+				IsNotError = false;
+
+			//проверка кода платежа
+			if (CodePaymentsValidation(row) == false)
+				IsNotError = false;
+
+			//проверка всех дат
+			if (DatesValidation(row) == false)
+				IsNotError = false;
+
+			if (PaysCounValidation(row) == false)
+				IsNotError = false;
+
+			if (IsNotError == false)
+			{
+				row.RowError = @"Ошибка в строке";
+				row.SetAdded();
+			}
+			return IsNotError;
 		}
 
+		//проверка на пустые ячейки
+		private bool IsNotEmtyValidation(DataRow row)
+		{
+			bool isNotError = true;//нет пустых ячеек
+			int indexOf = row.Table.Rows.IndexOf(row);
+			for (int i = 0; i < row.ItemArray.Length; i++)
+			{
+				//заполняем колонку "Орган принявший решение" в случае, если она пустая
+				string clmnName = row.Table.Columns[i].ColumnName;
+				if (clmnName == "51")
+				{
+					Type type = row.Table.Rows[indexOf][i].GetType();
+					if (type.FullName == "System.DBNull")
+					{
+						row[clmnName] = "ГНИ";
+						row.AcceptChanges();
+					}
+				}
+				if (clmnName != "71" && clmnName != "13" && clmnName != "111")
+				{
+					Type type = row.Table.Rows[indexOf][i].GetType();
+					if (type.FullName == "System.DBNull")
+					{
+						row.SetColumnError(i, @"Недопустима пустая ячейка");
+						isNotError = false;
+					}
+				}
+			}
+			return isNotError;
+		}
+
+		//проверка кода платежа
 		public bool CodePaymentsValidation(DataRow row)
 		{
-			bool isError = false;//нет ошибок
+			bool isNotError = true;//нет ошибок
 			Int64 code = Convert.ToInt64(row[CdPayng]);
 			var select = @"SELECT Kod_Pay FROM Payments";
 			DataTable table = GetCodes(select);
-			if (table.Rows.Contains(code) == false)
+			if (table.Rows.Contains(code) == false)//если не содержится
 			{
-				isError = true;
+				isNotError = false;
 				row.SetColumnError(CdPayng, @"Такой код платежа отсутствует в базе данных.");
 			}
 
-			return isError;
+			return isNotError;
 		}
 
 		//Проверка кода плательщика налогов
 		public bool CodePayersValidation(DataRow row)
 		{
-			bool isError = false;//нет ошибок
+			bool isNotError = true;//нет ошибок
 			Int64 code = Convert.ToInt64(row[CdPaer]);
 			string select;
 			if(code <= 99999999)
-				select = @"SELECT KOD FROM Name_Plat";
+				select = @"SELECT KOD FROM Name_Plat WHERE KOD IS NOT NULL";
 			else
-				select = @"SELECT [Код плательщика] FROM Name_Plat_fiz";
+				select = @"SELECT [Код плательщика] FROM Name_Plat_fiz WHERE [Код плательщика] IS  NOT NULL";
 			DataTable table = GetCodes(select);
 			if (table.Rows.Contains(code) == false)
 			{
-				isError = true;
+				isNotError = false;
 				row.SetColumnError(CdPaer, @"Плательщик с таким кодом отсутствует в базе данных.");
 			}
-			return isError;
+			return isNotError;
 
 		}
 
@@ -112,12 +156,14 @@ namespace Rassrotchka.FilesCommon
 		//Если ошика в строке, получаем значение true
 		private bool DatesValidation(DataRow row)
 		{
-			bool isError = false;//если нет ошибок
+			bool isNotError = true;//если нет ошибок
 
 			var dateDecis = (DateTime) row[DtDec]; //дата решения
 			var dateFirst = (DateTime) row[DtFrs]; //дата первой уплаты
 			var dateEnd = (DateTime) row[DtEnd]; //дата последней уплаты
-			var dateProlong = (DateTime) row[DtPrlg]; //дата до 
+			DateTime dateProlong = DateTime.MinValue;
+			if(row[DtPrlg] is DateTime)
+				dateProlong = (DateTime) row[DtPrlg]; //дата до которой продлен срок действия договора
 
 			//===========Проверка даты первой уплаты
 
@@ -125,13 +171,13 @@ namespace Rassrotchka.FilesCommon
 			if ((string)row[TypDec] == "рассрочка" && dateDecis.AddMonths(1).Month != dateFirst.Month)
 			{
 				row.SetColumnError(DtFrs, @"Ошибка в дате первого платежа по рассрочке!");
-				isError = true;
+				isNotError = false;
 			}
 			//Сравниваем не меньше либо равна дата уплаты по отсрочке по отношению к дате решения
 			if ((string)row[TypDec] == "отсрочка" && dateFirst <= dateDecis)
 			{
 				row.SetColumnError(DtFrs, @"Ошибка в дате первого платежа по отсрочке!");
-				isError = true;
+				isNotError = false;
 			}
 
 			//===========Проверка даты последней уплаты
@@ -140,27 +186,30 @@ namespace Rassrotchka.FilesCommon
 			if ((string)row[TypDec] == "отсрочка" && dateEnd != dateFirst)
 			{
 				row.SetColumnError(DtEnd, @"Ошибка в дате последнего платежа по отсрочке!");
-				isError = true;
+				isNotError = false;
 			}
 			//проверка даты последней уплаты при рассрочке
 			if ((string)row[TypDec] == "рассрочка" && dateEnd <= dateFirst)
 			{
 				row.SetColumnError(DtEnd, @"Ошибка в дате последнего платежа по рассрочке!");
-				isError = true;
+				isNotError = false;
 			}
 
 			//============Проверка даты до которой продлен срок действия рассрочки
 			//=========== должна быть равна дате последней уплаты
-			if (dateProlong != dateEnd)
+			if (dateProlong < dateEnd)
+			{
 				row[DtPrlg] = row[DtEnd];
-			return isError;
+				row.AcceptChanges();
+			}
+			return isNotError;
 		}
 
 		//Проверка количества платежей в случае рассрочки проверка значенич колоники "10".
 		//Проверка значения суммы ежемесячного платежа (колонка "11").
 		private bool PaysCounValidation(DataRow row)
 		{
-			bool isError = false;//если нет ошибок
+			bool isNotError = true;//если нет ошибок
 			var dateDecis = (DateTime) row[DtDec]; //дата решения
 			var dateEnd = (DateTime) row[DtEnd]; //дата первой уплаты
 			var sumDecis = Convert.ToDecimal(row[SumDcs].ToString());//cумма по решению
@@ -175,7 +224,7 @@ namespace Rassrotchka.FilesCommon
 			if (actual != expected)
 			{
 				row.SetColumnError(PayCnt, @"Ошибка в количестве месяцев действия рассрочки либо отсрочки");
-				isError = true;
+				isNotError = false;
 
 			}			
 
@@ -187,7 +236,7 @@ namespace Rassrotchka.FilesCommon
 				if (sumPayActual != sumDecis)
 				{
 					row.SetColumnError(SumPay, @"Ошибка в сумме ежемесячного платежа, правильное значение: " + sumDecis);
-					isError = true;
+					isNotError = false;
 				}
 			}
 			else// рассрочка
@@ -197,10 +246,10 @@ namespace Rassrotchka.FilesCommon
 				if (Math.Abs(sumPayExpected - sumPayActual) >= 1000)
 				{
 					row.SetColumnError(SumPay, @"Ошибка в cумме ежемесячного платежа, расчетное значение: " + sumPayExpected);
-					isError = true;
+					isNotError = false;
 				}
 			}
-			return isError;
+			return isNotError;
 		}
 	}
 }
