@@ -78,21 +78,21 @@ namespace TestProject1
 							@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
 					ExcelParametrs = {StartRow = 2}
 				};
-			var payes = new FillTablesPayes(arg);
+			var payes = new FillTablesPayes1(arg);
 			var target = new RowValidationError(); //
 			DataTable table = payes.GetDebitPayTableGemBox();
 			table.AcceptChanges();
 			var col = table.Columns["0"];
 			DataColumn[] columns = new[] {col};
 			table.PrimaryKey = columns;
-			target.TableFile = table.Clone();
 			object idRow = 2111748;//код тестируемого решения
 			DataRow row = table.Rows.Find(idRow); // получаем искомый для проверки рядок
 
 			bool actual;
 			actual = target.ValidationError(row);
-			payes.VisualErrorRow(table);
-			//string mess = "Данная строка имеет ошибки";
+			
+			string mess = "Данная строка имеет ошибки";
+			payes.VisualErrorRow(table.DefaultView, mess);
 			//payes.IsContinue(target.TableFile.DefaultView, mess);
 			
 			Assert.IsTrue(actual);
@@ -111,7 +111,7 @@ namespace TestProject1
 						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
 				ExcelParametrs = { StartRow = 2 }
 			};
-			var payes = new FillTablesPayes(arg);
+			var payes = new FillTablesPayes1(arg);
 			var target = new RowValidationError(); //
 			DataTable table = payes.GetDebitPayTableGemBox();
 			table.AcceptChanges();
@@ -124,8 +124,8 @@ namespace TestProject1
 
 			bool actual;
 			actual = target.ValidationError(row);
-			payes.VisualErrorRow(table);
-			//string mess = "Данная строка имеет ошибки";
+			string mess = "Данная строка имеет ошибки";
+			payes.VisualErrorRow(table.DefaultView, mess);
 			//payes.IsContinue(target.TableFile.DefaultView, mess);
 
 			Assert.IsTrue(actual);
@@ -143,7 +143,7 @@ namespace TestProject1
 						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
 				ExcelParametrs = { StartRow = 2 }
 			};
-			var payes = new FillTablesPayes(arg);
+			var payes = new FillTablesPayes1(arg);
 			DataTable table = payes.GetDebitPayTableGemBox();
 			var col = table.Columns["0"];
 			DataColumn[] columns = new[] { col };
@@ -172,7 +172,7 @@ namespace TestProject1
 						@"d:\мои документы\visual studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx",
 				ExcelParametrs = { StartRow = 2 }
 			};
-			var payes = new FillTablesPayes(arg);
+			var payes = new FillTablesPayes1(arg);
 			DataTable table = payes.GetDebitPayTableGemBox();
 			var col = table.Columns["0"];
 			DataColumn[] columns = new[] { col };
