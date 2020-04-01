@@ -1,43 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.Windows;
+using System.Windows.Forms;
 using Rassrotchka.Properties;
-using Rassrotchka.NedoimkaDataSetTableAdapters;
 using GemBox.Spreadsheet;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Rassrotchka.FilesCommon
 {
 	/// <summary>
 	/// Класс, заполняющий таблицу выданных рассрочек
 	/// </summary>
-	public class FillTablesPayes
+	public class FillTablesPayes1
 	{
 		private DataTable _tableBase;
-		private DataTable _tableFile;
 		private DictPropName dict;
 		private RowValidationError _validError;
 		public ArgumentDebitPay Argument { get; set; }
 
-		public DataTable TableBase
-		{
-			get { return _tableBase; }
-			set { _tableBase = value; }
-		}
-
-		public DataTable TableFile
-		{
-			get { return _tableFile; }
-			set { _tableFile = value; }
-		}
-
 		//Конструктор
-		public FillTablesPayes(ArgumentDebitPay arg)
+		public FillTablesPayes1(ArgumentDebitPay arg)
 		{
 			Argument = arg;
-			TableBase = new DataTable("TableBaseTemp");
-			TableFile = new DataTable("TableFileTemp");
 			dict = new DictPropName();
 			_validError = new RowValidationError();
 		}
@@ -46,28 +32,44 @@ namespace Rassrotchka.FilesCommon
 		/// Метод обновляет таблицу рассрочек
 		/// </summary>
 		/// <returns>сообщение об успешности завершения операции</returns>
-		public string UpdateSqlTableDebitPayGen()
+		public bool UpdateSqlTableDebitPayGen(DataTable debitPayGen)
 		{
-			string mess = "";
-			var dataSet = new NedoimkaDataSet();
-			var adapter1 = new DebitPayGenTableAdapter();
 			try
 			{
-				adapter1.Fill(dataSet.DebitPayGen);
 				using (var debitPayTableGemBox = GetDebitPayTableGemBox())//извлекаем данные из excel файла
 				{
 					debitPayTableGemBox.AcceptChanges();
-					_validError.TableFile = debitPayTableGemBox.Clone();//копируем стркутуру таблицы
-					ReoderTable(dataSet.DebitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
+					ReoderTable(debitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
 				}
-				int rowCount = adapter1.Update(dataSet.DebitPayGen);//обновляем данные  в базе о вынесенных решениях
-				mess = string.Format("Обновлено {0} строк.", rowCount);
-				return mess;
+				var view = debitPayGen.DefaultView;
+				view.RowStateFilter = DataViewRowState.ModifiedCurrent;
+				VisulChanges(view, "Приняты изменения в следующих строках:");
+				//IsContinue(view1, "Приняты изменения в следующих строках:");
+				view.RowStateFilter = DataViewRowState.Added;
+				if (IsContinue(view, @"Вы хотите добавить новые строки в базу данных?"))
+					return true;
+				return false;
 			}
 			catch (Exception e)
 			{
 				throw new Exception(e.Message + " Ошибка в методе: " + e.TargetSite);
 			}
+		}
+
+		private bool VisulChanges(DataView view1, string mes)
+		{
+			var window = new WindowDateNoRange
+			{
+				TextBlockField = { Text = mes },
+			};
+			window.View = view1;
+			window.Label1.Visibility = Visibility.Visible;
+			window.ButtonFlag.Visibility = Visibility.Visible;
+			window.ButtonNo.Visibility = Visibility.Collapsed;
+
+			var showdialog = window.ShowDialog();
+			var showDialogResultOkCancel = showdialog;
+			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
 		}
 
 		/// <summary>
@@ -120,7 +122,7 @@ namespace Rassrotchka.FilesCommon
 					{
 						debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
 						string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
-						if (IsContinue(debitPayTableGemBox.DefaultView, message))//спрашиваем
+						if (VisualErrorRow(debitPayTableGemBox.DefaultView, message))//спрашиваем
 						{
 							//Проверяем строку на ошибки и добавляем в таблицу из базы данных
 							ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
@@ -137,6 +139,16 @@ namespace Rassrotchka.FilesCommon
 					UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
 				}
 			}
+
+			if (debitPayTableGemBox.HasErrors)//выводим ошибки при наличии
+			{
+				debitPayTableGemBox.DefaultView.RowFilter = "";
+				var view = debitPayTableGemBox.DefaultView;
+				view.RowStateFilter = DataViewRowState.Added;
+				VisualErrorRow(view, "Следующие строки имеют ошибки");
+			}
+			
+			//
 		}
 
 		/// <summary>
@@ -171,13 +183,13 @@ namespace Rassrotchka.FilesCommon
 			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
 		}
 
-		public void VisualErrorRow(DataTable tableGembox)
+		public bool VisualErrorRow(DataView view, string mes)
 		{
-			var view = tableGembox.DefaultView;
-			view.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
-			var form = new Form1 {dataGridView1 = {DataSource = view}};
-			form.ShowDialog();
-
+			var form = new Form1 {dataGridView1 = {DataSource = view}, label1 = {Text = mes}};
+			DialogResult result = form.ShowDialog();
+			if (result == DialogResult.OK)
+				return true;
+			return false;
 		}
 
 		/// <summary>
@@ -189,7 +201,7 @@ namespace Rassrotchka.FilesCommon
 		private void ValidateAndAddRow(DataTable debitPayTable, DataTable debitPayTableGemBox, int i)
 		{
 			DataRow row = debitPayTable.NewRow();
-			if (_validError.ValidationError(debitPayTableGemBox.Rows[i])) //проверка новой строки на ошибки
+			if (_validError.ValidationError(debitPayTableGemBox.Rows[i]))//если нет ошбиок
 			{
 				for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
 				{
@@ -222,30 +234,33 @@ namespace Rassrotchka.FilesCommon
 				string colNameTableBase; //имя колонки в таблице базы данных
 				if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
 				{
+					object obBase = debitPayTable.Rows[id][colNameTableBase];
+					Type type = debitPayTable.Rows[id][colNameTableBase].GetType();
+					object obFile = type.FullName != "System.DBNull" ? 
+						                Convert.ChangeType(debitPayTableGemBox.Rows[rowNumb][colName], type, new CultureInfo("ru-Ru")) : 
+						                debitPayTableGemBox.Rows[rowNumb][colName];
+					
 					//если не равна, то перезаписываем
-					if (debitPayTable.Rows[id][colNameTableBase] != debitPayTableGemBox.Rows[rowNumb][colName])
+					if (!obBase.Equals(obFile))
 					{
-						//TableBase.Rows.Add(debitPayTable.Rows[id]);
-						//TableFile.Rows.Add(debitPayTableGemBox.Rows[rowNumb]);
-
-						string inform1 = string.Format("&/tбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"							
+						string inform1 = string.Format("\nбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"							
 							, debitPayTable.Rows[id]["Kod_Payer"]
 							, debitPayTable.Rows[id]["Name"]
 							, debitPayTable.Rows[id]["Date_Decis"]
 							, debitPayTable.Rows[id]["Summa_Decis"]
 							, debitPayTable.Rows[id][colNameTableBase]);
-						string inform2 = string.Format("&/tстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}" +
-													   "стали: "
+						string inform2 = string.Format("\nстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
 							, debitPayTableGemBox.Rows[rowNumb]["3"]
 							, debitPayTableGemBox.Rows[rowNumb]["2"]
 							, debitPayTableGemBox.Rows[rowNumb]["4"]
 							, debitPayTableGemBox.Rows[rowNumb]["6"]
 							, debitPayTableGemBox.Rows[rowNumb][colName]);
 							
-						MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2);
-						if (result == MessageBoxResult.OK)
+						MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2, "Предупреждение", MessageBoxButton.YesNo);
+						if (result == MessageBoxResult.Yes)
 						{
 							debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[rowNumb][colName];
+							debitPayTable.Rows[id].SetColumnError(colNameTableBase, @"Внесены изменения в данную ячейку");
 						}
 					}
 				}

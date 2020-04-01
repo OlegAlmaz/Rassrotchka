@@ -29,11 +29,26 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+                        <Style x:Key="ElementSyle" TargetType="TextBlock">
+                    <Setter Property="TextAlignment" Value="Right"/>
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip" 
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                            <Setter Property="Foreground" Value="OrangeRed"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+
 
     </Window.Resources>
     <StackPanel>
         <TextBlock Name="TextBlockField" Text="Какой то текст" 
                    TextAlignment="Justify" Margin="5" />
+        <Label Name="Label1" Content="Стали:" Margin="0,5,0,5" Visibility="Collapsed" Foreground="#FF1C3DF2"
+                FontSize="16" FontStyle="Italic" FontWeight="Bold" />
         <DataGrid Name="DataGrid1" ItemsSource="{Binding}"
                   AutoGenerateColumns="False" 
                   HorizontalAlignment="Left" Margin="5" 
@@ -65,67 +80,50 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                <Style x:Key="ElementSyle" TargetType="TextBlock">
-                    <Setter Property="TextAlignment" Value="Right"/>
-                </Style>
             </DataGrid.Resources>
             <DataGrid.RowValidationRules>
                 <local:ValidDateDecis DateMin="-35" DateMax="6" ValidatesOnTargetUpdated="True" ValidationStep="UpdatedValue"/>
             </DataGrid.RowValidationRules>
-            <!--<DataGrid.RowValidationErrorTemplate>
-                <ControlTemplate>
-                    <Grid Margin="0,-2,0,-2"
-                            ToolTip="{Binding RelativeSource={RelativeSource
-                            FindAncestor, AncestorType={x:Type DataGridRow}},
-                            Path=(Validation.Errors)[0].ErrorContent}">
-                        <Ellipse StrokeThickness="0" Fill="Red" 
-                                  Width="{TemplateBinding FontSize}" 
-                                  Height="{TemplateBinding FontSize}" />
-                        <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
-                                  FontWeight="Bold" Foreground="White" 
-                                  HorizontalAlignment="Center"  />
-                    </Grid>
-                </ControlTemplate>
-            </DataGrid.RowValidationErrorTemplate>-->
-
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Идентиф." Binding="{Binding Path=Id_dpg}" ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="ГНИ" Binding="{Binding Path=Kod_GNI}"/>
-                <DataGridTextColumn Header="Плательщик" Binding="{Binding Path=Name}"/>
-                <DataGridTextColumn Header="Код" Binding="{Binding Path=Kod_Payer}" ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="Дата реш." ElementStyle="{StaticResource ErrorStyle}"
+                <DataGridTextColumn Header="Идентиф." Binding="{Binding Path=Id_dpg, ValidatesOnDataErrors=True}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="ГНИ" Binding="{Binding Path=Kod_GNI, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Плательщик" Binding="{Binding Path=Name, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Код" Binding="{Binding Path=Kod_Payer, ValidatesOnDataErrors=True}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Дата реш." ElementStyle="{StaticResource ElementSyle}"
                                     EditingElementStyle="{StaticResource ErrorStyle}">
                     <DataGridTextColumn.Binding>
-                        <Binding Path="Date_Decis">
+                        <Binding Path="Date_Decis" ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <local:ValidDateDecis DateMin="-35" DateMax="6"  />
                             </Binding.ValidationRules>
                         </Binding>
                     </DataGridTextColumn.Binding>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Ном. реш." Binding="{Binding Path=Numb_Decis}" ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="Орг. прин. реш." Binding="{Binding Path=GniOrGKNS}"/>
+                <DataGridTextColumn Header="Ном. реш." Binding="{Binding Path=Numb_Decis, ValidatesOnDataErrors=True}" ElementStyle="{StaticResource ElementSyle}"/>
+                <DataGridTextColumn Header="Орг. прин. реш." Binding="{Binding Path=GniOrGKNS, ValidatesOnDataErrors=True}"/>
                 <DataGridTextColumn Header="Сумма реш." 
-                                    Binding="{Binding Path=Summa_Decis, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Binding="{Binding Path=Summa_Decis, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                     ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="Код платежа" Binding="{Binding Path=Kod_Paying}"/>
-                <DataGridTextColumn Header="Дата первого платежа" Binding="{Binding Path=Date_first, StringFormat=\{0:d\}}"/>
-                <DataGridTextColumn Header="Дата последнего платежа" Binding="{Binding Path=Date_end, StringFormat=\{0:d\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Количество платежей" Binding="{Binding Path=Count_Mount}"
+                <DataGridTextColumn Header="Код платежа" Binding="{Binding Path=Kod_Paying, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Дата первого платежа" Binding="{Binding Path=Date_first, StringFormat=\{0:d\}, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Дата последнего платежа" Binding="{Binding Path=Date_end, StringFormat=\{0:d\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Количество платежей" Binding="{Binding Path=Count_Mount, ValidatesOnDataErrors=True}"
                                     ElementStyle="{StaticResource ElementSyle}"/>
                 <DataGridTextColumn Header="Сумма ежемесячного платежа" 
-                                    Binding="{Binding Path=Summa_Payer, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Binding="{Binding Path=Summa_Payer, StringFormat=\{0:N\}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                     ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="Тип решения" Binding="{Binding Path=Type_Decis}"
+                <DataGridTextColumn Header="Тип решения" Binding="{Binding Path=Type_Decis, ValidatesOnDataErrors=True}"
                                     ElementStyle="{StaticResource ElementSyle}"/>
-                <DataGridTextColumn Header="Дата до которой продлена рассрочка" Binding="{Binding Path=Date_prolong, StringFormat=\{0:d\}}"/>
-                <DataGridTextColumn Header="Примечание" Binding="{Binding Path=Note}"/>
+                <DataGridTextColumn Header="Дата до которой продлена рассрочка" Binding="{Binding Path=Date_prolong, StringFormat=\{0:d\}, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Примечание" Binding="{Binding Path=Note, ValidatesOnDataErrors=True}"/>
             </DataGrid.Columns>
         </DataGrid>
+        <Button Name="ButtonFlag" Content="Были" Width="60" HorizontalAlignment="Left" Click="ButtonFlag_Click"
+                Visibility="Collapsed" />
         <StackPanel Orientation="Horizontal">
             <Button Content="Да" IsDefault="True"
                     Click="ButtonYes_Click" />
-            <Button Content="Нет" />
+            <Button Name="ButtonNo" Content="Нет" IsCancel="True" />
         </StackPanel>
     </StackPanel>
 </Window>
