@@ -153,7 +153,7 @@ namespace TestProject1
 			{
 				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject3\TestedFiles\рассрочки.xlsx"
 			};
-			var target = new FillTablesPayes(arg);
+			var target = new FillTablesPayes1(arg);
 			var debitPayTable = new NedoimkaDataSet.DebitPayGenTestDataTable();
 			var adapter = new DebitPayGenTestTableAdapter();
 			adapter.Fill(debitPayTable);
@@ -213,6 +213,27 @@ namespace TestProject1
 	    #endregion
 
 		/// <summary>
+		///Тест для UpdateSqlTableDebitPayGen для нетестовой базы
+		///</summary>
+		[TestMethod()]
+		public void UpdateSqlTableDebitPayGenTest2()
+		{
+			var arg = new ArgumentDebitPay()
+			{
+				FilePath = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль\рассрочки_06_2020_03.xlsx"
+			};
+			var target = new FillTablesPayes1(arg);
+			var debitPayTable = new NedoimkaDataSet.DebitPayGenDataTable();
+			var adapter = new DebitPayGenTableAdapter();
+			adapter.Fill(debitPayTable);
+
+			bool expected = true; // TODO: инициализация подходящего значения
+			bool actual;
+			actual = target.UpdateSqlTableDebitPayGen(debitPayTable);
+			Assert.AreEqual(expected, actual);
+		}
+
+		/// <summary>
 		///Тест для UpdateSqlTableDebitPayGen
 		///</summary>
 		[TestMethod()]
@@ -220,18 +241,17 @@ namespace TestProject1
 		{
 			var arg = new ArgumentDebitPay()
 			{
-				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject3\TestedFiles\рассрочки.xlsx"
+				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
 			};
-			var target = new FillTablesPayes(arg);
+			var target = new FillTablesPayes1(arg);
 			var debitPayTable = new NedoimkaDataSet.DebitPayGenTestDataTable();
 			var adapter = new DebitPayGenTestTableAdapter();
 			adapter.Fill(debitPayTable);
 
-			string expected = string.Empty; // TODO: инициализация подходящего значения
-			string actual;
-			actual = target.UpdateSqlTableDebitPayGen();
+			bool expected = true; // TODO: инициализация подходящего значения
+			bool actual;
+			actual = target.UpdateSqlTableDebitPayGen(debitPayTable);
 			Assert.AreEqual(expected, actual);
-			Assert.Inconclusive("Проверьте правильность этого метода теста.");
 		}
 
 		/// <summary>
@@ -244,7 +264,7 @@ namespace TestProject1
 			{
 				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
 			};
-			var target = new FillTablesPayes(arg);
+			var target = new FillTablesPayes1(arg);
 			DataTable debitPayTableGemBox = target.GetDebitPayTableGemBox();
 			long id = 158769;
 			string expression = string.Format("[0] = {0}", id);
@@ -266,7 +286,7 @@ namespace TestProject1
 			{
 				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
 			};
-			var target = new FillTablesPayes(arg);
+			var target = new FillTablesPayes1(arg);
 
 			var debitPayTable = new NedoimkaDataSet.DebitPayGenTestDataTable();
 			var adapter = new DebitPayGenTestTableAdapter();
