@@ -221,12 +221,17 @@ namespace Rassrotchka.FilesCommon
 
 			int actual = Convert.ToInt32(row[PayCnt].ToString());// по факту
 
+
+			if ((string)row[TypDec] == "отсрочка")
+			{
+				if (expected == 0)
+					expected = 1;
+			}
 			if (actual != expected)
 			{
 				row.SetColumnError(PayCnt, @"Ошибка в количестве месяцев действия рассрочки либо отсрочки");
 				isNotError = false;
-
-			}			
+			}
 
 			//===============Проверка суммы ежемесячного платежа
 			decimal sumPayActual = Convert.ToDecimal(row[SumPay].ToString()); // по факту

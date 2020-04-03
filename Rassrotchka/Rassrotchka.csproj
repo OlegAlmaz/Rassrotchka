@@ -82,7 +82,7 @@
     </Compile>
     <Compile Include="FilesCommon\ArgumentDebitPay.cs" />
     <Compile Include="FilesCommon\DictPropName.cs" />
-    <Compile Include="FilesCommon\FillTablesPayes.cs" />
+    <Compile Include="FilesCommon\FillTablesPayes1.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -138,6 +138,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GemBox.Spreadsheet.dll" />
+    <Resource Include="Images\copy-pro.bmp" />
+    <Resource Include="Images\copy-pro.cur" />
+    <Resource Include="Images\copy-pro32.bmp" />
+    <Resource Include="Images\CustomWiz.ico" />
+    <Resource Include="Images\DatabaseProject.ico" />
+    <Resource Include="Images\delete-pro.cur" />
+    <Resource Include="Images\delete-pro32.bmp" />
+    <Resource Include="Images\delete.ico" />
+    <Resource Include="Images\fileview.bmp" />
+    <Resource Include="Images\properties.bmp" />
+    <Resource Include="Images\relationship.gif" />
+    <Resource Include="Images\table.gif" />
+    <Resource Include="Images\tbahi.bmp" />
+    <Resource Include="Images\tba_i.bmp" />
+    <Resource Include="Images\tba_i256.bmp" />
+    <Resource Include="Images\view.gif" />
+    <Resource Include="Images\OpenHH.bmp" />
+    <Resource Include="Images\OpenHH1.bmp" />
+    <Resource Include="Images\Delete_tableHH.bmp" />
+    <Resource Include="Images\FindHH.bmp" />
+    <Resource Include="Images\SaveHH.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

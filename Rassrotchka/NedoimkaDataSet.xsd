@@ -147,7 +147,7 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
               <Mapping SourceColumn="Kod_Paying" DataSetColumn="Kod_Paying" />
               <Mapping SourceColumn="Date_first" DataSetColumn="Date_first" />
               <Mapping SourceColumn="Date_end" DataSetColumn="Date_end" />
-              <Mapping SourceColumn="Count_Mount" DataSetColumn="Count_Mount" />
+              <Mapping SourceColumn="Кол-во платежей" DataSetColumn="Count_Mount" />
               <Mapping SourceColumn="Summa_Payer" DataSetColumn="Summa_Payer" />
               <Mapping SourceColumn="Type_Decis" DataSetColumn="Type_Decis" />
               <Mapping SourceColumn="Date_prolong" DataSetColumn="Date_prolong" />
@@ -214,7 +214,7 @@ SELECT ID_MP, Id_dpg, Date, Summa_pay FROM MonthPay WHERE (ID_MP = @ID_MP)</Comm
             <Mappings>
               <Mapping SourceColumn="ID_MP" DataSetColumn="ID_MP" />
               <Mapping SourceColumn="Id_dpg" DataSetColumn="Id_dpg" />
-              <Mapping SourceColumn="Date" DataSetColumn="Date" />
+              <Mapping SourceColumn="Date" DataSetColumn="Дата" />
               <Mapping SourceColumn="Summa_pay" DataSetColumn="Summa_pay" />
             </Mappings>
             <Sources />
@@ -378,46 +378,46 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
         <xs:element name="DebitPayGen" msprop:Generator_TableClassName="DebitPayGenDataTable" msprop:Generator_TableVarName="tableDebitPayGen" msprop:Generator_TablePropName="DebitPayGen" msprop:Generator_RowDeletingName="DebitPayGenRowDeleting" msprop:Generator_UserTableName="DebitPayGen" msprop:Generator_RowChangingName="DebitPayGenRowChanging" msprop:Generator_RowEvHandlerName="DebitPayGenRowChangeEventHandler" msprop:Generator_RowDeletedName="DebitPayGenRowDeleted" msprop:Generator_RowEvArgName="DebitPayGenRowChangeEvent" msprop:Generator_RowChangedName="DebitPayGenRowChanged" msprop:Generator_RowClassName="DebitPayGenRow">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="Id_dpg" msprop:Generator_ColumnVarNameInTable="columnId_dpg" msprop:Generator_ColumnPropNameInRow="Id_dpg" msprop:Generator_ColumnPropNameInTable="Id_dpgColumn" msprop:Generator_UserColumnName="Id_dpg" type="xs:long" />
-              <xs:element name="Kod_GNI" msprop:Generator_ColumnVarNameInTable="columnKod_GNI" msprop:Generator_ColumnPropNameInRow="Kod_GNI" msprop:Generator_ColumnPropNameInTable="Kod_GNIColumn" msprop:Generator_UserColumnName="Kod_GNI" type="xs:short" minOccurs="0" />
-              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
+              <xs:element name="Id_dpg" msdata:Caption="Id" msprop:Generator_ColumnVarNameInTable="columnId_dpg" msprop:Generator_ColumnPropNameInRow="Id_dpg" msprop:Generator_ColumnPropNameInTable="Id_dpgColumn" msprop:Generator_UserColumnName="Id_dpg" type="xs:long" />
+              <xs:element name="Kod_GNI" msdata:Caption="ГНИ" msprop:Generator_ColumnVarNameInTable="columnKod_GNI" msprop:Generator_ColumnPropNameInRow="Kod_GNI" msprop:Generator_ColumnPropNameInTable="Kod_GNIColumn" msprop:Generator_UserColumnName="Kod_GNI" type="xs:short" minOccurs="0" />
+              <xs:element name="Name" msdata:Caption="Плательщик" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="100" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="Kod_Payer" msprop:Generator_ColumnVarNameInTable="columnKod_Payer" msprop:Generator_ColumnPropNameInRow="Kod_Payer" msprop:Generator_ColumnPropNameInTable="Kod_PayerColumn" msprop:Generator_UserColumnName="Kod_Payer" type="xs:long" minOccurs="0" />
-              <xs:element name="Date_Decis" msprop:Generator_ColumnVarNameInTable="columnDate_Decis" msprop:Generator_ColumnPropNameInRow="Date_Decis" msprop:Generator_ColumnPropNameInTable="Date_DecisColumn" msprop:Generator_UserColumnName="Date_Decis" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="Numb_Decis" msprop:Generator_ColumnVarNameInTable="columnNumb_Decis" msprop:Generator_ColumnPropNameInRow="Numb_Decis" msprop:Generator_ColumnPropNameInTable="Numb_DecisColumn" msprop:Generator_UserColumnName="Numb_Decis" minOccurs="0">
+              <xs:element name="Kod_Payer" msdata:Caption="Код плател." msprop:Generator_ColumnVarNameInTable="columnKod_Payer" msprop:Generator_ColumnPropNameInRow="Kod_Payer" msprop:Generator_ColumnPropNameInTable="Kod_PayerColumn" msprop:Generator_UserColumnName="Kod_Payer" type="xs:long" minOccurs="0" />
+              <xs:element name="Date_Decis" msdata:Caption="Дата решения" msprop:Generator_ColumnVarNameInTable="columnDate_Decis" msprop:Generator_ColumnPropNameInRow="Date_Decis" msprop:Generator_ColumnPropNameInTable="Date_DecisColumn" msprop:Generator_UserColumnName="Date_Decis" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Numb_Decis" msdata:Caption="№ решен." msprop:Generator_ColumnVarNameInTable="columnNumb_Decis" msprop:Generator_ColumnPropNameInRow="Numb_Decis" msprop:Generator_ColumnPropNameInTable="Numb_DecisColumn" msprop:Generator_UserColumnName="Numb_Decis" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="50" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="GniOrGKNS" msprop:Generator_ColumnVarNameInTable="columnGniOrGKNS" msprop:Generator_ColumnPropNameInRow="GniOrGKNS" msprop:Generator_ColumnPropNameInTable="GniOrGKNSColumn" msprop:Generator_UserColumnName="GniOrGKNS" minOccurs="0">
+              <xs:element name="GniOrGKNS" msdata:Caption="Орган" msprop:Generator_ColumnVarNameInTable="columnGniOrGKNS" msprop:Generator_ColumnPropNameInRow="GniOrGKNS" msprop:Generator_ColumnPropNameInTable="GniOrGKNSColumn" msprop:Generator_UserColumnName="GniOrGKNS" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="4" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="Summa_Decis" msprop:Generator_ColumnVarNameInTable="columnSumma_Decis" msprop:Generator_ColumnPropNameInRow="Summa_Decis" msprop:Generator_ColumnPropNameInTable="Summa_DecisColumn" msprop:Generator_UserColumnName="Summa_Decis" type="xs:decimal" minOccurs="0" />
-              <xs:element name="Kod_Paying" msprop:Generator_ColumnVarNameInTable="columnKod_Paying" msprop:Generator_ColumnPropNameInRow="Kod_Paying" msprop:Generator_ColumnPropNameInTable="Kod_PayingColumn" msprop:Generator_UserColumnName="Kod_Paying" type="xs:int" minOccurs="0" />
-              <xs:element name="Date_first" msprop:Generator_ColumnVarNameInTable="columnDate_first" msprop:Generator_ColumnPropNameInRow="Date_first" msprop:Generator_ColumnPropNameInTable="Date_firstColumn" msprop:Generator_UserColumnName="Date_first" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="Date_end" msprop:Generator_ColumnVarNameInTable="columnDate_end" msprop:Generator_ColumnPropNameInRow="Date_end" msprop:Generator_ColumnPropNameInTable="Date_endColumn" msprop:Generator_UserColumnName="Date_end" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Summa_Decis" msdata:Caption="Сумма реш." msprop:Generator_ColumnVarNameInTable="columnSumma_Decis" msprop:Generator_ColumnPropNameInRow="Summa_Decis" msprop:Generator_ColumnPropNameInTable="Summa_DecisColumn" msprop:Generator_UserColumnName="Summa_Decis" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Kod_Paying" msdata:Caption="Платеж" msprop:Generator_ColumnVarNameInTable="columnKod_Paying" msprop:Generator_ColumnPropNameInRow="Kod_Paying" msprop:Generator_ColumnPropNameInTable="Kod_PayingColumn" msprop:Generator_UserColumnName="Kod_Paying" type="xs:int" minOccurs="0" />
+              <xs:element name="Date_first" msdata:Caption="Дата 1 платежа" msprop:Generator_ColumnVarNameInTable="columnDate_first" msprop:Generator_ColumnPropNameInRow="Date_first" msprop:Generator_ColumnPropNameInTable="Date_firstColumn" msprop:Generator_UserColumnName="Date_first" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Date_end" msdata:Caption="Дата последнего платежа" msprop:Generator_ColumnVarNameInTable="columnDate_end" msprop:Generator_ColumnPropNameInRow="Date_end" msprop:Generator_ColumnPropNameInTable="Date_endColumn" msprop:Generator_UserColumnName="Date_end" type="xs:dateTime" minOccurs="0" />
               <xs:element name="Count_Mount" msprop:Generator_ColumnVarNameInTable="columnCount_Mount" msprop:Generator_ColumnPropNameInRow="Count_Mount" msprop:Generator_ColumnPropNameInTable="Count_MountColumn" msprop:Generator_UserColumnName="Count_Mount" type="xs:int" minOccurs="0" />
-              <xs:element name="Summa_Payer" msprop:Generator_ColumnVarNameInTable="columnSumma_Payer" msprop:Generator_ColumnPropNameInRow="Summa_Payer" msprop:Generator_ColumnPropNameInTable="Summa_PayerColumn" msprop:Generator_UserColumnName="Summa_Payer" type="xs:decimal" minOccurs="0" />
-              <xs:element name="Type_Decis" msprop:Generator_ColumnVarNameInTable="columnType_Decis" msprop:Generator_ColumnPropNameInRow="Type_Decis" msprop:Generator_ColumnPropNameInTable="Type_DecisColumn" msprop:Generator_UserColumnName="Type_Decis" minOccurs="0">
+              <xs:element name="Summa_Payer" msdata:Caption="Сумма ежем. платежа" msprop:Generator_ColumnVarNameInTable="columnSumma_Payer" msprop:Generator_ColumnPropNameInRow="Summa_Payer" msprop:Generator_ColumnPropNameInTable="Summa_PayerColumn" msprop:Generator_UserColumnName="Summa_Payer" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Type_Decis" msdata:Caption="Тип решен." msprop:Generator_ColumnVarNameInTable="columnType_Decis" msprop:Generator_ColumnPropNameInRow="Type_Decis" msprop:Generator_ColumnPropNameInTable="Type_DecisColumn" msprop:Generator_UserColumnName="Type_Decis" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="9" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
-              <xs:element name="Date_prolong" msprop:Generator_ColumnVarNameInTable="columnDate_prolong" msprop:Generator_ColumnPropNameInRow="Date_prolong" msprop:Generator_ColumnPropNameInTable="Date_prolongColumn" msprop:Generator_UserColumnName="Date_prolong" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="Note" msprop:Generator_ColumnVarNameInTable="columnNote" msprop:Generator_ColumnPropNameInRow="Note" msprop:Generator_ColumnPropNameInTable="NoteColumn" msprop:Generator_UserColumnName="Note" minOccurs="0">
+              <xs:element name="Date_prolong" msdata:Caption="Дата пролонгации" msprop:Generator_ColumnVarNameInTable="columnDate_prolong" msprop:Generator_ColumnPropNameInRow="Date_prolong" msprop:Generator_ColumnPropNameInTable="Date_prolongColumn" msprop:Generator_UserColumnName="Date_prolong" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Note" msdata:Caption="Примечание" msprop:Generator_ColumnVarNameInTable="columnNote" msprop:Generator_ColumnPropNameInRow="Note" msprop:Generator_ColumnPropNameInTable="NoteColumn" msprop:Generator_UserColumnName="Note" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
                     <xs:maxLength value="255" />
@@ -430,10 +430,10 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
         <xs:element name="MonthPay" msprop:Generator_TableClassName="MonthPayDataTable" msprop:Generator_TableVarName="tableMonthPay" msprop:Generator_TablePropName="MonthPay" msprop:Generator_RowDeletingName="MonthPayRowDeleting" msprop:Generator_UserTableName="MonthPay" msprop:Generator_RowChangingName="MonthPayRowChanging" msprop:Generator_RowEvHandlerName="MonthPayRowChangeEventHandler" msprop:Generator_RowDeletedName="MonthPayRowDeleted" msprop:Generator_RowEvArgName="MonthPayRowChangeEvent" msprop:Generator_RowChangedName="MonthPayRowChanged" msprop:Generator_RowClassName="MonthPayRow">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="ID_MP" msprop:Generator_ColumnVarNameInTable="columnID_MP" msprop:Generator_ColumnPropNameInRow="ID_MP" msprop:Generator_ColumnPropNameInTable="ID_MPColumn" msprop:Generator_UserColumnName="ID_MP" type="xs:int" />
-              <xs:element name="Id_dpg" msprop:Generator_ColumnVarNameInTable="columnId_dpg" msprop:Generator_ColumnPropNameInRow="Id_dpg" msprop:Generator_ColumnPropNameInTable="Id_dpgColumn" msprop:Generator_UserColumnName="Id_dpg" type="xs:long" minOccurs="0" />
-              <xs:element name="Date" msprop:Generator_ColumnVarNameInTable="columnDate" msprop:Generator_ColumnPropNameInRow="Date" msprop:Generator_ColumnPropNameInTable="DateColumn" msprop:Generator_UserColumnName="Date" type="xs:dateTime" minOccurs="0" />
-              <xs:element name="Summa_pay" msprop:Generator_ColumnVarNameInTable="columnSumma_pay" msprop:Generator_ColumnPropNameInRow="Summa_pay" msprop:Generator_ColumnPropNameInTable="Summa_payColumn" msprop:Generator_UserColumnName="Summa_pay" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ID_MP" msdata:AutoIncrement="true" msdata:AutoIncrementSeed="1" msdata:Caption="Id" msprop:Generator_ColumnVarNameInTable="columnID_MP" msprop:Generator_ColumnPropNameInRow="ID_MP" msprop:Generator_ColumnPropNameInTable="ID_MPColumn" msprop:Generator_UserColumnName="ID_MP" type="xs:int" />
+              <xs:element name="Id_dpg" msdata:Caption="Id решения" msprop:Generator_ColumnVarNameInTable="columnId_dpg" msprop:Generator_ColumnPropNameInRow="Id_dpg" msprop:Generator_ColumnPropNameInTable="Id_dpgColumn" msprop:Generator_UserColumnName="Id_dpg" type="xs:long" minOccurs="0" />
+              <xs:element name="Дата" msprop:Generator_ColumnVarNameInTable="columnДата" msprop:Generator_ColumnPropNameInRow="Дата" msprop:Generator_ColumnPropNameInTable="ДатаColumn" msprop:Generator_UserColumnName="Дата" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Summa_pay" msdata:Caption="Сумма" msprop:Generator_ColumnVarNameInTable="columnSumma_pay" msprop:Generator_ColumnPropNameInRow="Summa_pay" msprop:Generator_ColumnPropNameInTable="Summa_payColumn" msprop:Generator_UserColumnName="Summa_pay" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -506,7 +506,7 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
   </xs:element>
   <xs:annotation>
     <xs:appinfo>
-      <msdata:Relationship name="FK_MonthPay_DebitPayGen_Id_dpg" msdata:parent="DebitPayGen" msdata:child="MonthPay" msdata:parentkey="Id_dpg" msdata:childkey="Id_dpg" msprop:Generator_UserChildTable="MonthPay" msprop:Generator_ChildPropName="GetMonthPayRows" msprop:Generator_UserParentTable="DebitPayGen" msprop:Generator_UserRelationName="FK_MonthPay_DebitPayGen_Id_dpg" msprop:Generator_RelationVarName="relationFK_MonthPay_DebitPayGen_Id_dpg" msprop:Generator_ParentPropName="DebitPayGenRow" />
+      <msdata:Relationship name="FK_MonthPay_DebitPayGen_Id_dpg" msdata:parent="DebitPayGen" msdata:child="MonthPay" msdata:parentkey="Id_dpg" msdata:childkey="Id_dpg" msprop:Generator_UserChildTable="MonthPay" msprop:Generator_ChildPropName="GetMonthPayRows" msprop:Generator_ParentPropName="DebitPayGenRow" msprop:Generator_UserRelationName="FK_MonthPay_DebitPayGen_Id_dpg" msprop:Generator_RelationVarName="relationFK_MonthPay_DebitPayGen_Id_dpg" msprop:Generator_UserParentTable="DebitPayGen" />
     </xs:appinfo>
   </xs:annotation>
 </xs:schema>

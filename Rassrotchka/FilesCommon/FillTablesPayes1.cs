@@ -44,7 +44,6 @@ namespace Rassrotchka.FilesCommon
 				var view = debitPayGen.DefaultView;
 				view.RowStateFilter = DataViewRowState.ModifiedCurrent;
 				VisulChanges(view, "Приняты изменения в следующих строках:");
-				//IsContinue(view1, "Приняты изменения в следующих строках:");
 				view.RowStateFilter = DataViewRowState.Added;
 				if (IsContinue(view, @"Вы хотите добавить новые строки в базу данных?"))
 					return true;
@@ -158,7 +157,7 @@ namespace Rassrotchka.FilesCommon
 		/// <returns>возвращает true, если дата вне заданного диапазона</returns>
 		private bool IsDecisDateNotRange(DateTime dateDecis)
 		{
-			DateTime dateMin = DateTime.Now.AddDays(-35);
+			DateTime dateMin = DateTime.Now.AddDays(-40);
 			DateTime dateMax = DateTime.Now.AddDays(6);
 			if (dateDecis >= dateMin && dateDecis <= dateMax)
 				return false;
@@ -239,30 +238,40 @@ namespace Rassrotchka.FilesCommon
 					object obFile = type.FullName != "System.DBNull" ? 
 						                Convert.ChangeType(debitPayTableGemBox.Rows[rowNumb][colName], type, new CultureInfo("ru-Ru")) : 
 						                debitPayTableGemBox.Rows[rowNumb][colName];
-					
+
+
+
+					//todo изменить
+					#region Старый код
+
 					//если не равна, то перезаписываем
 					if (!obBase.Equals(obFile))
 					{
-						string inform1 = string.Format("\nбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"							
-							, debitPayTable.Rows[id]["Kod_Payer"]
-							, debitPayTable.Rows[id]["Name"]
-							, debitPayTable.Rows[id]["Date_Decis"]
-							, debitPayTable.Rows[id]["Summa_Decis"]
-							, debitPayTable.Rows[id][colNameTableBase]);
-						string inform2 = string.Format("\nстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
-							, debitPayTableGemBox.Rows[rowNumb]["3"]
-							, debitPayTableGemBox.Rows[rowNumb]["2"]
-							, debitPayTableGemBox.Rows[rowNumb]["4"]
-							, debitPayTableGemBox.Rows[rowNumb]["6"]
-							, debitPayTableGemBox.Rows[rowNumb][colName]);
-							
-						MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2, "Предупреждение", MessageBoxButton.YesNo);
-						if (result == MessageBoxResult.Yes)
-						{
+						//string inform1 =
+						//    string.Format("\nбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
+						//                  , debitPayTable.Rows[id]["Kod_Payer"]
+						//                  , debitPayTable.Rows[id]["Name"]
+						//                  , debitPayTable.Rows[id]["Date_Decis"]
+						//                  , debitPayTable.Rows[id]["Summa_Decis"]
+						//                  , debitPayTable.Rows[id][colNameTableBase]);
+						//string inform2 =
+						//    string.Format("\nстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
+						//                  , debitPayTableGemBox.Rows[rowNumb]["3"]
+						//                  , debitPayTableGemBox.Rows[rowNumb]["2"]
+						//                  , debitPayTableGemBox.Rows[rowNumb]["4"]
+						//                  , debitPayTableGemBox.Rows[rowNumb]["6"]
+						//                  , debitPayTableGemBox.Rows[rowNumb][colName]);
+
+						//MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2, "Предупреждение",
+						//                                          MessageBoxButton.YesNo);
+						//if (result == MessageBoxResult.Yes)
+						//{
 							debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[rowNumb][colName];
 							debitPayTable.Rows[id].SetColumnError(colNameTableBase, @"Внесены изменения в данную ячейку");
-						}
+						//}
 					}
+
+					#endregion
 				}
 			}
 		}
@@ -338,55 +347,69 @@ namespace Rassrotchka.FilesCommon
 		/// заполнение таблиц базы даных из объектов DataTable информацией о ежемесячных платежах
 		/// </summary>
 		/// <returns></returns>
-//        public string UpdateSqlTableMonthPay()
-//        {
-//            string mess = "";
-//            using (var connection = new SqlConnection(Settings.Default.NedoimkaConnectionString))
-//            {
-//                try
-//                {
-//                    connection.Open();
-//                    SqlCommand command = connection.CreateCommand();
-//                    command.CommandText = Argument.SelectedCommand;
-//                    var adapter = new SqlDataAdapter(command);
+		public string UpdateSqlTableMonthPay()
+		{
+			string mess = "";
+			using (var connection = new SqlConnection(Settings.Default.NedoimkaConnectionString))
+			{
+				try
+				{
+					connection.Open();
+					SqlCommand command = connection.CreateCommand();
 
-//                    var debitPayTable = new DataTable();//таблица из базы данных
-//                    adapter.Fill(debitPayTable);
+					command.CommandText = @"
+SELECT
+      dpgt.Id_dpg
+    , dpgt.Summa_Decis
+    , dpgt.Date_first
+    , dpgt.Date_end
+    , dpgt.Count_Mount
+    , dpgt.Summa_Payer
+    , dpgt.Type_Decis
 
-//                    command.CommandText = @"DECLARE @IdMax BIGINT
-//									SET @IdMax = (SELECT MAX(ID_MP) FROM MonthPay)
-//									SELECT TOP 1 * FROM MonthPay WHERE ID_MP = @IdMax";
-//                    adapter = new SqlDataAdapter(command);
-//                    var monthPayTable = new DataTable();
-//                    adapter.Fill(monthPayTable);//
-//                    GetTableMontPay(debitPayTable, monthPayTable);
-//                    adapter.InsertCommand = CreateInsertCommandMonthPay(connection, Argument.TableBaseMonthPay);
-//                    int rowCount = adapter.Update(monthPayTable);//обновляем данные  в базе о вынесенных решениях
-//                    mess = string.Format("Обновлено {0} строк.", rowCount);
-//                    return mess;
-//                }
-//                catch (Exception e)
-//                {
-//                    throw new Exception(e.Message);
-//                }
-//            }
+FROM DebitPayGen dpgt
+LEFT JOIN MonthPay mpt
+      ON dpgt.Id_dpg = mpt.Id_dpg
+WHERE mpt.Summa_pay IS NULL";
+					var adapter = new SqlDataAdapter(command);
 
-//        }
+					var debitPayTable = new DataTable();//таблица из базы данных
+					adapter.Fill(debitPayTable);
 
-//        private SqlCommand CreateInsertCommandMonthPay(SqlConnection connection, string tabName)
-//        {
-//            var command = connection.CreateCommand();
-//            command.CommandText = string.Format(@"INSERT INTO {0} 
-//									(ID_MP, Id_dpg, Date, Summa_pay)
-//										VALUES (@ID_MP, @Id_dpg, @Date, @Summa_pay)", tabName);
-//            SqlParameterCollection pc = command.Parameters;
-//            pc.Add("@ID_MP", SqlDbType.Int, 0, "ID_MP");
-//            pc.Add("@Id_dpg", SqlDbType.BigInt, 0, "Id_dpg");
-//            pc.Add("@Date", SqlDbType.DateTime, 0, "Date");
-//            pc.Add("@Summa_pay", SqlDbType.Money, 0, "Summa_pay");
+					command.CommandText = @"DECLARE @IdMax BIGINT
+									SET @IdMax = (SELECT MAX(ID_MP) FROM MonthPay)
+									SELECT TOP 1 * FROM MonthPay WHERE ID_MP = @IdMax";
+					adapter = new SqlDataAdapter(command);
+					var monthPayTable = new DataTable();
+					adapter.Fill(monthPayTable);//
+					GetTableMontPay(debitPayTable, monthPayTable);
+					adapter.InsertCommand = CreateInsertCommandMonthPay(connection, Argument.TableBaseMonthPay);
+					int rowCount = adapter.Update(monthPayTable);//обновляем данные  в базе о вынесенных решениях
+					mess = string.Format("Обновлено {0} строк.", rowCount);
+					return mess;
+				}
+				catch (Exception e)
+				{
+					throw new Exception(e.Message);
+				}
+			}
 
-//            return command;
-//        }
+		}
+
+		private SqlCommand CreateInsertCommandMonthPay(SqlConnection connection, string tabName)
+		{
+			var command = connection.CreateCommand();
+			command.CommandText = string.Format(@"INSERT INTO {0} 
+									(ID_MP, Id_dpg, Date, Summa_pay)
+										VALUES (@ID_MP, @Id_dpg, @Date, @Summa_pay)", tabName);
+			SqlParameterCollection pc = command.Parameters;
+			pc.Add("@ID_MP", SqlDbType.Int, 0, "ID_MP");
+			pc.Add("@Id_dpg", SqlDbType.BigInt, 0, "Id_dpg");
+			pc.Add("@Date", SqlDbType.DateTime, 0, "Date");
+			pc.Add("@Summa_pay", SqlDbType.Money, 0, "Summa_pay");
+
+			return command;
+		}
 
 
 

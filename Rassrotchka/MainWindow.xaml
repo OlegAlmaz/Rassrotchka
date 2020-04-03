@@ -1,8 +1,222 @@
 ﻿<Window x:Class="Rassrotchka.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:local="clr-namespace:Rassrotchka.ValidationFiles"
+        Title="MainWindow" Height="550" Width="825" FontSize="12"
+        Icon="/Rassrotchka;component/Images/CustomWiz.ico"
+        xml:lang="ru-Ru"
+        xmlns:my="clr-namespace:Rassrotchka" Loaded="Window_Loaded">
+    <Window.CommandBindings>
+        <CommandBinding Command="Save" 
+                        Executed="SaveCommandBinding_OnExecuted"
+                        CanExecute="CommandBinding_OnCanExecute"/>
+    </Window.CommandBindings>
+    <Window.Resources>
+        <!-- DataGridColumnHeader style -->
+        <Style x:Key="ColumnHeaderStyle1" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30" />
+            <Setter Property="Background" Value="LightBlue" />
+            <Setter Property="Foreground" Value="Blue" />
+            <Setter Property="FontSize" Value="14" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridColumnHeader, AncestorLevel=1}, Path=Column.Header}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ErrorElementStyle" TargetType="TextBlock">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="OrangeRed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         
+        <Style x:Key="CellWrapStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ErrorElementStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="RigthCellStyle" TargetType="TextBlock" BasedOn="{StaticResource ErrorElementStyle}">
+            <Setter Property="TextAlignment" Value="Right"></Setter>
+        </Style>
+        
+        <Style x:Key="SummaCellStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource RigthCellStyle}">
+            <Setter Property="Text" Value="{Binding StringFormat=\{0:N\}, ValidatesOnDataErrors=True}"/>
+        </Style>
+
+        <Style x:Key="ErrorCellStyle" TargetType="DataGridCell">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="OrangeRed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="ColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=Header}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="ClipboardCopyMode" Value="IncludeHeader" />
+            <Setter Property="Margin" Value="5" />
+            <!--<Setter Property="CellStyle" Value="{StaticResource ErrorCellStyle}"/>-->
+            <!--<Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>-->
+        </Style>
+
+        <my:NedoimkaDataSet x:Key="nedoimkaDataSet" />
+        <CollectionViewSource x:Key="debitPayGenViewSource"
+                              Source="{Binding Path=DebitPayGen, Source={StaticResource nedoimkaDataSet}}" />
+        <CollectionViewSource x:Key="debitPayGenMonthPayViewSource"
+                              Source="{Binding Path=FK_MonthPay_DebitPayGen_Id_dpg, Source={StaticResource debitPayGenViewSource}}" />
+    </Window.Resources>
+    <Grid DataContext="{StaticResource debitPayGenMonthPayViewSource}" PreviewDrop="Grid_PreviewDrop"
+          PreviewDragEnter="grid_PreviewDragEnter">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" FontSize="12">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Открыть" />
+                <Separator />
+                <MenuItem Header="Закрыть" ToolTip="Закрыть программу" />
+            </MenuItem>
+            <MenuItem Header="Правка">
+                <MenuItem Header="Сохранить"/>
+            </MenuItem>
+            <MenuItem Header="Данные"></MenuItem>
+        </Menu>
+        <ToolBar Grid.Row="1">
+            <Button>
+                <Image Source="/Rassrotchka;component/Images/OpenHH1.bmp" ToolTip="Открыть файл с новыми данными" />
+            </Button>
+            <Button>
+                <Image Source="/Rassrotchka;component/Images/Delete_tableHH.bmp" ToolTip="Удалить выделенные строки" />
+            </Button>
+            <Button Command="Save" ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Command.Text}">
+                <Image Source="/Rassrotchka;component/Images/SaveHH.bmp" />
+            </Button>
+        </ToolBar>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <DataGrid Name="debitPayGenDataGrid"
+                      Style="{StaticResource DataGridStyle1}"
+                      FrozenColumnCount="3"
+                      ItemsSource="{Binding Source={StaticResource debitPayGenViewSource}}"
+                      RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="id_dpgColumn" Binding="{Binding Path=Id_dpg}" Header="Id"
+                                        Width="SizeToCells" ElementStyle="{StaticResource RigthCellStyle}"/>
+                    <DataGridTextColumn x:Name="kod_GNIColumn" Binding="{Binding Path=Kod_GNI}" Header="ГНИ"
+                                        Width="SizeToCells" />
+                    <DataGridTextColumn x:Name="nameColumn" Binding="{Binding Path=Name}" Header="Плательщик"
+                                        Width="200" />
+                    <DataGridTextColumn x:Name="kod_PayerColumn" Binding="{Binding Path=Kod_Payer}"
+                                        Header="Код плател." ElementStyle="{StaticResource RigthCellStyle}"
+                                        Width="SizeToCells" />
+                    <DataGridTemplateColumn x:Name="date_DecisColumn" Header="Дата решения" Width="SizeToHeader">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DatePicker
+                                    SelectedDate="{Binding Path=Date_Decis, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn x:Name="numb_DecisColumn" Binding="{Binding Path=Numb_Decis}" Header="№ решен."
+                                        Width="SizeToHeader" />
+                    <DataGridTextColumn x:Name="gniOrGKNSColumn" Binding="{Binding Path=GniOrGKNS}" Header="Орган"
+                                        Width="SizeToHeader" ElementStyle="{StaticResource RigthCellStyle}"/>
+                    <DataGridTextColumn x:Name="summa_DecisColumn"
+                                        Binding="{Binding Path=Summa_Decis, StringFormat=\{0:N\}, ValidatesOnDataErrors=True}"
+                                        Header="Сумма реш." Width="SizeToCells"
+                            ElementStyle="{StaticResource SummaCellStyle}" />
+                    <DataGridTextColumn x:Name="kod_PayingColumn" Binding="{Binding Path=Kod_Paying}" Header="Платеж"
+                                        Width="SizeToCells" />
+                    <DataGridTemplateColumn x:Name="date_firstColumn" Header="Дата 1 платежа" Width="SizeToCells">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DatePicker
+                                    SelectedDate="{Binding Path=Date_first, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn x:Name="date_endColumn" Header="Дата последнего платежа"
+                                            Width="SizeToCells">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DatePicker
+                                    SelectedDate="{Binding Path=Date_end, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn x:Name="count_MountColumn" Binding="{Binding Path=Count_Mount}"
+                                        Header="Count Mount" Width="SizeToCells" ElementStyle="{StaticResource RigthCellStyle}"/>
+                    <DataGridTextColumn x:Name="summa_PayerColumn"
+                                        Binding="{Binding Path=Summa_Payer, StringFormat=\{0:N\}}"
+                                        Header="Сумма ежем. платежа" Width="SizeToCells" ElementStyle="{StaticResource SummaCellStyle}"/>
+                    <DataGridTextColumn x:Name="type_DecisColumn" Binding="{Binding Path=Type_Decis}"
+                                        Header="Тип решен." Width="SizeToCells" ElementStyle="{StaticResource RigthCellStyle}"/>
+                    <DataGridTemplateColumn x:Name="date_prolongColumn" Header="Дата пролонгации" Width="SizeToCells">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DatePicker
+                                    SelectedDate="{Binding Path=Date_prolong, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn x:Name="noteColumn" Header="Примечание"
+                                        ElementStyle="{StaticResource CellWrapStyle}"
+                                        Binding="{Binding Path=Note}"
+                                        Width="SizeToHeader" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid Name="monthPayDataGrid" Grid.Column="1"
+                      Style="{StaticResource DataGridStyle1}"
+                      ItemsSource="{Binding}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn x:Name="iD_MPColumn" Binding="{Binding Path=ID_MP}" Header="Id"
+                                        Width="SizeToCells" />
+                    <DataGridTextColumn x:Name="id_dpgColumn1" Binding="{Binding Path=Id_dpg}" Header="Id решения"
+                                        Width="SizeToCells" />
+                    <DataGridTemplateColumn x:Name="датаColumn" Header="Дата" Width="SizeToCells">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <DatePicker
+                                    SelectedDate="{Binding Path=Дата, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn x:Name="summa_payColumn"
+                                        Binding="{Binding Path=Summa_pay, StringFormat=\{0:N\}}" Header="Сумма"
+                                        Width="SizeToCells" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        <StatusBar Grid.Row="3" Height="Auto">
+            <Label Content="metka" />
+        </StatusBar>
     </Grid>
 </Window>

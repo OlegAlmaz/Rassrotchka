@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:Rassrotchka.ValidationFiles"
         xml:lang="ru-Ru"
-        Title="Предупреждение" Margin="5" Loaded="Window_Loaded" FontSize="14">
+        Title="Предупреждение" Margin="5" Loaded="Window_Loaded" FontSize="14"
+        SizeToContent="WidthAndHeight">
     <Window.Background>
         <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
             <GradientStop Color="#FF42A0A0" Offset="0" />
@@ -22,26 +23,25 @@
             <Setter Property="Height" Value="30"/>
             <Setter Property="Background" Value="LightBlue"/>
             <Setter Property="Foreground" Value="Blue"/>
-            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontSize" Value="12" />
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=DataGridColumnHeader, AncestorLevel=1}, Path=Column.Header}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
-                        <Style x:Key="ElementSyle" TargetType="TextBlock">
-                    <Setter Property="TextAlignment" Value="Right"/>
-                    <Style.Triggers>
-                        <Trigger Property="Validation.HasError" Value="True">
-                            <Setter Property="ToolTip" 
-                            Value="{Binding RelativeSource={RelativeSource Self}, 
-                            Path=(Validation.Errors)[0].ErrorContent}" />
-                            <Setter Property="Foreground" Value="OrangeRed"/>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
 
+        <Style x:Key="ElementSyle" TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" 
+            Value="{Binding RelativeSource={RelativeSource Self}, 
+            Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="OrangeRed"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
     </Window.Resources>
     <StackPanel>
@@ -54,7 +54,8 @@
                   HorizontalAlignment="Left" Margin="5" 
                   VerticalAlignment="Top" MinWidth="300" MinHeight="50" 
                   FontSize="14" ColumnWidth="SizeToCells"
-                Style="{StaticResource DataGridStyle1}">
+                    HorizontalScrollBarVisibility="Visible"
+                VerticalScrollBarVisibility="Visible" Width="800" Height="200">
             <DataGrid.Resources>
                 <Style x:Key="ErrorStyle" TargetType="{x:Type TextBox}">
                     <Setter Property="Validation.ErrorTemplate">
@@ -115,7 +116,8 @@
                 <DataGridTextColumn Header="Тип решения" Binding="{Binding Path=Type_Decis, ValidatesOnDataErrors=True}"
                                     ElementStyle="{StaticResource ElementSyle}"/>
                 <DataGridTextColumn Header="Дата до которой продлена рассрочка" Binding="{Binding Path=Date_prolong, StringFormat=\{0:d\}, ValidatesOnDataErrors=True}"/>
-                <DataGridTextColumn Header="Примечание" Binding="{Binding Path=Note, ValidatesOnDataErrors=True}"/>
+                <DataGridTextColumn Header="Примечание" Binding="{Binding Path=Note, ValidatesOnDataErrors=True}"
+                        Width="50" />
             </DataGrid.Columns>
         </DataGrid>
         <Button Name="ButtonFlag" Content="Были" Width="60" HorizontalAlignment="Left" Click="ButtonFlag_Click"
