@@ -32,7 +32,7 @@ namespace Rassrotchka.FilesCommon
 		/// Метод обновляет таблицу рассрочек
 		/// </summary>
 		/// <returns>сообщение об успешности завершения операции</returns>
-		public bool UpdateSqlTableDebitPayGen(DataTable debitPayGen)
+		public void UpdateSqlTableDebitPayGen(DataTable debitPayGen)
 		{
 			try
 			{
@@ -41,13 +41,13 @@ namespace Rassrotchka.FilesCommon
 					debitPayTableGemBox.AcceptChanges();
 					ReoderTable(debitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
 				}
-				var view = debitPayGen.DefaultView;
-				view.RowStateFilter = DataViewRowState.ModifiedCurrent;
-				VisulChanges(view, "Приняты изменения в следующих строках:");
-				view.RowStateFilter = DataViewRowState.Added;
-				if (IsContinue(view, @"Вы хотите добавить новые строки в базу данных?"))
-					return true;
-				return false;
+				//var view = debitPayGen.DefaultView;
+				//view.RowStateFilter = DataViewRowState.ModifiedCurrent;
+				//VisulChanges(view, "Приняты изменения в следующих строках:");
+				//view.RowStateFilter = DataViewRowState.Added;
+				//if (IsContinue(view, @"Вы хотите добавить новые строки в базу данных?"))
+				//    return true;
+				//return false;
 			}
 			catch (Exception e)
 			{
@@ -107,47 +107,56 @@ namespace Rassrotchka.FilesCommon
 		/// <param name="debitPayTableGemBox"></param>
 		private void ReoderTable(DataTable debitPayTable, DataTable debitPayTableGemBox)
 		{
-			string mess = "";
-			//проверяем по идентификатору есть ли решение о рассрочке либо отсрочке в базе данных
-			for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
+			try
 			{
-				var ident = Convert.ToInt64(debitPayTableGemBox.Rows[i]["0"]);
-				bool notHave = debitPayTable.Rows.Contains(ident);
-				if (notHave == false)//если не существует
+				string mess = "";
+				//проверяем по идентификатору есть ли решение о рассрочке либо отсрочке в базе данных
+				for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
 				{
-					//Проверяем запись нового решения в интервале между отставанием от
-					//текущей даты на 35 дней и опережением на 6 дней
-					if (IsDecisDateNotRange((DateTime)debitPayTableGemBox.Rows[i]["4"]))
+					long ident;
+					bool flag = Int64.TryParse(debitPayTableGemBox.Rows[i]["0"].ToString(), out ident);
+					if (flag)
 					{
-						debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
-						string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
-						if (VisualErrorRow(debitPayTableGemBox.DefaultView, message))//спрашиваем
+						bool notHave = debitPayTable.Rows.Contains(ident);
+						if (notHave == false) //если не существует
 						{
-							//Проверяем строку на ошибки и добавляем в таблицу из базы данных
-							ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+							//Проверяем запись нового решения в интервале между отставанием от
+							//текущей даты на 35 дней и опережением на 6 дней
+							if (IsDecisDateNotRange((DateTime) debitPayTableGemBox.Rows[i]["4"]))
+							{
+								debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
+								string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
+								if (VisualErrorRow(debitPayTableGemBox.DefaultView, message)) //спрашиваем
+								{
+									//Проверяем строку на ошибки и добавляем в таблицу из базы данных
+									ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+								}
+							}
+							else
+							{
+								//Проверяем строку на ошибки и добавляем в таблицу из базы данных
+								ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+							}
+						}
+						else //проверяем есть ли изменения данных в существующих в базе строках
+						{
+							UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
 						}
 					}
-					else
-					{
-						//Проверяем строку на ошибки и добавляем в таблицу из базы данных
-						ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
-					}
 				}
-				else//проверяем есть ли изменения данных в существующих в базе строках
-				{
-					UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
-				}
-			}
 
-			if (debitPayTableGemBox.HasErrors)//выводим ошибки при наличии
-			{
-				debitPayTableGemBox.DefaultView.RowFilter = "";
-				var view = debitPayTableGemBox.DefaultView;
-				view.RowStateFilter = DataViewRowState.Added;
-				VisualErrorRow(view, "Следующие строки имеют ошибки");
+				if (debitPayTableGemBox.HasErrors)//выводим ошибки при наличии
+				{
+					debitPayTableGemBox.DefaultView.RowFilter = "";
+					var view = debitPayTableGemBox.DefaultView;
+					view.RowStateFilter = DataViewRowState.Added;
+					VisualErrorRow(view, "Следующие строки имеют ошибки");
+				}
 			}
-			
-			//
+			catch (Exception e)
+			{
+				throw new Exception(e.Message + ". " + e.TargetSite);
+			}			
 		}
 
 		/// <summary>

@@ -61,12 +61,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\DataCommands.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NedoimkaDataSet.cs">
+      <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
     <Compile Include="WindowDateNoRange.xaml.cs">
@@ -138,6 +143,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GemBox.Spreadsheet.dll" />
+    <Resource Include="Images\Undo.ico" />
+    <Resource Include="Images\Save16.ico" />
+    <Resource Include="Images\Edit16.ico" />
+    <Resource Include="Images\Edit20.ico" />
+    <Resource Include="Images\Edit24.ico" />
+    <Resource Include="Images\Open24.ico" />
+    <Resource Include="Images\Open16.ico" />
+    <Resource Include="Images\Database.ico" />
+    <Resource Include="Images\Database.png" />
+    <Resource Include="Images\update_00.gif" />
+    <Resource Include="Images\Undo_Redo.png" />
+    <Resource Include="Images\Edit.png" />
     <Resource Include="Images\copy-pro.bmp" />
     <Resource Include="Images\copy-pro.cur" />
     <Resource Include="Images\copy-pro32.bmp" />

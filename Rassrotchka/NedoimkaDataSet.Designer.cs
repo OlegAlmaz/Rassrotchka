@@ -261,6 +261,14 @@ namespace Rassrotchka {
             base.Tables.Add(this.tableMonthPay);
             this.tableDebitPayGenTest = new DebitPayGenTestDataTable();
             base.Tables.Add(this.tableDebitPayGenTest);
+            global::System.Data.ForeignKeyConstraint fkc;
+            fkc = new global::System.Data.ForeignKeyConstraint("FK_MonthPay_DebitPayGen_Id_dpg", new global::System.Data.DataColumn[] {
+                        this.tableDebitPayGen.Id_dpgColumn}, new global::System.Data.DataColumn[] {
+                        this.tableMonthPay.Id_dpgColumn});
+            this.tableMonthPay.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.Cascade;
+            fkc.DeleteRule = global::System.Data.Rule.Cascade;
+            fkc.UpdateRule = global::System.Data.Rule.Cascade;
             this.relationFK_MonthPay_DebitPayGen_Id_dpg = new global::System.Data.DataRelation("FK_MonthPay_DebitPayGen_Id_dpg", new global::System.Data.DataColumn[] {
                         this.tableDebitPayGen.Id_dpgColumn}, new global::System.Data.DataColumn[] {
                         this.tableMonthPay.Id_dpgColumn}, false);
@@ -2917,10 +2925,11 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("Type_Decis", "Type_Decis");
             tableMapping.ColumnMappings.Add("Date_prolong", "Date_prolong");
             tableMapping.ColumnMappings.Add("Note", "Note");
+            tableMapping.ColumnMappings.Add("Count_Mount", "Count_Mount");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[DebitPayGen] WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_Kod_GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI)) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Kod_Payer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod_Payer)) AND ((@IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis] = @Original_Date_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL) OR ([Numb_Decis] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniOrGKNS] IS NULL) OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Decis = 1 AND [Summa_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND ((@IsNull_Kod_Paying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original_Kod_Paying)) AND ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_first] = @Original_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL) OR ([Date_end] = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count_Mount] IS NULL) OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa_Payer = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)) AND ((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Original_Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Note = 1 AND [Note] IS NULL) OR ([Note] = @Original_Note)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [DebitPayGen] WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_Kod_GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI)) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Kod_Payer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod_Payer)) AND ((@IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis] = @Original_Date_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL) OR ([Numb_Decis] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniOrGKNS] IS NULL) OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Decis = 1 AND [Summa_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND ((@IsNull_Kod_Paying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original_Kod_Paying)) AND ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_first] = @Original_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL) OR ([Date_end] = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count_Mount] IS NULL) OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa_Payer = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)) AND ((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Original_Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Note = 1 AND [Note] IS NULL) OR ([Note] = @Original_Note)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_GNI", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -2930,7 +2939,7 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_Payer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Kod_Payer", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_Decis", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_Decis", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_Decis", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Numb_Decis", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Numb_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_GniOrGKNS", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "GniOrGKNS", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -2940,9 +2949,9 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_first", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_first", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_first", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_end", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_end", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_end", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Summa_Payer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Payer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -2955,20 +2964,20 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[DebitPayGen] ([Id_dpg], [Kod_GNI], [Name], [Kod_Payer], [Date_Decis], [Numb_Decis], [GniOrGKNS], [Summa_Decis], [Kod_Paying], [Date_first], [Date_end], [Count_Mount], [Summa_Payer], [Type_Decis], [Date_prolong], [Note]) VALUES (@Id_dpg, @Kod_GNI, @Name, @Kod_Payer, @Date_Decis, @Numb_Decis, @GniOrGKNS, @Summa_Decis, @Kod_Paying, @Date_first, @Date_end, @Count_Mount, @Summa_Payer, @Type_Decis, @Date_prolong, @Note);
-SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note FROM DebitPayGen WHERE (Id_dpg = @Id_dpg)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [DebitPayGen] ([Id_dpg], [Kod_GNI], [Name], [Kod_Payer], [Date_Decis], [Numb_Decis], [GniOrGKNS], [Summa_Decis], [Kod_Paying], [Date_first], [Date_end], [Count_Mount], [Summa_Payer], [Type_Decis], [Date_prolong], [Note]) VALUES (@Id_dpg, @Kod_GNI, @Name, @Kod_Payer, @Date_Decis, @Numb_Decis, @GniOrGKNS, @Summa_Decis, @Kod_Paying, @Date_first, @Date_end, @Count_Mount, @Summa_Payer, @Type_Decis, @Date_prolong, @Note);
+SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_GNI", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_Payer", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_Decis", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_Decis", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Numb_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@GniOrGKNS", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "GniOrGKNS", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Summa_Decis", global::System.Data.SqlDbType.Money, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_first", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_end", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_first", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_end", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Summa_Payer", global::System.Data.SqlDbType.Money, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Payer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -2976,45 +2985,45 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = "UPDATE [dbo].[DebitPayGen] SET [Id_dpg] = @Id_dpg, [Kod_GNI] = @Kod_GNI, [Name] =" +
-                " @Name, [Kod_Payer] = @Kod_Payer, [Date_Decis] = @Date_Decis, [Numb_Decis] = @Nu" +
-                "mb_Decis, [GniOrGKNS] = @GniOrGKNS, [Summa_Decis] = @Summa_Decis, [Kod_Paying] =" +
-                " @Kod_Paying, [Date_first] = @Date_first, [Date_end] = @Date_end, [Count_Mount] " +
-                "= @Count_Mount, [Summa_Payer] = @Summa_Payer, [Type_Decis] = @Type_Decis, [Date_" +
-                "prolong] = @Date_prolong, [Note] = @Note WHERE (([Id_dpg] = @Original_Id_dpg) AN" +
-                "D ((@IsNull_Kod_GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI" +
-                ")) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND " +
-                "((@IsNull_Kod_Payer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod" +
-                "_Payer)) AND ((@IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis]" +
-                " = @Original_Date_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL)" +
-                " OR ([Numb_Decis] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniO" +
-                "rGKNS] IS NULL) OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Deci" +
-                "s = 1 AND [Summa_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND" +
-                " ((@IsNull_Kod_Paying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original" +
-                "_Kod_Paying)) AND ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_f" +
-                "irst] = @Original_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL" +
-                ") OR ([Date_end] = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count" +
-                "_Mount] IS NULL) OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa" +
-                "_Payer = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)" +
-                ") AND ((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Ori" +
-                "ginal_Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR" +
-                " ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Note = 1 AND [Note] IS" +
-                " NULL) OR ([Note] = @Original_Note)));\r\nSELECT Id_dpg, Kod_GNI, Name, Kod_Payer," +
-                " Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_en" +
-                "d, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note FROM DebitPayGen WHE" +
-                "RE (Id_dpg = @Id_dpg)";
+            this._adapter.UpdateCommand.CommandText = "UPDATE [DebitPayGen] SET [Id_dpg] = @Id_dpg, [Kod_GNI] = @Kod_GNI, [Name] = @Name" +
+                ", [Kod_Payer] = @Kod_Payer, [Date_Decis] = @Date_Decis, [Numb_Decis] = @Numb_Dec" +
+                "is, [GniOrGKNS] = @GniOrGKNS, [Summa_Decis] = @Summa_Decis, [Kod_Paying] = @Kod_" +
+                "Paying, [Date_first] = @Date_first, [Date_end] = @Date_end, [Count_Mount] = @Cou" +
+                "nt_Mount, [Summa_Payer] = @Summa_Payer, [Type_Decis] = @Type_Decis, [Date_prolon" +
+                "g] = @Date_prolong, [Note] = @Note WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@I" +
+                "sNull_Kod_GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI)) AND" +
+                " ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsN" +
+                "ull_Kod_Payer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod_Payer" +
+                ")) AND ((@IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis] = @Or" +
+                "iginal_Date_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL) OR ([" +
+                "Numb_Decis] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniOrGKNS]" +
+                " IS NULL) OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Decis = 1 " +
+                "AND [Summa_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND ((@Is" +
+                "Null_Kod_Paying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original_Kod_P" +
+                "aying)) AND ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_first] " +
+                "= @Original_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL) OR (" +
+                "[Date_end] = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count_Mount" +
+                "] IS NULL) OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa_Payer" +
+                " = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)) AND " +
+                "((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Original_" +
+                "Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR ([Dat" +
+                "e_prolong] = @Original_Date_prolong)) AND ((@IsNull_Note = 1 AND [Note] IS NULL)" +
+                " OR ([Note] = @Original_Note)));\r\nSELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_" +
+                "Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Cou" +
+                "nt_Mount, Summa_Payer, Type_Decis, Date_prolong, Note FROM DebitPayGen WHERE (Id" +
+                "_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_GNI", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Name", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Name", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_Payer", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_Decis", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_Decis", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Numb_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@GniOrGKNS", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "GniOrGKNS", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Summa_Decis", global::System.Data.SqlDbType.Money, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_first", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_end", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_first", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_end", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Summa_Payer", global::System.Data.SqlDbType.Money, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Payer", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3028,7 +3037,7 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_Payer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Kod_Payer", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Payer", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_Decis", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_Decis", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_Decis", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Numb_Decis", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Numb_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Numb_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_GniOrGKNS", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "GniOrGKNS", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -3038,9 +3047,9 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Kod_Paying", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_Paying", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_first", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_first", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_first", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_first", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_end", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_end", global::System.Data.SqlDbType.DateTime, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_end", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_end", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Count_Mount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Count_Mount", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Summa_Payer", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Summa_Payer", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -3066,9 +3075,10 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa" +
-                "_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, " +
-                "Date_prolong, Note FROM dbo.DebitPayGen";
+            this._commandCollection[0].CommandText = @"SELECT     Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, 
+                      Summa_Payer, Type_Decis, Date_prolong, Note
+FROM         DebitPayGen
+ORDER BY Date_Decis DESC";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

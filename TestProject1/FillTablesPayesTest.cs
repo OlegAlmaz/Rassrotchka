@@ -218,9 +218,12 @@ namespace TestProject1
 		[TestMethod()]
 		public void UpdateSqlTableDebitPayGenTest2()
 		{
+			int gni = 36;
+			string filePath =
+				string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль\рассрочки_{0}_2020_03.xlsx", gni);
 			var arg = new ArgumentDebitPay()
 			{
-				FilePath = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль\рассрочки_06_2020_03.xlsx"
+				FilePath = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\рассрочки_00_2020_03.xlsx"
 			};
 			var target = new FillTablesPayes1(arg);
 			var debitPayTable = new NedoimkaDataSet.DebitPayGenDataTable();
@@ -228,8 +231,12 @@ namespace TestProject1
 			adapter.Fill(debitPayTable);
 
 			bool expected = true; // TODO: инициализация подходящего значения
-			bool actual;
-			actual = target.UpdateSqlTableDebitPayGen(debitPayTable);
+			bool actual = true;
+			target.UpdateSqlTableDebitPayGen(debitPayTable);
+			int countRow = 0;
+			if (actual == true)
+				adapter.Update(debitPayTable);
+			MessageBox.Show("Обновлено " + countRow + " строк") ;
 			Assert.AreEqual(expected, actual);
 		}
 
@@ -249,8 +256,8 @@ namespace TestProject1
 			adapter.Fill(debitPayTable);
 
 			bool expected = true; // TODO: инициализация подходящего значения
-			bool actual;
-			actual = target.UpdateSqlTableDebitPayGen(debitPayTable);
+			bool actual = true;
+			target.UpdateSqlTableDebitPayGen(debitPayTable);
 			Assert.AreEqual(expected, actual);
 		}
 
