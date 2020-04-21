@@ -143,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GemBox.Spreadsheet.dll" />
+    <Resource Include="Images\Refresh.ico" />
+    <Resource Include="Images\Undo1.ico" />
+    <Resource Include="Images\Save.ico" />
     <Resource Include="Images\Undo.ico" />
     <Resource Include="Images\Save16.ico" />
     <Resource Include="Images\Edit16.ico" />

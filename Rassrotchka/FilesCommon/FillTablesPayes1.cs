@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using Rassrotchka.Properties;
@@ -15,16 +17,19 @@ namespace Rassrotchka.FilesCommon
 	/// </summary>
 	public class FillTablesPayes1
 	{
-		private DataTable _tableBase;
-		private DictPropName dict;
-		private RowValidationError _validError;
+		private readonly NedoimkaDataSet.DebitPayGenDataTable _tableDebitPay;
+		private readonly NedoimkaDataSet.MonthPayDataTable _tableMontPay;
+		private readonly DictPropName _dict;
+		private readonly RowValidationError _validError;
 		public ArgumentDebitPay Argument { get; set; }
 
 		//Конструктор
-		public FillTablesPayes1(ArgumentDebitPay arg)
+		public FillTablesPayes1(ArgumentDebitPay arg, NedoimkaDataSet.DebitPayGenDataTable tableDebitPay, NedoimkaDataSet.MonthPayDataTable tableMontPay)
 		{
 			Argument = arg;
-			dict = new DictPropName();
+			_tableDebitPay = tableDebitPay;
+			_tableMontPay = tableMontPay;
+			_dict = new DictPropName();
 			_validError = new RowValidationError();
 		}
 
@@ -32,26 +37,84 @@ namespace Rassrotchka.FilesCommon
 		/// Метод обновляет таблицу рассрочек
 		/// </summary>
 		/// <returns>сообщение об успешности завершения операции</returns>
-		public void UpdateSqlTableDebitPayGen(DataTable debitPayGen)
+		public void UpdateSqlTableDebitPayGen()
 		{
 			try
 			{
 				using (var debitPayTableGemBox = GetDebitPayTableGemBox())//извлекаем данные из excel файла
 				{
 					debitPayTableGemBox.AcceptChanges();
-					ReoderTable(debitPayGen, debitPayTableGemBox);//обновляем объект debitPayTable
+					ReoderTable(_tableDebitPay, debitPayTableGemBox);//обновляем объект debitPayTable
+
+					var rows = GetRowsDebit();
+					if(rows.Count != 0)
+						UpdateTableMontPay(rows);
+
 				}
-				//var view = debitPayGen.DefaultView;
-				//view.RowStateFilter = DataViewRowState.ModifiedCurrent;
-				//VisulChanges(view, "Приняты изменения в следующих строках:");
-				//view.RowStateFilter = DataViewRowState.Added;
-				//if (IsContinue(view, @"Вы хотите добавить новые строки в базу данных?"))
-				//    return true;
-				//return false;
 			}
 			catch (Exception e)
 			{
 				throw new Exception(e.Message + " Ошибка в методе: " + e.TargetSite);
+			}
+		}
+
+		private List<NedoimkaDataSet.DebitPayGenRow> GetRowsDebit()
+		{
+			var rows = new List<NedoimkaDataSet.DebitPayGenRow>();
+			var query = from rowDeb in _tableDebitPay.AsEnumerable()
+			            join rowMonth in _tableMontPay.AsEnumerable() on rowDeb.Id_dpg equals rowMonth.Id_dpg
+				            into leftOuter
+			            from monthPayRow in leftOuter.DefaultIfEmpty()
+			            where monthPayRow == null
+			            select new {rowDeb};
+			if (query.Any())
+			{
+				foreach (var anonim in query)
+				{
+					rows.Add(anonim.rowDeb);
+				}
+			}
+			return rows;
+		}
+
+		private void UpdateTableMontPay(IEnumerable<NedoimkaDataSet.DebitPayGenRow> rowsDeb)
+		{
+			long index = _tableMontPay.Rows.Count == 0
+				             ? 0
+				             : _tableMontPay.Rows.Cast<object>()
+				                           .Select((t, i) => Convert.ToInt64(_tableMontPay.Rows[i][0]))
+				                           .Concat(new long[] {1})
+				                           .Max();
+			index++;
+			foreach (NedoimkaDataSet.DebitPayGenRow genRow in rowsDeb)
+			{
+
+				if (genRow.IsDate_firstNull() || genRow.IsDate_endNull())
+					continue;//если дата первой и последней уплаты не равны нолю
+
+				//Количество платежей
+				int payCount = GetPay(genRow.Date_first, genRow.Date_end);
+
+				//заполняем список платежей
+				for (int j = 0; j < payCount; j++)
+				{
+					var rowMP = _tableMontPay.NewMonthPayRow();
+					rowMP.ID_MP = index;
+					rowMP.Id_dpg = genRow.Id_dpg;
+					if (j < payCount - 1)
+					{
+						rowMP.Summa_pay = genRow.Summa_Payer;
+						rowMP.Дата = genRow.Date_first.AddMonths(j);
+					}
+					else
+					{
+						rowMP.Summa_pay = genRow.Summa_Decis - genRow.Summa_Payer * (payCount - 1);
+						rowMP.Дата = genRow.Date_end;
+					}
+					_tableMontPay.Rows.Add(rowMP);
+					index++;
+				}
+
 			}
 		}
 
@@ -215,7 +278,7 @@ namespace Rassrotchka.FilesCommon
 				{
 					string colName = debitPayTableGemBox.Columns[j].ColumnName; //имя колонки в таблице excel файла
 					string colNameTableBase; //имя колонки в таблице базы данных
-					if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+					if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
 					{
 						object val = debitPayTableGemBox.Rows[i][colName];
 						row[colNameTableBase] = val;
@@ -240,7 +303,7 @@ namespace Rassrotchka.FilesCommon
 			{
 				string colName = debitPayTableGemBox.Columns[k].ColumnName; //имя колонки в таблице excel файла
 				string colNameTableBase; //имя колонки в таблице базы данных
-				if (dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+				if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
 				{
 					object obBase = debitPayTable.Rows[id][colNameTableBase];
 					Type type = debitPayTable.Rows[id][colNameTableBase].GetType();
@@ -367,19 +430,19 @@ namespace Rassrotchka.FilesCommon
 					SqlCommand command = connection.CreateCommand();
 
 					command.CommandText = @"
-SELECT
-      dpgt.Id_dpg
-    , dpgt.Summa_Decis
-    , dpgt.Date_first
-    , dpgt.Date_end
-    , dpgt.Count_Mount
-    , dpgt.Summa_Payer
-    , dpgt.Type_Decis
+											SELECT
+												  dpgt.Id_dpg
+												, dpgt.Summa_Decis
+												, dpgt.Date_first
+												, dpgt.Date_end
+												, dpgt.Count_Mount
+												, dpgt.Summa_Payer
+												, dpgt.Type_Decis
 
-FROM DebitPayGen dpgt
-LEFT JOIN MonthPay mpt
-      ON dpgt.Id_dpg = mpt.Id_dpg
-WHERE mpt.Summa_pay IS NULL";
+											FROM DebitPayGen dpgt
+											LEFT JOIN MonthPay mpt
+												  ON dpgt.Id_dpg = mpt.Id_dpg
+											WHERE mpt.Summa_pay IS NULL";
 					var adapter = new SqlDataAdapter(command);
 
 					var debitPayTable = new DataTable();//таблица из базы данных

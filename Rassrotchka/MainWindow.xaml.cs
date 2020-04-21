@@ -70,7 +70,7 @@ namespace Rassrotchka
 			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
 			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
 			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
-			_asDataView = _dataSet.DebitPayGen.DefaultView;
+			_asDataView = _debitPaytable.DefaultView;
 
 		}
 
@@ -78,17 +78,20 @@ namespace Rassrotchka
 		{
 
 			// Загрузить данные в таблицу DebitPayGen. Можно изменить этот код как требуется.
-			_debitPayGenTableAdapter.Fill(_dataSet.DebitPayGen);
+			_debitPayGenTableAdapter.Fill(_debitPaytable);
 			//DebitPayGenDataGrid.ItemsSource = _viewDpGn.View;
 			_viewDpGn.View.MoveCurrentToFirst();
 			// Загрузить данные в таблицу MonthPay. Можно изменить этот код как требуется.
-			_monthPayTableAdapter.Fill(_dataSet.MonthPay);
-			_viewMp.View.MoveCurrentToFirst();//todo удалить
+			_monthPayTableAdapter.Fill(_monthPayTable);
 
+			AcceptChanges();
+		}
+
+		private void AcceptChanges()
+		{
 			_debitPaytable.AcceptChanges();
 			_monthPayTable.AcceptChanges();
 			UndoItem.Clear();
-
 		}
 
 		#region Обработчики событий иных элементов управления
@@ -136,10 +139,7 @@ namespace Rassrotchka
 		{
 			Readonly();
 
-			_dataSet.DebitPayGen.AcceptChanges();
-			_dataSet.MonthPay.AcceptChanges();
-			UndoItem.Clear();
-	
+			AcceptChanges();
 		}
 
 		private void SaveCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -161,33 +161,38 @@ namespace Rassrotchka
 
 		private void UndoCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			int i = UndoItem.Count - 1;
-			UndoItem.List[i].RejectChanges();
-			UndoItem.RemoveAt(i);
-			
+			if (DebitPayGenDataGrid.SelectedItem != null)
+			{
+				//todo добавить код
+			}
+			else
+			{
+				int i = UndoItem.Count - 1;
+				UndoItem.List[i].RejectChanges();
+				UndoItem.RemoveAt(i);
+				
+			}			
 		}
 
 		private void UndoAllCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			_dataSet.DebitPayGen.RejectChanges();//todo переделать
-			_dataSet.MonthPay.RejectChanges();//todo переделать
+			_debitPaytable.RejectChanges();//todo переделать
+			_monthPayTable.RejectChanges();//todo переделать
 			UndoItem.Clear();
 		}
 
 		private void UpdateCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			var tab1 = _dataSet.DebitPayGen.GetChanges();
-			var tab2 = _dataSet.MonthPay.GetChanges();
+			var tab1 = _debitPaytable.GetChanges();
+			var tab2 = _monthPayTable.GetChanges();
 			if (tab1 != null && tab2 != null)
 			{
 				var result = MessageBox.Show("Обновить базу данных?", "Информация.", MessageBoxButton.YesNo, MessageBoxImage.Information);
 				if (result == MessageBoxResult.Yes)
 				{
-					_debitPayGenTableAdapter.Update(_dataSet.DebitPayGen);
-					_monthPayTableAdapter.Update(_dataSet.MonthPay);
-					_dataSet.DebitPayGen.AcceptChanges();
-					_dataSet.MonthPay.AcceptChanges();
-					UndoItem.Clear();
+					_debitPayGenTableAdapter.Update(_debitPaytable);
+					_monthPayTableAdapter.Update(_monthPayTable);
+					AcceptChanges();
 
 					_isDirty = true;
 				}
@@ -240,15 +245,14 @@ namespace Rassrotchka
 				try
 				{
 
-					var payes = new FillTablesPayes1(_argument);
-					if (_dataSet.DebitPayGen.Rows.Count == 0)
+					if (_debitPaytable.Rows.Count == 0)
 					{
-						_debitPayGenTableAdapter.Fill(_dataSet.DebitPayGen);
-						_monthPayTableAdapter.Fill(_dataSet.MonthPay);
-						_dataSet.DebitPayGen.AcceptChanges();
-						_dataSet.MonthPay.AcceptChanges();
+						_debitPayGenTableAdapter.Fill(_debitPaytable);
+						_monthPayTableAdapter.Fill(_monthPayTable);
+						AcceptChanges();
 					}
-					payes.UpdateSqlTableDebitPayGen(_dataSet.DebitPayGen);
+					var payes = new FillTablesPayes1(_argument, _debitPaytable, _monthPayTable);
+					payes.UpdateSqlTableDebitPayGen();
 
 					_asDataView.RowStateFilter = DataViewRowState.ModifiedCurrent;
 					int countModifRows = _asDataView.Count;
@@ -264,7 +268,7 @@ namespace Rassrotchka
 					{
 						MessageBox.Show("Добавлены и изменены следующие данные");
 						_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
-						_asDataView.Sort = string.Format("{0} DESC", _dataSet.DebitPayGen.Date_DecisColumn.ColumnName);
+						_asDataView.Sort = string.Format("{0} DESC", _debitPaytable.Date_DecisColumn.ColumnName);
 						ItemAddAndModif.IsChecked = true;
 						NotReadonly();
 					}
@@ -282,6 +286,12 @@ namespace Rassrotchka
 			}
 			Cursor = null;
 		}
+
+		private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			throw new NotImplementedException();
+		}
+
 
 		#endregion
 
@@ -346,7 +356,7 @@ namespace Rassrotchka
 		{
 			_view.CustomFilter = ((TextBox)sender).Text == string.Empty
 									 ? string.Empty
-									 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
+									 : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
 													 ((TextBox)sender).Text);
 		}
 
@@ -355,7 +365,7 @@ namespace Rassrotchka
 		{
 			//_view.CustomFilter = ((TextBox) sender).Text.Length < 8
 			//                         ? string.Empty
-			//                         : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_PayerColumn.ColumnName,
+			//                         : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
 			//                                         ((TextBox) sender).Text);
 
 		}
@@ -368,7 +378,7 @@ namespace Rassrotchka
 			{
 				_view.CustomFilter = ((TextBox)sender).Text.Length < 8
 						 ? string.Empty
-						 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_PayerColumn.ColumnName,
+						 : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
 										 ((TextBox)sender).Text);
 			}
 		}
@@ -388,7 +398,7 @@ namespace Rassrotchka
 			{
 				_view.CustomFilter = ((TextBox)sender).Text == string.Empty
 										 ? string.Empty
-										 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
+										 : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
 														 ((TextBox)sender).Text);
 			}
 
@@ -398,7 +408,7 @@ namespace Rassrotchka
 		{
 			_view.CustomFilter = ((TextBox)sender).Text.Length < 3
 										? string.Empty
-										: string.Format("{0} LIKE \'%{1}%\'", _dataSet.DebitPayGen.NameColumn.ColumnName,
+										: string.Format("{0} LIKE \'%{1}%\'", _debitPaytable.NameColumn.ColumnName,
 														((TextBox)sender).Text);
 		}
 

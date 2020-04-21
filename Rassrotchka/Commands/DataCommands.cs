@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace Rassrotchka.Commands
 {
@@ -14,6 +10,7 @@ namespace Rassrotchka.Commands
 		public static RoutedCommand Update { get; set; }
 		public static RoutedCommand Download { get; set; }
 		public static RoutedCommand FillData { get; set; }
+		public static RoutedCommand PayersFill { get; set; }
 
 		static DataCommands()
 		{
@@ -40,6 +37,10 @@ namespace Rassrotchka.Commands
 			inputs = new InputGestureCollection();
 			inputs.Add(new KeyGesture(Key.B, ModifierKeys.Control, "Ctrl+B"));
 			FillData = new RoutedCommand("FillData", typeof(DataCommands), inputs);
+
+			inputs = new InputGestureCollection();
+			inputs.Add(new KeyGesture(Key.P, ModifierKeys.Control, "Ctrl+P"));
+			PayersFill = new RoutedCommand("PayersFill", typeof(DataCommands), inputs);
 		}
 
 	}

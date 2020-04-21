@@ -27,6 +27,8 @@
         <CommandBinding Command="command:DataCommands.FillData"
                         Executed="FillDataCommandBinding_OnExecuted"
                         CanExecute="EditCommandBinding_OnCanExecute"/>
+        <CommandBinding Command="command:DataCommands.PayersFill"
+                        Executed="CommandBinding_OnExecuted"/>
     </Window.CommandBindings>
     <Window.Resources>
         <LinearGradientBrush x:Key="BackgroundGrid" EndPoint="1,0.5" StartPoint="0,0.5">
@@ -185,6 +187,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        
         <Menu Grid.Row="0" Grid.ColumnSpan="2" FontSize="12">
             <MenuItem Header="Файл">
                 <MenuItem Header="Открыть" />
@@ -226,6 +229,7 @@
                           ToolTip="Обновление базы данных с учетом внесенных изменений" />
             </MenuItem>
         </Menu>
+        
         <ToolBar Grid.Row="1" Grid.ColumnSpan="2">
             <ToolBar.Resources>
                 <Style TargetType="Image">
@@ -241,15 +245,15 @@
                 <Image Source="/Rassrotchka;component/Images/Edit16.ico" />
             </Button>
             <Button Command="Undo" IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=my:MainWindow, AncestorLevel=1}, Mode=OneWay, Path=UndoItem.IsEnabled}" >
-                <Image Source="/Rassrotchka;component/Images/Undo.ico"></Image>
+                <Image Source="/Rassrotchka;component/Images/Undo1.ico"></Image>
             </Button>
             <Button Name="ButtonSave" Command="Save" ToolTip="Сохранить изменения">
-                <Image Source="/Rassrotchka;component/Images/Save16.ico" />
+                <Image Source="/Rassrotchka;component/Images/Save.ico" />
             </Button>
             <Separator/>
             <Button Command="command:DataCommands.Update"
                     ToolTip="Обновление базы данных">
-                <Image Source="/Rassrotchka;component/Images/Database.ico" />
+                <Image Source="/Rassrotchka;component/Images/Refresh.ico" />
             </Button>
             <Button Command="command:DataCommands.FillData"
                     ToolTip="Загрузить данные">
