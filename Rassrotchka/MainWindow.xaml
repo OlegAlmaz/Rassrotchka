@@ -230,6 +230,16 @@
                 <MenuItem Header="Очистить" Command="command:DataCommands.Clean"
                           ToolTip="Очистка экрана приложения от загруженных данных"/>
             </MenuItem>
+            <MenuItem Header="Отчет">
+                <MenuItem Name="MenuItemConsolid" Header="Сводная.." Click="MenuItemReport_OnClick"
+                          ToolTip="Сводная таблица за прошедший месяц"/>
+                <MenuItem Name="MenuItemForecast1" Header="Прогноз.."
+                          Click="MenuItemReport_OnClick"
+                          ToolTip="Прогноз поступлений по рассрочкам на текущий месяц"/>
+                <MenuItem Name="MenuItemForecast20" Header="Прогноз на 20..."
+                          Click="MenuItemReport_OnClick"
+                          ToolTip="Прогноз поступлений по рассрочкам в разрезе платежей на 20 число"/>
+            </MenuItem>
         </Menu>
         
         <ToolBar Grid.Row="1" Grid.ColumnSpan="2">
