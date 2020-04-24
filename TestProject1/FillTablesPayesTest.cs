@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Controls;
 using Rassrotchka;
 using Rassrotchka.FilesCommon;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -225,17 +226,22 @@ namespace TestProject1
 			{
 				FilePath = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\рассрочки_00_2020_03.xlsx"
 			};
-			var target = new FillTablesPayes1(arg);
-			var debitPayTable = new NedoimkaDataSet.DebitPayGenDataTable();
-			var adapter = new DebitPayGenTableAdapter();
-			adapter.Fill(debitPayTable);
+			var dataSet = new NedoimkaDataSet();
+			var debitPayTable = dataSet.DebitPayGen;
+			var adapterDebit = new DebitPayGenTableAdapter();
+			adapterDebit.Fill(debitPayTable);
 
-			bool expected = true; // TODO: инициализация подходящего значения
+			var monthPayTable = dataSet.MonthPay;
+			var adapterMonthPay = new MonthPayTableAdapter();
+			adapterMonthPay.Fill(monthPayTable);
+
+			bool expected = true; 
 			bool actual = true;
-			target.UpdateSqlTableDebitPayGen(debitPayTable);
+			var target = new FillTablesPayes1(arg, debitPayTable, monthPayTable);
+			target.UpdateSqlTableDebitPayGen();
 			int countRow = 0;
 			if (actual == true)
-				adapter.Update(debitPayTable);
+				adapterDebit.Update(debitPayTable);
 			MessageBox.Show("Обновлено " + countRow + " строк") ;
 			Assert.AreEqual(expected, actual);
 		}
@@ -250,15 +256,28 @@ namespace TestProject1
 			{
 				FilePath = @"d:\Мои документы\Visual Studio 2010\Projects\Rassrotchka\TestProject1\TestedFiles\рассрочки.xlsx"
 			};
-			var target = new FillTablesPayes1(arg);
-			var debitPayTable = new NedoimkaDataSet.DebitPayGenTestDataTable();
-			var adapter = new DebitPayGenTestTableAdapter();
-			adapter.Fill(debitPayTable);
+			arg.ExcelParametrs.NumberOfRows = 4;
+			var dataset = new NedoimkaDataSet();
 
-			bool expected = true; // TODO: инициализация подходящего значения
-			bool actual = true;
-			target.UpdateSqlTableDebitPayGen(debitPayTable);
-			Assert.AreEqual(expected, actual);
+			var debitPayTable = dataset.DebitPayGen;
+			var adapterPayTable = new DebitPayGenTableAdapter();
+			adapterPayTable.Fill(debitPayTable);
+
+			var monthPayTable = dataset.MonthPay;
+			var adapterMonthPay = new MonthPayTableAdapter();
+			adapterMonthPay.Fill(monthPayTable);
+
+			var target = new FillTablesPayes1(arg, debitPayTable, monthPayTable);
+			target.UpdateSqlTableDebitPayGen();
+
+			var dataGrid = new DataGrid();
+			dataGrid.ItemsSource = debitPayTable.DefaultView;
+
+			var win = new ViewWindow();
+			win.SetUiElement(dataGrid);
+			bool actual = (bool)win.ShowDialog();
+
+			Assert.IsTrue(actual);
 		}
 
 		/// <summary>

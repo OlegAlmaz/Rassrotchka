@@ -65,16 +65,15 @@ namespace TestProject1
 
 
 		/// <summary>
-		///Тест для UpdateSqlTableMonthPay
+		///Тест для GetPay
 		///</summary>
 		[TestMethod()]
-		public void UpdateSqlTableMonthPayTest()
+		public void GetPayTest()
 		{
-			ArgumentDebitPay arg = new ArgumentDebitPay(); // TODO: инициализация подходящего значения
-			FillTablesPayes1 target = new FillTablesPayes1(arg); // TODO: инициализация подходящего значения
-			string expected = string.Empty; // TODO: инициализация подходящего значения
-			string actual;
-			actual = target.UpdateSqlTableMonthPay();
+			DateTime dateFirst = new DateTime(2020, 3, 5); //
+			DateTime dateEnd = new DateTime(2020, 3, 31);
+			int expected = 1; // TODO: инициализация подходящего значения
+			int actual = FillTablesPayes1.GetPay(dateFirst, dateEnd);
 			Assert.AreEqual(expected, actual);
 		}
 	}

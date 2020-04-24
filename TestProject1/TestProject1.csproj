@@ -37,7 +37,9 @@
       <HintPath>..\Rassrotchka\GemBox.Spreadsheet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -63,6 +65,7 @@
     <Compile Include="FillTablesPayesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RowValidationErrorTest.cs" />
+    <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <Shadow Include="Тестовые ссылки\Rassrotchka.accessor" />
