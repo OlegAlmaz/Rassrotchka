@@ -25,7 +25,7 @@ namespace Rassrotchka.FilesCommon
 		#endregion
 		
 		/// <summary>
-		/// уведомление об ошибке исли значение равно true
+		/// уведомление об отсутствии ошибки если значение равно true
 		/// </summary>
 		public bool IsNotError { get; private set; }
 
@@ -34,37 +34,43 @@ namespace Rassrotchka.FilesCommon
 			//IsNotError = true;
 		}
 
-		public bool ValidationError(DataRow row)
+		/// <summary>
+		/// проверка строки, извлеченной из файла excel
+		/// возвращает true, если нет ошибки, и наоборот
+		/// </summary>
+		/// <param name="rowExcel"></param>
+		/// <returns></returns>
+		public bool ValidationError(DataRow rowExcel)
 		{
 			IsNotError = true;
 			//проверка на пустые ячейки
-			IsNotError = IsNotEmtyValidation(row);
+			IsNotError = IsNotEmtyValidation(rowExcel);
 			if (IsNotError == false)
 			{
-				row.RowError = @"Ошибка в строке";
-				row.SetAdded();
+				rowExcel.RowError = @"Ошибка в строке";
+				rowExcel.SetAdded();
 				return IsNotError;
 			}
 
 			//проверка кода плательщика налогов
-			if (CodePayersValidation(row) == false)
+			if (CodePayersValidation(rowExcel) == false)
 				IsNotError = false;
 
 			//проверка кода платежа
-			if (CodePaymentsValidation(row) == false)
+			if (CodePaymentsValidation(rowExcel) == false)
 				IsNotError = false;
 
 			//проверка всех дат
-			if (DatesValidation(row) == false)
+			if (DatesValidation(rowExcel) == false)
 				IsNotError = false;
 
-			if (PaysCounValidation(row) == false)
+			if (PaysCounValidation(rowExcel) == false)
 				IsNotError = false;
 
 			if (IsNotError == false)
 			{
-				row.RowError = @"Ошибка в строке";
-				row.SetAdded();
+				rowExcel.RowError = @"Ошибка в строке";
+				rowExcel.SetAdded();
 			}
 			return IsNotError;
 		}
@@ -221,12 +227,6 @@ namespace Rassrotchka.FilesCommon
 
 			int actual = Convert.ToInt32(row[PayCnt].ToString());// по факту
 
-
-			if ((string)row[TypDec] == "отсрочка")
-			{
-				if (expected == 0)
-					expected = 1;
-			}
 			if (actual != expected)
 			{
 				row.SetColumnError(PayCnt, @"Ошибка в количестве месяцев действия рассрочки либо отсрочки");

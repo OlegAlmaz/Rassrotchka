@@ -10,7 +10,7 @@ namespace Rassrotchka.Commands
 		public static RoutedCommand Update { get; set; }
 		public static RoutedCommand Download { get; set; }
 		public static RoutedCommand FillData { get; set; }
-		public static RoutedCommand PayersFill { get; set; }
+		public static RoutedCommand Clean { get; set; }
 
 		static DataCommands()
 		{
@@ -39,8 +39,8 @@ namespace Rassrotchka.Commands
 			FillData = new RoutedCommand("FillData", typeof(DataCommands), inputs);
 
 			inputs = new InputGestureCollection();
-			inputs.Add(new KeyGesture(Key.P, ModifierKeys.Control, "Ctrl+P"));
-			PayersFill = new RoutedCommand("PayersFill", typeof(DataCommands), inputs);
+			inputs.Add(new KeyGesture(Key.J, ModifierKeys.Control, "Ctrl+J"));
+			Clean = new RoutedCommand("Clean", typeof(DataCommands), inputs);
 		}
 
 	}

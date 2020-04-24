@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Forms;
 using Rassrotchka.Properties;
 using GemBox.Spreadsheet;
-using MessageBox = System.Windows.MessageBox;
 
 namespace Rassrotchka.FilesCommon
 {
@@ -33,6 +32,16 @@ namespace Rassrotchka.FilesCommon
 			_validError = new RowValidationError();
 		}
 
+		//Конструктор
+		public FillTablesPayes1(ArgumentDebitPay arg)
+		{
+			Argument = arg;
+			_tableDebitPay = new NedoimkaDataSet.DebitPayGenDataTable();
+			_tableMontPay = new NedoimkaDataSet.MonthPayDataTable();
+			_dict = new DictPropName();
+			_validError = new RowValidationError();
+		}
+
 		/// <summary>
 		/// Метод обновляет таблицу рассрочек
 		/// </summary>
@@ -44,12 +53,12 @@ namespace Rassrotchka.FilesCommon
 				using (var debitPayTableGemBox = GetDebitPayTableGemBox())//извлекаем данные из excel файла
 				{
 					debitPayTableGemBox.AcceptChanges();
-					ReoderTable(_tableDebitPay, debitPayTableGemBox);//обновляем объект debitPayTable
-
-					var rows = GetRowsDebit();
-					if(rows.Count != 0)
-						UpdateTableMontPay(rows);
-
+					if(ReoderTable(debitPayTableGemBox))//обновляем объект debitPayTable, если нет ошибок
+					{// либо соглашаемся на продолжение обновления данных
+						var rows = GetRowsDebit();
+						if(rows.Count != 0)
+							UpdateTableMontPay(rows);
+					}
 				}
 			}
 			catch (Exception e)
@@ -86,7 +95,7 @@ namespace Rassrotchka.FilesCommon
 				                           .Concat(new long[] {1})
 				                           .Max();
 			index++;
-			foreach (NedoimkaDataSet.DebitPayGenRow genRow in rowsDeb)
+			foreach (var genRow in rowsDeb)
 			{
 
 				if (genRow.IsDate_firstNull() || genRow.IsDate_endNull())
@@ -98,41 +107,33 @@ namespace Rassrotchka.FilesCommon
 				//заполняем список платежей
 				for (int j = 0; j < payCount; j++)
 				{
-					var rowMP = _tableMontPay.NewMonthPayRow();
-					rowMP.ID_MP = index;
-					rowMP.Id_dpg = genRow.Id_dpg;
+					var rowMontPay = _tableMontPay.NewMonthPayRow();
+					rowMontPay.ID_MP = index;
+					rowMontPay.Id_dpg = genRow.Id_dpg;
 					if (j < payCount - 1)
 					{
-						rowMP.Summa_pay = genRow.Summa_Payer;
-						rowMP.Дата = genRow.Date_first.AddMonths(j);
+						rowMontPay.Summa_pay = genRow.Summa_Payer;
+						rowMontPay.Date = genRow.Date_first.AddMonths(j);
 					}
 					else
 					{
-						rowMP.Summa_pay = genRow.Summa_Decis - genRow.Summa_Payer * (payCount - 1);
-						rowMP.Дата = genRow.Date_end;
+						rowMontPay.Summa_pay = genRow.Summa_Decis - genRow.Summa_Payer * (payCount - 1);
+						rowMontPay.Date = genRow.Date_end;
 					}
-					_tableMontPay.Rows.Add(rowMP);
+					_tableMontPay.Rows.Add(rowMontPay);
 					index++;
 				}
-
 			}
 		}
 
-		private bool VisulChanges(DataView view1, string mes)
+		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
 		{
-			var window = new WindowDateNoRange
-			{
-				TextBlockField = { Text = mes },
-			};
-			window.View = view1;
-			window.Label1.Visibility = Visibility.Visible;
-			window.ButtonFlag.Visibility = Visibility.Visible;
-			window.ButtonNo.Visibility = Visibility.Collapsed;
-
-			var showdialog = window.ShowDialog();
-			var showDialogResultOkCancel = showdialog;
-			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
+			int deltaYar = dateEnd.Year - dateFirst.Year;
+			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar * 12 + 1;
+			return paysCount;
 		}
+
+
 
 		/// <summary>
 		/// Извлекает из Excel с помощью библиотеки GemBox и метода worksheet.CreateDataTable()
@@ -166,44 +167,45 @@ namespace Rassrotchka.FilesCommon
 		/// <summary>
 		/// Добавляет новые данные и обновляет старые в случае изменения
 		/// </summary>
-		/// <param name="debitPayTable">таблица данных из базы данных Nedoimka</param>
 		/// <param name="debitPayTableGemBox"></param>
-		private void ReoderTable(DataTable debitPayTable, DataTable debitPayTableGemBox)
+		private bool ReoderTable(DataTable debitPayTableGemBox)
 		{
+			int i = 0;//индекс строки
 			try
 			{
-				string mess = "";
 				//проверяем по идентификатору есть ли решение о рассрочке либо отсрочке в базе данных
-				for (int i = 0; i < debitPayTableGemBox.Rows.Count; i++)
+				for (i = 0; i < debitPayTableGemBox.Rows.Count; i++)
 				{
+					var rowExcel = debitPayTableGemBox.Rows[i];
 					long ident;
-					bool flag = Int64.TryParse(debitPayTableGemBox.Rows[i]["0"].ToString(), out ident);
+					bool flag = Int64.TryParse(rowExcel["0"].ToString(), out ident);
 					if (flag)
 					{
-						bool notHave = debitPayTable.Rows.Contains(ident);
+						bool notHave = _tableDebitPay.Rows.Contains(ident);
 						if (notHave == false) //если не существует
 						{
 							//Проверяем запись нового решения в интервале между отставанием от
 							//текущей даты на 35 дней и опережением на 6 дней
-							if (IsDecisDateNotRange((DateTime) debitPayTableGemBox.Rows[i]["4"]))
+							if (IsDecisDateNotRange((DateTime) rowExcel["4"]))
 							{
 								debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
-								string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
+								const string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
 								if (VisualErrorRow(debitPayTableGemBox.DefaultView, message)) //спрашиваем
 								{
 									//Проверяем строку на ошибки и добавляем в таблицу из базы данных
-									ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+									ValidateAndAddRow(rowExcel);
 								}
 							}
 							else
 							{
 								//Проверяем строку на ошибки и добавляем в таблицу из базы данных
-								ValidateAndAddRow(debitPayTable, debitPayTableGemBox, i);
+								ValidateAndAddRow(rowExcel);
 							}
 						}
 						else //проверяем есть ли изменения данных в существующих в базе строках
 						{
-							UpdateDates(debitPayTable, debitPayTableGemBox, ident, i);
+							var rowDebPay = _tableDebitPay.FindById_dpg(ident);
+							UpdateDates(rowDebPay, rowExcel);
 						}
 					}
 				}
@@ -213,13 +215,15 @@ namespace Rassrotchka.FilesCommon
 					debitPayTableGemBox.DefaultView.RowFilter = "";
 					var view = debitPayTableGemBox.DefaultView;
 					view.RowStateFilter = DataViewRowState.Added;
-					VisualErrorRow(view, "Следующие строки имеют ошибки");
+					return VisualErrorRow(view, "Следующие строки имеют ошибки");
 				}
 			}
 			catch (Exception e)
 			{
-				throw new Exception(e.Message + ". " + e.TargetSite);
-			}			
+				i++;
+				throw new Exception(e.Message + ". " + e.TargetSite + " строка: " + i);
+			}
+			return true;
 		}
 
 		/// <summary>
@@ -237,10 +241,79 @@ namespace Rassrotchka.FilesCommon
 		}
 
 		/// <summary>
+		/// Проверка новой строки на ошибки и добавление ее в таблицу для обновления базы данных
+		/// </summary>
+		private void ValidateAndAddRow(DataRow rowExcel)
+		{
+			if (_validError.ValidationError(rowExcel) == false) //если ошибка в строке
+				return;
+			DataRow rowDeb = _tableDebitPay.NewRow();
+			for (int j = 0; j < rowExcel.ItemArray.Length; j++)
+			{
+				string colName = rowExcel.Table.Columns[j].ColumnName; //имя колонки в таблице excel файла
+				string colNameTableBase; //имя колонки в таблице базы данных
+				if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+				{
+					object val = rowExcel[colName];
+					rowDeb[colNameTableBase] = val;
+				}
+			}
+			_tableDebitPay.Rows.Add(rowDeb);
+		}
+
+		/// <summary>
+		/// Обновление информации уже имеющихся данных таблицы рассрочек
+		/// обновляется последняя колонка - Примечания
+		/// </summary>
+		/// <param name="rowDeb">строк таблицы из базы данных</param>
+		/// <param name="rowGemBox">строка из файла excel</param>
+		private void UpdateDates(DataRow rowDeb, DataRow rowGemBox)
+		{
+			const string nmEx = "13"; //имя колонки файла
+			const string nmBs = "Note";//имя колонки из таблицы базы данных
+			var obBase = rowDeb[nmBs];
+			var obFile = rowGemBox[nmEx];
+
+			//если не равна, то перезаписываем
+			if (!obBase.Equals(obFile))
+			{
+				rowDeb[nmBs] = rowGemBox[nmEx];
+				rowDeb.SetColumnError(nmBs, @"Внесены изменения в данную ячейку");
+			}
+
+			#region Старый код
+
+			//for (int k = 0; k < rowGemBox.ItemArray.Length; k++) //проверяем каждую ячейку этой строки на наличие изменений
+			//{
+			//    string colName = rowGemBox.Table.Columns[k].ColumnName; //имя колонки в таблице excel файла
+			//    string colNameTableBase; //имя колонки в таблице базы данных
+			//    if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
+			//    {
+			//        object obBase = rowDeb[colNameTableBase];
+			//        Type type = rowDeb[colNameTableBase].GetType();
+			//        object obFile = type.FullName != "System.DBNull"
+			//                            ? Convert.ChangeType(rowGemBox[colName], type, new CultureInfo("ru-Ru"))
+			//                            : rowGemBox[colName];
+
+			//        //если не равна, то перезаписываем
+			//        if (!obBase.Equals(obFile))
+			//        {
+			//            rowDeb[colNameTableBase] = rowGemBox[colName];
+			//            rowDeb.SetColumnError(colNameTableBase, @"Внесены изменения в данную ячейку");
+			//        }
+
+			//    }
+			//}
+
+			#endregion
+		}
+
+
+		/// <summary>
 		/// Метод, спрашивает о том, вносить ли в базу данных информацию о рассрочке либо отсрочке
 		/// </summary>
 		/// <param name="rows">Извлекаемый рядок из таблицы файлы</param>
-		/// <param name="ident"></param>
+		/// <param name="mess"></param>
 		/// <returns>возвращает true при нажатии на кнопку ДА, иначе - false</returns>
 		public bool IsContinue(DataView rows, string mess)
 		{
@@ -249,240 +322,33 @@ namespace Rassrotchka.FilesCommon
 					DataGrid1 = {ItemsSource = rows},
 					TextBlockField = {Text = mess},
 				};
-			var showdialog = window.ShowDialog();
-			var showDialogResultOkCancel = showdialog;
-			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
+			var showDialog = window.ShowDialog();
+			return showDialog != null && (bool)showDialog;
+			
 		}
 
 		public bool VisualErrorRow(DataView view, string mes)
 		{
 			var form = new Form1 {dataGridView1 = {DataSource = view}, label1 = {Text = mes}};
-			DialogResult result = form.ShowDialog();
-			if (result == DialogResult.OK)
-				return true;
-			return false;
+			var result = form.ShowDialog();
+			return result == DialogResult.OK;
 		}
 
-		/// <summary>
-		/// Проверка новой строки на ошибки и добавление ее в таблицу для обновления базы данных
-		/// </summary>
-		/// <param name="debitPayTable">таблица из базы данных</param>
-		/// <param name="debitPayTableGemBox">таблица из excel файла</param>
-		/// <param name="i"></param>	
-		private void ValidateAndAddRow(DataTable debitPayTable, DataTable debitPayTableGemBox, int i)
+		private bool VisulChanges(DataView view1, string mes)
 		{
-			DataRow row = debitPayTable.NewRow();
-			if (_validError.ValidationError(debitPayTableGemBox.Rows[i]))//если нет ошбиок
+			var window = new WindowDateNoRange
 			{
-				for (int j = 0; j < debitPayTableGemBox.Columns.Count; j++)
-				{
-					string colName = debitPayTableGemBox.Columns[j].ColumnName; //имя колонки в таблице excel файла
-					string colNameTableBase; //имя колонки в таблице базы данных
-					if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
-					{
-						object val = debitPayTableGemBox.Rows[i][colName];
-						row[colNameTableBase] = val;
-					}
-				}
-				debitPayTable.Rows.Add(row);
-			}
+				TextBlockField = { Text = mes },
+			};
+			window.View = view1;
+			window.Label1.Visibility = Visibility.Visible;
+			window.ButtonFlag.Visibility = Visibility.Visible;
+			window.ButtonNo.Visibility = Visibility.Collapsed;
+
+			var showdialog = window.ShowDialog();
+			var showDialogResultOkCancel = showdialog;
+			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
 		}
-
-		/// <summary>
-		/// Обновление информации уже имеющихся данных таблицы рассрочек
-		/// </summary>
-		/// <param name="debitPayTable">таблица из базы данных</param>
-		/// <param name="debitPayTableGemBox">таблица с данными из файла excel</param>
-		/// <param name="ident">код решения о рассрочке </param>
-		/// <param name="rowNumb">номер рядка таблицы debitPayTableGemBox</param>
-		private void UpdateDates(DataTable debitPayTable, DataTable debitPayTableGemBox, long ident, int rowNumb)
-		{
-			DataRow row = debitPayTable.Rows.Find(ident); //получаем строку c имеющимися в базе данными
-			int id = debitPayTable.Rows.IndexOf(row); //получаем индекс данной строки в таблице из базы данных
-			for (int k = 0; k < debitPayTableGemBox.Columns.Count; k++) //проверяем каждую ячейку этой строки на наличие изменений
-			{
-				string colName = debitPayTableGemBox.Columns[k].ColumnName; //имя колонки в таблице excel файла
-				string colNameTableBase; //имя колонки в таблице базы данных
-				if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
-				{
-					object obBase = debitPayTable.Rows[id][colNameTableBase];
-					Type type = debitPayTable.Rows[id][colNameTableBase].GetType();
-					object obFile = type.FullName != "System.DBNull" ? 
-						                Convert.ChangeType(debitPayTableGemBox.Rows[rowNumb][colName], type, new CultureInfo("ru-Ru")) : 
-						                debitPayTableGemBox.Rows[rowNumb][colName];
-
-
-
-					//todo изменить
-					#region Старый код
-
-					//если не равна, то перезаписываем
-					if (!obBase.Equals(obFile))
-					{
-						//string inform1 =
-						//    string.Format("\nбыли: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
-						//                  , debitPayTable.Rows[id]["Kod_Payer"]
-						//                  , debitPayTable.Rows[id]["Name"]
-						//                  , debitPayTable.Rows[id]["Date_Decis"]
-						//                  , debitPayTable.Rows[id]["Summa_Decis"]
-						//                  , debitPayTable.Rows[id][colNameTableBase]);
-						//string inform2 =
-						//    string.Format("\nстали: код {0}; имя {1}; дата решения {2}; сумма по решению {3}; измененные данные {4}"
-						//                  , debitPayTableGemBox.Rows[rowNumb]["3"]
-						//                  , debitPayTableGemBox.Rows[rowNumb]["2"]
-						//                  , debitPayTableGemBox.Rows[rowNumb]["4"]
-						//                  , debitPayTableGemBox.Rows[rowNumb]["6"]
-						//                  , debitPayTableGemBox.Rows[rowNumb][colName]);
-
-						//MessageBoxResult result = MessageBox.Show("Обновить данные: " + inform1 + inform2, "Предупреждение",
-						//                                          MessageBoxButton.YesNo);
-						//if (result == MessageBoxResult.Yes)
-						//{
-							debitPayTable.Rows[id][colNameTableBase] = debitPayTableGemBox.Rows[rowNumb][colName];
-							debitPayTable.Rows[id].SetColumnError(colNameTableBase, @"Внесены изменения в данную ячейку");
-						//}
-					}
-
-					#endregion
-				}
-			}
-		}
-
-		/// <summary>
-		/// заполнение таблиц базы даных из объектов DataTable информацией о рассрочках
-		/// </summary>
-		/// <returns></returns>
-		//public string UpdateSqlTableDebitPayGen()
-		//{
-		//    string mess = "";
-		//    using (var connection = new SqlConnection(Rassrotchka.Properties.Settings.Default.NedoimkaConnectionString))
-		//    {
-		//        try
-		//        {
-		//            connection.Open();
-		//            SqlCommand command = connection.CreateCommand();
-		//            command.CommandText = string.Format("SELECT * FROM {0}", Argument.TableBase);
-		//            var adapter = new SqlDataAdapter(command);
-
-		//            var debitPayTable = new DataTable();//таблица из базы данных
-
-		//            adapter.Fill(debitPayTable);
-
-		//            using (var debitPayTableGemBox = GetDebitPayTableGemBox())
-		//            {
-		//                ReoderTable(debitPayTable, debitPayTableGemBox);//обновляем объект debitPayTable
-		//            }
-		//            adapter.InsertCommand = CreateInsertCommand(connection);
-		//            int rowCount = adapter.Update(debitPayTable);//обновляем данные  в базе о вынесенных решениях
-		//            mess = string.Format("Обновлено {0} строк.", rowCount);
-		//            return mess;
-		//        }
-		//        catch (Exception e)
-		//        {
-		//            throw new Exception(e.Message);
-		//        }
-		//    }
-		//}
-
-
-//        private SqlCommand CreateInsertCommand(SqlConnection connection)
-//        {
-//            var command = connection.CreateCommand();
-//            command.CommandText = @"INSERT INTO DebitPayGen 
-//									(Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, 
-//									 GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, 
-//									 Count_Mount, Summa_Payer, Type_Decis, Note)
-//										VALUES (@Id_dpg, @Kod_GNI, @Name, @Kod_Payer, @Date_Decis, @Numb_Decis, 
-//												@GniOrGKNS, @Summa_Decis, @Kod_Paying, @Date_first, @Date_end, 
-//												@Count_Mount, @Summa_Payer, @Type_Decis, @Note)";
-//            SqlParameterCollection pc = command.Parameters;
-//            pc.Add("@Id_dpg", SqlDbType.BigInt, 0, "Id_dpg");
-//            pc.Add("@Kod_GNI", SqlDbType.SmallInt, 0, "Kod_GNI");
-//            pc.Add("@Name", SqlDbType.VarChar, 0, "Name");
-//            pc.Add("@Kod_Payer", SqlDbType.BigInt, 0, "Kod_Payer");
-//            pc.Add("@Date_Decis", SqlDbType.DateTime, 0, "Date_Decis");
-//            pc.Add("@Numb_Decis", SqlDbType.VarChar, 0, "Numb_Decis");
-//            pc.Add("@GniOrGKNS", SqlDbType.VarChar, 0, "GniOrGKNS");
-//            pc.Add("@Summa_Decis", SqlDbType.Money, 0, "Summa_Decis");
-//            pc.Add("@Kod_Paying", SqlDbType.Int, 0, "Kod_Paying");
-//            pc.Add("@Date_first", SqlDbType.DateTime, 0, "Date_first");
-//            pc.Add("@Date_end", SqlDbType.DateTime, 0, "Date_end");
-//            pc.Add("@Count_Mount", SqlDbType.Int, 0, "Count_Mount");
-//            pc.Add("@Summa_Payer", SqlDbType.Money, 0, "Summa_Payer");
-//            pc.Add("@Type_Decis", SqlDbType.VarChar, 0, "Type_Decis");
-//            pc.Add("@Note", SqlDbType.VarChar, 0, "Note");
-
-//            return command;
-//        }
-
-		/// <summary>
-		/// заполнение таблиц базы даных из объектов DataTable информацией о ежемесячных платежах
-		/// </summary>
-		/// <returns></returns>
-		public string UpdateSqlTableMonthPay()
-		{
-			string mess = "";
-			using (var connection = new SqlConnection(Settings.Default.NedoimkaConnectionString))
-			{
-				try
-				{
-					connection.Open();
-					SqlCommand command = connection.CreateCommand();
-
-					command.CommandText = @"
-											SELECT
-												  dpgt.Id_dpg
-												, dpgt.Summa_Decis
-												, dpgt.Date_first
-												, dpgt.Date_end
-												, dpgt.Count_Mount
-												, dpgt.Summa_Payer
-												, dpgt.Type_Decis
-
-											FROM DebitPayGen dpgt
-											LEFT JOIN MonthPay mpt
-												  ON dpgt.Id_dpg = mpt.Id_dpg
-											WHERE mpt.Summa_pay IS NULL";
-					var adapter = new SqlDataAdapter(command);
-
-					var debitPayTable = new DataTable();//таблица из базы данных
-					adapter.Fill(debitPayTable);
-
-					command.CommandText = @"DECLARE @IdMax BIGINT
-									SET @IdMax = (SELECT MAX(ID_MP) FROM MonthPay)
-									SELECT TOP 1 * FROM MonthPay WHERE ID_MP = @IdMax";
-					adapter = new SqlDataAdapter(command);
-					var monthPayTable = new DataTable();
-					adapter.Fill(monthPayTable);//
-					GetTableMontPay(debitPayTable, monthPayTable);
-					adapter.InsertCommand = CreateInsertCommandMonthPay(connection, Argument.TableBaseMonthPay);
-					int rowCount = adapter.Update(monthPayTable);//обновляем данные  в базе о вынесенных решениях
-					mess = string.Format("Обновлено {0} строк.", rowCount);
-					return mess;
-				}
-				catch (Exception e)
-				{
-					throw new Exception(e.Message);
-				}
-			}
-
-		}
-
-		private SqlCommand CreateInsertCommandMonthPay(SqlConnection connection, string tabName)
-		{
-			var command = connection.CreateCommand();
-			command.CommandText = string.Format(@"INSERT INTO {0} 
-									(ID_MP, Id_dpg, Date, Summa_pay)
-										VALUES (@ID_MP, @Id_dpg, @Date, @Summa_pay)", tabName);
-			SqlParameterCollection pc = command.Parameters;
-			pc.Add("@ID_MP", SqlDbType.Int, 0, "ID_MP");
-			pc.Add("@Id_dpg", SqlDbType.BigInt, 0, "Id_dpg");
-			pc.Add("@Date", SqlDbType.DateTime, 0, "Date");
-			pc.Add("@Summa_pay", SqlDbType.Money, 0, "Summa_pay");
-
-			return command;
-		}
-
 
 
 
@@ -519,7 +385,6 @@ namespace Rassrotchka.FilesCommon
 		/// <summary>
 		/// Копирует данные из таблицы в список объектов перед занесением в базу данных
 		/// </summary>
-		/// <param name="dataTable">таблица данных</param>
 		/// <returns>Список решений по рассрочкам</returns>
 		//private static List<T> GetDebitPayListGemBox<T>(DataTable dataTable) where T : new ()
 		//{
@@ -658,52 +523,6 @@ namespace Rassrotchka.FilesCommon
 
 		#region Формирование списка платежей
 
-		/// <summary>
-		/// Формирование перечня ежемесячных платежей
-		/// </summary>
-		/// <param name="tableMontPay"></param>
-		/// <param name="tableDebitPay"></param>
-		/// <returns></returns>
-		public static DataTable GetTableMontPay(DataTable tableDebitPay, DataTable tableMontPay)
-		{
-			Int64 index;
-			index = tableMontPay.Rows.Count != 0 ? Convert.ToInt64(tableMontPay.Rows[0][0]) + 1 : 1;
-			if (tableMontPay.Rows.Count != 0)
-				tableMontPay.Rows.RemoveAt(0);//удаляем единственную строку
-
-			for (int i = 0; i < tableDebitPay.Rows.Count; i++)
-			{
-				if (tableDebitPay.Rows[i]["Date_first"] != null || tableDebitPay.Rows[i]["Date_end"] != null)//если дата первой и последней уплаты не равны нолю
-				{
-					//Количество платежей
-					int payCount = GetPay((DateTime)tableDebitPay.Rows[i]["Date_first"], (DateTime)tableDebitPay.Rows[i]["Date_end"]);
-
-					var sumPay = (Decimal)tableDebitPay.Rows[i]["Summa_Payer"];
-
-					//заполняем список платежей
-					for (int j = 0; j < payCount; j++)
-					{
-						var rowMP = tableMontPay.NewRow();
-						rowMP[0] = index;
-						rowMP["Id_dpg"] = (Int64)tableDebitPay.Rows[i]["Id_dpg"];
-						if (j < payCount - 1)
-						{
-							rowMP["Summa_Pay"] = sumPay;
-							rowMP["Date"] = ((DateTime)tableDebitPay.Rows[i]["Date_first"]).AddMonths(j);
-						}
-						else
-						{
-							rowMP["Summa_Pay"] = (Decimal)tableDebitPay.Rows[i]["Summa_Decis"] - sumPay * (payCount - 1);
-							rowMP["Date"] = (DateTime)tableDebitPay.Rows[i]["Date_end"];
-						}
-						tableMontPay.Rows.Add(rowMP);
-						index++;
-					}
-				}
-			}
-			return tableMontPay;
-		}
-
 		private static DataTable GetTablGetTableMontPayForma()
 		{
 			using (var connection = new SqlConnection(Settings.Default.NedoimkaConnectionString))
@@ -758,13 +577,6 @@ namespace Rassrotchka.FilesCommon
 
 		//}
 
-
-		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
-		{
-			int deltaYar = dateEnd.Year - dateFirst.Year;
-			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar*12 + 1;
-			return paysCount;
-		}
 
 		//private static List<MonthPay> GetMonthPay(List<DebitPayGen> list)
 		//{

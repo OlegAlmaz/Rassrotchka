@@ -301,6 +301,7 @@ namespace Rassrotchka {
             this.relationFK_MonthPay_DebitPayGen_Id_dpg = new global::System.Data.DataRelation("FK_MonthPay_DebitPayGen_Id_dpg", new global::System.Data.DataColumn[] {
                         this.tableDebitPayGen.Id_dpgColumn}, new global::System.Data.DataColumn[] {
                         this.tableMonthPay.Id_dpgColumn}, false);
+            this.relationFK_MonthPay_DebitPayGen_Id_dpg.Nested = true;
             this.Relations.Add(this.relationFK_MonthPay_DebitPayGen_Id_dpg);
             this.relationFK_MonthPay_DebitPayGenTest_Id_dpg = new global::System.Data.DataRelation("FK_MonthPay_DebitPayGenTest_Id_dpg", new global::System.Data.DataColumn[] {
                         this.tableDebitPayGenTest.Id_dpgColumn}, new global::System.Data.DataColumn[] {
@@ -914,7 +915,7 @@ namespace Rassrotchka {
             
             private global::System.Data.DataColumn columnId_dpg;
             
-            private global::System.Data.DataColumn columnДата;
+            private global::System.Data.DataColumn columnDate;
             
             private global::System.Data.DataColumn columnSumma_pay;
             
@@ -969,9 +970,9 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn ДатаColumn {
+            public global::System.Data.DataColumn DateColumn {
                 get {
-                    return this.columnДата;
+                    return this.columnDate;
                 }
             }
             
@@ -1020,12 +1021,12 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MonthPayRow AddMonthPayRow(DebitPayGenRow parentDebitPayGenRowByFK_MonthPay_DebitPayGen_Id_dpg, System.DateTime Дата, decimal Summa_pay) {
+            public MonthPayRow AddMonthPayRow(DebitPayGenRow parentDebitPayGenRowByFK_MonthPay_DebitPayGen_Id_dpg, System.DateTime Date, decimal Summa_pay) {
                 MonthPayRow rowMonthPayRow = ((MonthPayRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         null,
-                        Дата,
+                        Date,
                         Summa_pay};
                 if ((parentDebitPayGenRowByFK_MonthPay_DebitPayGen_Id_dpg != null)) {
                     columnValuesArray[1] = parentDebitPayGenRowByFK_MonthPay_DebitPayGen_Id_dpg[0];
@@ -1037,7 +1038,7 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MonthPayRow FindByID_MP(int ID_MP) {
+            public MonthPayRow FindByID_MP(long ID_MP) {
                 return ((MonthPayRow)(this.Rows.Find(new object[] {
                             ID_MP})));
             }
@@ -1061,19 +1062,19 @@ namespace Rassrotchka {
             internal void InitVars() {
                 this.columnID_MP = base.Columns["ID_MP"];
                 this.columnId_dpg = base.Columns["Id_dpg"];
-                this.columnДата = base.Columns["Дата"];
+                this.columnDate = base.Columns["Date"];
                 this.columnSumma_pay = base.Columns["Summa_pay"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnID_MP = new global::System.Data.DataColumn("ID_MP", typeof(int), null, global::System.Data.MappingType.Element);
+                this.columnID_MP = new global::System.Data.DataColumn("ID_MP", typeof(long), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnID_MP);
                 this.columnId_dpg = new global::System.Data.DataColumn("Id_dpg", typeof(long), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnId_dpg);
-                this.columnДата = new global::System.Data.DataColumn("Дата", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnДата);
+                this.columnDate = new global::System.Data.DataColumn("Date", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDate);
                 this.columnSumma_pay = new global::System.Data.DataColumn("Summa_pay", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnSumma_pay);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
@@ -2478,7 +2479,7 @@ namespace Rassrotchka {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public long ID_MP {
                 get {
-                    return ((int)(this[this.tableMonthPay.ID_MPColumn]));
+                    return ((long)(this[this.tableMonthPay.ID_MPColumn]));
                 }
                 set {
                     this[this.tableMonthPay.ID_MPColumn] = value;
@@ -2503,17 +2504,17 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public System.DateTime Дата {
+            public System.DateTime Date {
                 get {
                     try {
-                        return ((global::System.DateTime)(this[this.tableMonthPay.ДатаColumn]));
+                        return ((global::System.DateTime)(this[this.tableMonthPay.DateColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Дата\' в таблице \'MonthPay\' равно DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Date\' в таблице \'MonthPay\' равно DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableMonthPay.ДатаColumn] = value;
+                    this[this.tableMonthPay.DateColumn] = value;
                 }
             }
             
@@ -2558,14 +2559,14 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsДатаNull() {
-                return this.IsNull(this.tableMonthPay.ДатаColumn);
+            public bool IsDateNull() {
+                return this.IsNull(this.tableMonthPay.DateColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetДатаNull() {
-                this[this.tableMonthPay.ДатаColumn] = global::System.Convert.DBNull;
+            public void SetDateNull() {
+                this[this.tableMonthPay.DateColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4360,7 +4361,7 @@ ORDER BY Date_Decis DESC";
             tableMapping.DataSetTable = "MonthPay";
             tableMapping.ColumnMappings.Add("ID_MP", "ID_MP");
             tableMapping.ColumnMappings.Add("Id_dpg", "Id_dpg");
-            tableMapping.ColumnMappings.Add("Date", "Дата");
+            tableMapping.ColumnMappings.Add("Date", "Date");
             tableMapping.ColumnMappings.Add("Summa_pay", "Summa_pay");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();

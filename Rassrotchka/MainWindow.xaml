@@ -27,8 +27,8 @@
         <CommandBinding Command="command:DataCommands.FillData"
                         Executed="FillDataCommandBinding_OnExecuted"
                         CanExecute="EditCommandBinding_OnCanExecute"/>
-        <CommandBinding Command="command:DataCommands.PayersFill"
-                        Executed="CommandBinding_OnExecuted"/>
+        <CommandBinding Command="command:DataCommands.Clean"
+                        Executed="CleanCommandBinding_OnExecuted"/>
     </Window.CommandBindings>
     <Window.Resources>
         <LinearGradientBrush x:Key="BackgroundGrid" EndPoint="1,0.5" StartPoint="0,0.5">
@@ -217,7 +217,7 @@
                 <MenuItem Name="ItemAddAndModif" Header="Имен. и добавл." Click="MenuItem_Click"
                           IsCheckable="True" ToolTip="Измененные и добавленные строки"/>
                 <Separator />
-                <MenuItem Name="ItemAll" Header="Все" IsCheckable="True" IsChecked="True" Click="MenuItem_Click" Checked="Item_OnChecked"/>
+                <MenuItem Name="ItemAll" Header="Все" IsCheckable="True" Click="MenuItem_Click" Checked="Item_OnChecked"/>
             </MenuItem>
             <MenuItem Header="Данные">
                 <MenuItem Header="Загрузить.." Command="command:DataCommands.FillData"
@@ -227,6 +227,8 @@
                 <Separator/>
                 <MenuItem Header="Обновить базу" Command="command:DataCommands.Update"
                           ToolTip="Обновление базы данных с учетом внесенных изменений" />
+                <MenuItem Header="Очистить" Command="command:DataCommands.Clean"
+                          ToolTip="Очистка экрана приложения от загруженных данных"/>
             </MenuItem>
         </Menu>
         
@@ -259,11 +261,22 @@
                     ToolTip="Загрузить данные">
                 <Image Source="/Rassrotchka;component/Images/DatabaseProject.ico" />
             </Button>
+            <Button Command="command:DataCommands.Clean">
+                <Image Source="/Rassrotchka;component/Images/Clean.ico" />
+            </Button>
         </ToolBar>
         <DataGrid Grid.Row="2" Name="DebitPayGenDataGrid" IsReadOnly="True"
                   ItemsSource="{Binding}"
                     Style="{StaticResource DataGridStyle1}"
                     FrozenColumnCount="3" RowHeaderWidth="2">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="MenuItemContextUndo" Header="Отменить выделенные"
+                              IsEnabled="False" 
+                              Click="UndoSelectedRowsMenuItem_OnClick"
+                            ToolTip="Отменить изменения в выделенных строках" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.RowValidationErrorTemplate>
                 <ControlTemplate>
                     <Grid Margin="0,-2,0,-2" 
@@ -375,23 +388,24 @@
             </Grid.RowDefinitions>
             <DataGrid Name="MonthPayDataGrid" IsReadOnly="True"
                         Style="{StaticResource DataGridStyle1}"
-                        ItemsSource="{Binding Source={StaticResource DebitPayGenMonthPayViewSource}}">
+                        ItemsSource="{Binding Source={StaticResource DebitPayGenMonthPayViewSource}}"
+                    VerticalScrollBarVisibility="Visible">
                 <DataGrid.Columns>
                     <!--<DataGridTextColumn x:Name="iD_MPColumn" Binding="{Binding Path=ID_MP}" Header="Id"
                                         Width="SizeToCells" />-->
                     <!--<DataGridTextColumn x:Name="id_dpgColumn1" Binding="{Binding Path=Id_dpg}" Header="Id решения"
                                         Width="SizeToCells" />-->
                     <DataGridTemplateColumn Header="Дата" Width="SizeToCells"
-                                            CanUserSort="True" SortMemberPath="Дата">
+                                            CanUserSort="True" SortMemberPath="Date">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Дата, StringFormat=\{0:d\}}"/>
+                                <TextBlock Text="{Binding Path=Date, StringFormat=\{0:d\}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <DatePicker
-                                    SelectedDate="{Binding Path=Дата, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                                    SelectedDate="{Binding Path=Date, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>

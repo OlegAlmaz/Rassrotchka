@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -46,11 +47,6 @@ namespace Rassrotchka
 			_monthPayTableAdapter = new MonthPayTableAdapter();
 		}
 
-		void _monthPayTable_RowChanged(object sender, DataRowChangeEventArgs e)
-		{
-			UndoItem.Add(e.Row);
-		}
-
 		void _debitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			if (e.Row.RowState != DataRowState.Unchanged && e.Row.RowState != DataRowState.Detached)
@@ -65,13 +61,20 @@ namespace Rassrotchka
 
 			_dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
 			_debitPaytable.RowChanged += _debitPaytable_RowChanged;
-			_monthPayTable.RowChanged += _monthPayTable_RowChanged;
+			_monthPayTable.RowChanged += _debitPaytable_RowChanged;
 
 			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
 			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
 			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
 			_asDataView = _debitPaytable.DefaultView;
 
+			var binding = new Binding("IsEnabled")
+				{
+					Source = UndoItem,
+					Mode = BindingMode.OneWay,
+					UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+				};
+			MenuItemContextUndo.SetBinding(IsEnabledProperty, binding);
 		}
 
 		private void FillData()
@@ -138,8 +141,7 @@ namespace Rassrotchka
 		private void SaveCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			Readonly();
-
-			AcceptChanges();
+			ValidFromCanges();//Проверка на наличие изменений в таблице, сохранение и обновление базые данных
 		}
 
 		private void SaveCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -161,17 +163,12 @@ namespace Rassrotchka
 
 		private void UndoCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (DebitPayGenDataGrid.SelectedItem != null)
-			{
-				//todo добавить код
-			}
-			else
-			{
-				int i = UndoItem.Count - 1;
-				UndoItem.List[i].RejectChanges();
-				UndoItem.RemoveAt(i);
+			int i = UndoItem.Count - 1;
+			UndoItem.List[i].RejectChanges();
+			UndoItem.List[i].RowError = string.Empty;
+			UndoItem.List[i].ClearErrors();
+			UndoItem.RemoveAt(i);
 				
-			}			
 		}
 
 		private void UndoAllCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -213,16 +210,17 @@ namespace Rassrotchka
 			Cursor = null;
 		}
 
-		//Загрузка новых данных в базу
+		#region Загрузка новых данных в базу
+
 		private void DownloadCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
 		{
 			LabelInfo.Content = string.Empty;
 			var dialog = new OpenFileDialog
-			{
-				Title = "Выбор файлов",
-				Multiselect = false,
-				InitialDirectory = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль"
-			};
+				{
+					Title = "Выбор файлов",
+					Multiselect = false,
+					InitialDirectory = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль"
+				};
 			var result = dialog.ShowDialog();
 			if (result == true)
 			{
@@ -245,12 +243,9 @@ namespace Rassrotchka
 				try
 				{
 
-					if (_debitPaytable.Rows.Count == 0)
-					{
-						_debitPayGenTableAdapter.Fill(_debitPaytable);
-						_monthPayTableAdapter.Fill(_monthPayTable);
-						AcceptChanges();
-					}
+					ValidateFromLoad(); //Проверка: загружен ли dataset, если нет, то загружаем
+					ValidFromCanges(); //Проверка: есть ли измененные строки в dataset, если да, то сохраняем и обновляем базу данных
+
 					var payes = new FillTablesPayes1(_argument, _debitPaytable, _monthPayTable);
 					payes.UpdateSqlTableDebitPayGen();
 
@@ -258,10 +253,10 @@ namespace Rassrotchka
 					int countModifRows = _asDataView.Count;
 					_asDataView.RowStateFilter = DataViewRowState.Added;
 					int countAddedRows = _asDataView.Count;
+
 					if (countAddedRows + countModifRows == 0)
 					{
-						_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent |
-						                             DataViewRowState.Unchanged;
+						_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
 						MessageBox.Show("Новые и измененные данные отсутствуют");
 					}
 					else
@@ -271,9 +266,9 @@ namespace Rassrotchka
 						_asDataView.Sort = string.Format("{0} DESC", _debitPaytable.Date_DecisColumn.ColumnName);
 						ItemAddAndModif.IsChecked = true;
 						NotReadonly();
+						_viewDpGn.View.MoveCurrentToFirst();
+						_viewMp.View.MoveCurrentToFirst();
 					}
-					_viewDpGn.View.MoveCurrentToFirst();
-					_viewMp.View.MoveCurrentToFirst();
 				}
 				catch (Exception ex)
 				{
@@ -287,9 +282,61 @@ namespace Rassrotchka
 			Cursor = null;
 		}
 
-		private void CommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		private void ValidFromCanges()
 		{
-			throw new NotImplementedException();
+			if (_dataSet.HasChanges())
+			{
+				DataSet dsCnang = _dataSet.GetChanges();
+				if (dsCnang.Tables[_debitPaytable.TableName].Rows.Count > 0)
+				{
+					DataRow[] dataRows = dsCnang.Tables[_debitPaytable.TableName].GetErrors();
+					foreach (DataRow dataRow in dataRows)
+					{
+						dataRow.ClearErrors();
+						dataRow.RowError = string.Empty;
+					}
+					_debitPayGenTableAdapter.Update(_dataSet);
+				}
+				if (dsCnang.Tables[_monthPayTable.TableName].Rows.Count > 0)
+				{
+					DataRow[] dataRows = dsCnang.Tables[_monthPayTable.TableName].GetErrors();
+					foreach (DataRow dataRow in dataRows)
+					{
+						dataRow.ClearErrors();
+						dataRow.RowError = string.Empty;
+					}
+					_monthPayTableAdapter.Update(_dataSet);
+				}
+				AcceptChanges();
+			}
+		}
+
+		private void ValidateFromLoad()
+		{
+			if (_debitPaytable.Rows.Count == 0) //если не загружены таблицы загружаем
+			{
+				_debitPayGenTableAdapter.Fill(_debitPaytable);
+				_monthPayTableAdapter.Fill(_monthPayTable);
+				AcceptChanges();
+			}
+		}
+
+		#endregion
+
+
+		private void CleanCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			int rowCahng = _debitPaytable.GetChanges().Rows.Count;
+			if (rowCahng > 0)
+			{
+				var result = MessageBox.Show("В таблице имеются измененные данные. \rОбновить базу данных перед очисткой экрана?",
+				                "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+				if (result == MessageBoxResult.Yes)
+					_debitPayGenTableAdapter.Update(_dataSet);
+
+			}
+			DataRelationCollection relationCollection = _debitPaytable.ChildRelations;
+			_dataSet.Clear();
 		}
 
 
@@ -412,88 +459,20 @@ namespace Rassrotchka
 														((TextBox)sender).Text);
 		}
 
-	}
-
-	/// <summary>
-	/// Класс, который аккумулирует изменения в строках таблицы
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class UndoMenuItem<T> : INotifyPropertyChanged
-	{
-		/// <summary>
-		/// Позволяет быть активным элементу управления
-		/// </summary>
-		public bool IsEnabled
+		private void UndoSelectedRowsMenuItem_OnClick(object sender, RoutedEventArgs e)
 		{
-			get { return _isEnabled; }
-			private set
+			if (DebitPayGenDataGrid.SelectedItem != null)
 			{
-				_isEnabled = value;
-				if (PropertyChanged != null)
+				IList selectedItems = DebitPayGenDataGrid.SelectedItems;
+				List<DataRow> rows = (from object selectedItem in selectedItems select ((DataRowView)selectedItem).Row).ToList();
+				foreach (var row in rows)
 				{
-					PropertyChanged(this, new PropertyChangedEventArgs("IsEnabled"));
+					row.RejectChanges();
+					row.ClearErrors();
+					row.RowError = "";
+					UndoItem.Remote(row);
 				}
 			}
 		}
-
-		/// <summary>
-		/// Количество элементов в списки изменений для последующей отмены
-		/// </summary>
-		public int Count { get; private set; }
-
-		public List<T> List
-		{
-			get { return _list; }
-			set { _list = value; }
-		}
-
-		private List<T> _list;
-		private bool _isEnabled;
-
-		public UndoMenuItem()
-		{
-			List = new List<T>();
-			Count = 0;
-			IsEnabled = false;
-		}
-
-		public void Add(T t)
-		{
-			if (t != null)
-			{
-				_list.Add(t);
-				Count = _list.Count;
-				IsEnabled = true;
-			}
-		}
-
-		/// <summary>
-		/// удаление элемента из списка по индексу
-		/// </summary>
-		/// <param name="i">номер индекса удаляемого элемента списка</param>
-		public void RemoveAt(int i)
-		{
-			if (i <= Count && i >= 0)
-			{
-				_list.RemoveAt(i);
-				Count = _list.Count;
-				if (Count == 0)
-					IsEnabled = false;
-			}
-			else
-				throw new ArgumentOutOfRangeException("Индекс вне диапазона. Количество элементов списка - " + Count);
-		}
-
-		internal void Clear()
-		{
-			List.Clear();
-			Count = 0;
-			IsEnabled = false;
-		}
-
-		public event PropertyChangedEventHandler PropertyChanged;
 	}
-
-
-
 }

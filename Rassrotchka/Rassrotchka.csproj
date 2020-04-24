@@ -73,6 +73,7 @@
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
     <Compile Include="WindowDateNoRange.xaml.cs">
       <DependentUpon>WindowDateNoRange.xaml</DependentUpon>
@@ -143,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GemBox.Spreadsheet.dll" />
+    <Resource Include="Images\Clean.ico" />
     <Resource Include="Images\Refresh.ico" />
     <Resource Include="Images\Undo1.ico" />
     <Resource Include="Images\Save.ico" />
