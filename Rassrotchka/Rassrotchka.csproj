@@ -61,7 +61,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BaseElementName.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="Commands\DataCommands.cs" />
+    <Compile Include="FactoryConsolid.cs" />
+    <Compile Include="FactoryForecast1.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
