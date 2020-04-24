@@ -1,4 +1,5 @@
-﻿using GemBox.Spreadsheet;
+﻿using System;
+using GemBox.Spreadsheet;
 
 namespace Rassrotchka.FilesCommon
 {
@@ -38,6 +39,26 @@ namespace Rassrotchka.FilesCommon
 		/// Имя таблицы из базы данных учету платежей по рассрочке, сведения которой необходимо обновить, по умолчанию MonthPay
 		/// </summary>
 		public string TableBaseMonthPay { get; set; }
+
+		/// <summary>
+		/// Дата на которую готовится сводный отчет
+		/// </summary>
+		public DateTime Date { get; set; }
+
+		/// <summary>
+		/// Имя хранимой процедуры
+		/// </summary>
+		public string ProcedureName { get; set; }
+
+		/// <summary>
+		/// Начальная дата в диапазоне выбранных дат
+		/// </summary>
+		public DateTime DateFirst { get; set; }
+
+		/// <summary>
+		/// Конечная дата в диапазоне выбранных дат
+		/// </summary>
+		public DateTime DateEnd { get; set; }
 
 		//Конструктор
 		public ArgumentDebitPay()
