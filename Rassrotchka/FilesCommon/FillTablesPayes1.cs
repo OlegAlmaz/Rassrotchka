@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Windows.Forms;
-using Rassrotchka.Properties;
 using GemBox.Spreadsheet;
 
 namespace Rassrotchka.FilesCommon
@@ -69,21 +65,13 @@ namespace Rassrotchka.FilesCommon
 
 		private List<NedoimkaDataSet.DebitPayGenRow> GetRowsDebit()
 		{
-			var rows = new List<NedoimkaDataSet.DebitPayGenRow>();
 			var query = from rowDeb in _tableDebitPay.AsEnumerable()
 			            join rowMonth in _tableMontPay.AsEnumerable() on rowDeb.Id_dpg equals rowMonth.Id_dpg
 				            into leftOuter
 			            from monthPayRow in leftOuter.DefaultIfEmpty()
 			            where monthPayRow == null
 			            select new {rowDeb};
-			if (query.Any())
-			{
-				foreach (var anonim in query)
-				{
-					rows.Add(anonim.rowDeb);
-				}
-			}
-			return rows;
+			return query.Select(anonim => anonim.rowDeb).ToList();
 		}
 
 		private void UpdateTableMontPay(IEnumerable<NedoimkaDataSet.DebitPayGenRow> rowsDeb)
@@ -254,9 +242,9 @@ namespace Rassrotchka.FilesCommon
 				string colNameTableBase; //имя колонки в таблице базы данных
 				if (_dict.TryGetValue(colName, out colNameTableBase)) //если есть такая
 				{
-					object val = rowExcel[colName];
-					rowDeb[colNameTableBase] = val;
+					rowDeb[colNameTableBase] = rowExcel[colName];
 				}
+				rowDeb["Date_prolong"] = rowDeb["Date_end"];
 			}
 			_tableDebitPay.Rows.Add(rowDeb);
 		}
@@ -334,24 +322,6 @@ namespace Rassrotchka.FilesCommon
 			return result == DialogResult.OK;
 		}
 
-		private bool VisulChanges(DataView view1, string mes)
-		{
-			var window = new WindowDateNoRange
-			{
-				TextBlockField = { Text = mes },
-			};
-			window.View = view1;
-			window.Label1.Visibility = Visibility.Visible;
-			window.ButtonFlag.Visibility = Visibility.Visible;
-			window.ButtonNo.Visibility = Visibility.Collapsed;
-
-			var showdialog = window.ShowDialog();
-			var showDialogResultOkCancel = showdialog;
-			return showDialogResultOkCancel != null && (bool)showDialogResultOkCancel;
-		}
-
-
-
 		//public string Fill(NedoimkaEntities entities, DataTable table)
 		//{
 		//    string mess;
@@ -382,10 +352,6 @@ namespace Rassrotchka.FilesCommon
 
 		#region Извлечение данных из таблицы рассрочек или отсрочек
 
-		/// <summary>
-		/// Копирует данные из таблицы в список объектов перед занесением в базу данных
-		/// </summary>
-		/// <returns>Список решений по рассрочкам</returns>
 		//private static List<T> GetDebitPayListGemBox<T>(DataTable dataTable) where T : new ()
 		//{
 		//    var list = new List<T>();
@@ -522,21 +488,6 @@ namespace Rassrotchka.FilesCommon
 		#endregion
 
 		#region Формирование списка платежей
-
-		private static DataTable GetTablGetTableMontPayForma()
-		{
-			using (var connection = new SqlConnection(Settings.Default.NedoimkaConnectionString))
-			{
-				connection.Open();
-				var commandText = @"DECLARE @IdMax BIGINT
-									SET @IdMax = (SELECT MAX(ID_MP) FROM MonthPay)
-									SELECT TOP 1 * FROM MonthPay WHERE ID_MP = @IdMax";
-				var adapter = new SqlDataAdapter(commandText, connection);
-				var dataTable = new DataTable();
-				adapter.Fill(dataTable);
-				return dataTable;
-			}
-		}
 
 
 		//private static List<MonthPay> GetListMontPay(DebitPayGen debitPay)
