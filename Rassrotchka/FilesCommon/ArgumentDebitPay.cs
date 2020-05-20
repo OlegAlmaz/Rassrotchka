@@ -60,6 +60,11 @@ namespace Rassrotchka.FilesCommon
 		/// </summary>
 		public DateTime DateEnd { get; set; }
 
+		/// <summary>
+		/// Название месяца в заголовке файла
+		/// </summary>
+		public MonthName Monthname { get; set; }
+
 		//Конструктор
 		public ArgumentDebitPay()
 		{
@@ -70,6 +75,7 @@ namespace Rassrotchka.FilesCommon
 			ExcelParametrs = new ExcelParametr();
 			TableBase = "DebitPayGen";
 			TableBaseMonthPay = "MonthPay";
+			Monthname = new MonthName("", "");
 		}
 
 		/// <summary>
