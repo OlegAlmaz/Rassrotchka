@@ -19,7 +19,6 @@ namespace Rassrotchka.FilesCommon
 			Add("9", "Date_end");
 			Add("10", "Count_Mount");
 			Add("11", "Summa_Payer");
-			Add("111", "Date_prolong");
 			Add("12", "Type_Decis");
 			Add("13", "Note");
 		}
