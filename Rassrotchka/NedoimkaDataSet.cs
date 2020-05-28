@@ -1,15 +1,4 @@
-﻿namespace Rassrotchka {
-    
-    
-    public partial class NedoimkaDataSet {
-
-		partial class MonthPayDataTable
-		{
-		}
-	}
-}
-
-namespace Rassrotchka.NedoimkaDataSetTableAdapters {
+﻿namespace Rassrotchka.NedoimkaDataSetTableAdapters {
 	partial class MonthPayTableAdapter
 	{
 		public string SelectedCommandText
@@ -27,4 +16,12 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
 		    set { CommandCollection[0].CommandText = value; }
 	    }
     }
+}
+namespace Rassrotchka
+{
+
+
+	public partial class NedoimkaDataSet
+	{
+	}
 }
