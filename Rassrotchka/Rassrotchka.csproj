@@ -64,8 +64,10 @@
     <Compile Include="BaseElementName.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Commands\DataCommands.cs" />
+    <Compile Include="DictMonth.cs" />
     <Compile Include="FactoryConsolid.cs" />
     <Compile Include="FactoryForecast1.cs" />
+    <Compile Include="FactoryForecast20.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -73,12 +75,15 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormattingRangeGemBox.cs" />
     <Compile Include="NedoimkaDataSet.cs">
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
+    <Compile Include="WinSetPeriod.xaml.cs">
+      <DependentUpon>WinSetPeriod.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowDateNoRange.xaml.cs">
       <DependentUpon>WindowDateNoRange.xaml</DependentUpon>
     </Compile>
@@ -97,6 +102,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WinSetPeriod.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowDateNoRange.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -129,6 +138,15 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="FilesTemplates\Рассрочка_XX.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FilesTemplates\рассрочки_2020_03.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="FilesTemplates\Рассрочки_налоги.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="NedoimkaDataSet.xsc">
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
     </None>
@@ -189,6 +207,7 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
