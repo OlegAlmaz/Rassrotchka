@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
-using Rassrotchka.FilesCommon;
-using Rassrotchka.Properties;
+using System.Linq;
+using GemBox.Spreadsheet;
 
 namespace Rassrotchka
 {
@@ -18,29 +18,74 @@ namespace Rassrotchka
 
 		public override AbstractFile CreateFile()
 		{
-			throw new NotImplementedException();
+			return new FileConsolid();
 		}
 	}
 
 	public class TableConsolid : AbstractTable
 	{
-		public override DataSet SqlToDataSet(ArgumentDebitPay args)
+		protected override SqlDataAdapter SqlDataAdapter(SqlConnection sqlConnection)
 		{
-			var sqlConnection = new SqlConnection(Settings.Default.NedoimkaConnectionString);
-			using (var dataSet = new DataSet())
+			var adapter = new SqlDataAdapter(BaseElementName.ProcedConsolid, sqlConnection)
 			{
-				//заполнение сводной таблицы
-				var sqlCommand = new SqlCommand(args.ProcedureName, sqlConnection) //todo указать название процедуры
-					{
-						CommandType = CommandType.StoredProcedure
-					};
-				var sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-				sqlDataAdapter.SelectCommand.Parameters.Add("@Date", SqlDbType.Date);
-				sqlDataAdapter.SelectCommand.Parameters[0].SqlValue = args.Date;
-				sqlDataAdapter.Fill(dataSet);
-				return dataSet;
-			}
+				SelectCommand = { CommandType = CommandType.StoredProcedure }
+			};
+			return adapter;
 		}
+	}
+
+
+	public class FileConsolid : AbstractFile
+	{
+		public override void Interact(AbstractTable tb)
+		{
+			FilePath = "FilesTemplates\\рассрочки_2020_03.xlsx";
+			TableCellsNames.HeaderCollumns = "A3";
+			TableCellsNames.CellData = "A4";
+			HeaderFile.NameCellHeader = "A1";
+			DateToFileTwoSheets(tb);
+		}
+
+		/// <summary>
+		/// Формирует и копирует данные в excel файл на двух листах
+		/// </summary>
+		/// <param name="tb"></param>
+		private void DateToFileTwoSheets(AbstractTable tb)
+		{
+			string licensi = tb.Args.ExcelParametrs.License;
+			SpreadsheetInfo.SetLicense(licensi);
+			var workbook = ExcelFile.Load(FilePath);
+			var dataSet = tb.SqlToDataSet();
+			//заполняем первый лист - свод решений рассрочек
+			var ws = workbook.Worksheets[0];
+			DataTable dataTable = dataSet.Tables[0];
+			var options = new InsertDataTableOptions(TableCellsNames.CellData);
+			ws.InsertDataTable(dataTable, options);
+			//FormattingRangeGemBox.FormattingUsedRange(ws, TableCellsNames.CellData);
+			const int numDec = 4; //номер колонки с датой решения
+			DateTime maxData =
+				dataTable.Rows.Cast<object>()
+				         .Select((t, i) => Convert.ToDateTime(dataTable.Rows[i][numDec]))
+				         .Max();
+			int numMonth = maxData.Month;
+			HeaderFile.Header = string.Format(@"Информация о предоставленных  рассрочках (отсрочках) по состоянию на {0:dd.MM.yyyy}",
+							maxData);
+			ws.Cells[HeaderFile.NameCellHeader].Value = HeaderFile.Header;
+
+
+			//заполняем второй лист со списком платежей
+			//todo добавить код
+			ws = workbook.Worksheets[2];
+			TableCellsNames.CellData = "A3";
+			options = new InsertDataTableOptions(TableCellsNames.CellData);
+			dataTable = dataSet.Tables[1];
+			ws.InsertDataTable(dataTable, options);
+			//сохраняем файл
+			NewFile = string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\рассрочки_2020_{0}.xlsx",
+									numMonth);
+			workbook.Save(NewFile);
+		}
+
 	}
 
 }

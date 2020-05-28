@@ -16,5 +16,10 @@
 		/// по рассрочкам и отсрочкам в разрезе плательщиков и платежей
 		/// </summary>
 		public static string ProcedPredicGenPay = "ProcedPredicGenPay";
+
+		/// <summary>
+		/// Процедура формирует сводные данные по рассрочкам и отсрочкам
+		/// </summary>
+		public static string ProcedConsolid = "ProcedConsolid";
 	}
 }
