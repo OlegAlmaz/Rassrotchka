@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -14,465 +15,546 @@ using Rassrotchka.NedoimkaDataSetTableAdapters;
 
 namespace Rassrotchka
 {
-	/// <summary>
-	///     Логика взаимодействия для MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
-	{
-		private bool _isDirty = true;
-		private NedoimkaDataSet _dataSet;
-		private NedoimkaDataSet.DebitPayGenDataTable _debitPaytable;
-		private NedoimkaDataSet.MonthPayDataTable _monthPayTable;
-		private DebitPayGenTableAdapter _debitPayGenTableAdapter;
-		private MonthPayTableAdapter _monthPayTableAdapter;
-		private CollectionViewSource _viewDpGn;
-		private CollectionViewSource _viewMp;
-		private ArgumentDebitPay _argument;
-		private DataView _asDataView;
+    /// <summary>
+    ///     Логика взаимодействия для MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow
+    {
+        private bool _isDirty = true;
+        private NedoimkaDataSet _dataSet;
+        private readonly DebitPayGenTableAdapter _debitPayGenTableAdapter;
+        private readonly MonthPayTableAdapter _monthPayTableAdapter;
+        private CollectionViewSource _viewDpGn;
+        private CollectionViewSource _viewMp;
+        private ArgumentDebitPay _argument;
+        private DataView _asDataView;
 
-		public static UndoMenuItem<DataRow> UndoItem { get; private set; }
-		private BindingListCollectionView _view;
+        public static UndoMenuItem<DataRow> UndoItem { get; private set; }
+        private BindingListCollectionView _view;
 
-		public MainWindow()
-		{
-			UndoItem = new UndoMenuItem<DataRow>();
-			InitializeComponent();
-			_dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
+        public MainWindow()
+        {
+            UndoItem = new UndoMenuItem<DataRow>();
+            InitializeComponent();
+            _dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
 
+            _debitPayGenTableAdapter = new DebitPayGenTableAdapter();
+            _monthPayTableAdapter = new MonthPayTableAdapter();
+        }
 
-			_debitPaytable = _dataSet.DebitPayGen;
-			_monthPayTable = _dataSet.MonthPay;
+        void _debitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
+        {
+            if (e.Row.RowState != DataRowState.Unchanged && e.Row.RowState != DataRowState.Detached)
+            {
+                UndoItem.Add(e.Row);
+            }
+        }
 
-			_debitPayGenTableAdapter = new DebitPayGenTableAdapter();
-			_monthPayTableAdapter = new MonthPayTableAdapter();
-		}
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            _argument = new ArgumentDebitPay();
 
-		void _debitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
-		{
-			if (e.Row.RowState != DataRowState.Unchanged && e.Row.RowState != DataRowState.Detached)
-			{
-				UndoItem.Add(e.Row);
-			}
-		}
+            _dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
+            _dataSet.DebitPayGen.RowChanged += _debitPaytable_RowChanged;
+            _dataSet.MonthPay.RowChanged += _debitPaytable_RowChanged;
 
-		private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
-			_argument = new ArgumentDebitPay();
+            _viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
+            _viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
+            _view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
+            _asDataView = _dataSet.DebitPayGen.DefaultView;
 
-			_dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
-			_debitPaytable.RowChanged += _debitPaytable_RowChanged;
-			_monthPayTable.RowChanged += _debitPaytable_RowChanged;
+            var binding = new Binding("IsEnabled")
+            {
+                Source = UndoItem,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+            MenuItemContextUndo.SetBinding(IsEnabledProperty, binding);
+        }
 
-			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
-			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
-			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
-			_asDataView = _debitPaytable.DefaultView;
+        private void FillData()
+        {
 
-			var binding = new Binding("IsEnabled")
-				{
-					Source = UndoItem,
-					Mode = BindingMode.OneWay,
-					UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-				};
-			MenuItemContextUndo.SetBinding(IsEnabledProperty, binding);
-		}
+            // Загрузить данные в таблицу DebitPayGen. Можно изменить этот код как требуется.
+            _debitPayGenTableAdapter.Fill(_dataSet.DebitPayGen);
+            //DebitPayGenDataGrid.ItemsSource = _viewDpGn.View;
+            _viewDpGn.View.MoveCurrentToFirst();
+            // Загрузить данные в таблицу MonthPay. Можно изменить этот код как требуется.
+            _monthPayTableAdapter.Fill(_dataSet.MonthPay);
 
-		private void FillData()
-		{
+            AcceptChanges();
+        }
 
-			// Загрузить данные в таблицу DebitPayGen. Можно изменить этот код как требуется.
-			_debitPayGenTableAdapter.Fill(_debitPaytable);
-			//DebitPayGenDataGrid.ItemsSource = _viewDpGn.View;
-			_viewDpGn.View.MoveCurrentToFirst();
-			// Загрузить данные в таблицу MonthPay. Можно изменить этот код как требуется.
-			_monthPayTableAdapter.Fill(_monthPayTable);
+        private void AcceptChanges()
+        {
+            _dataSet.DebitPayGen.AcceptChanges();
+            _dataSet.MonthPay.AcceptChanges();
+            UndoItem.Clear();
+        }
 
-			AcceptChanges();
-		}
-
-		private void AcceptChanges()
-		{
-			_debitPaytable.AcceptChanges();
-			_monthPayTable.AcceptChanges();
-			UndoItem.Clear();
-		}
-
-		#region Обработчики событий иных элементов управления
+        #region Обработчики событий иных элементов управления
 
 
+        #region //обработка события перетаскивания файла
 
-		#region //обработка события перетаскивания файла
+        private void grid_PreviewDragEnter(object sender, DragEventArgs e)
+        {
+            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        }
 
-		private void grid_PreviewDragEnter(object sender, DragEventArgs e)
-		{
-			e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
+        private void Grid_PreviewDrop(object sender, DragEventArgs e)
+        {
+            LabelInfo.Content = string.Empty;
+            var filePathArray = (string[])e.Data.GetData(DataFormats.FileDrop, true);
+            _argument.FilePath = filePathArray[0];
+            LabelInfo.Content = Path.GetFileName(_argument.FilePath);
+            AddNewData();
+        }
 
-		private void Grid_PreviewDrop(object sender, DragEventArgs e)
-		{
-			LabelInfo.Content = string.Empty;
-			var filePathArray = (string[]) e.Data.GetData(DataFormats.FileDrop, true);
-			_argument.FilePath = filePathArray[0];
-			LabelInfo.Content = Path.GetFileName(_argument.FilePath);
-			AddNewData();
-		}
+        #endregion
 
-		#endregion
+        #endregion
 
-		#endregion
+        #region Обработка комманд
 
-		#region Обработка комманд
+        private void NotReadonly()
+        {
+            _isDirty = false;
 
-		private void NotReadonly()
-		{
-			_isDirty = false;
+            DebitPayGenDataGrid.IsReadOnly = false;
+            MonthPayDataGrid.IsReadOnly = false;
+        }
 
-			DebitPayGenDataGrid.IsReadOnly = false;
-			MonthPayDataGrid.IsReadOnly = false;
-		}
+        private void Readonly()
+        {
+            _isDirty = true;
+            DebitPayGenDataGrid.IsReadOnly = true;
+            MonthPayDataGrid.IsReadOnly = true;
+        }
 
-		private void Readonly()
-		{
-			_isDirty = true;
-			DebitPayGenDataGrid.IsReadOnly = true;
-			MonthPayDataGrid.IsReadOnly = true;
-		}
+        private void SaveCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Readonly();
+            ValidFromCanges();//Проверка на наличие изменений в таблице, сохранение и обновление базые данных
+        }
 
-		private void SaveCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			Readonly();
-			ValidFromCanges();//Проверка на наличие изменений в таблице, сохранение и обновление базые данных
-		}
+        private void SaveCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
 
-		private void SaveCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			
-			e.CanExecute = !_isDirty;
-		
-		}
+            e.CanExecute = !_isDirty;
 
-		private void EditCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			NotReadonly();
-		}
+        }
 
-		private void EditCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = _isDirty;
-		}
+        private void EditCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            NotReadonly();
+        }
 
-		private void UndoCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			int i = UndoItem.Count - 1;
-			UndoItem.List[i].RejectChanges();
-			UndoItem.List[i].RowError = string.Empty;
-			UndoItem.List[i].ClearErrors();
-			UndoItem.RemoveAt(i);
-				
-		}
+        private void EditCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _isDirty;
+        }
 
-		private void UndoAllCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			_debitPaytable.RejectChanges();//todo переделать
-			_monthPayTable.RejectChanges();//todo переделать
-			UndoItem.Clear();
-		}
+        private void UndoCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            int i = UndoItem.Count - 1;
+            UndoItem.List[i].RejectChanges();
+            UndoItem.List[i].RowError = string.Empty;
+            UndoItem.List[i].ClearErrors();
+            UndoItem.RemoveAt(i);
 
-		private void UpdateCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			var tab1 = _debitPaytable.GetChanges();
-			var tab2 = _monthPayTable.GetChanges();
-			if (tab1 != null && tab2 != null)
-			{
-				var result = MessageBox.Show("Обновить базу данных?", "Информация.", MessageBoxButton.YesNo, MessageBoxImage.Information);
-				if (result == MessageBoxResult.Yes)
-				{
-					_debitPayGenTableAdapter.Update(_debitPaytable);
-					_monthPayTableAdapter.Update(_monthPayTable);
-					AcceptChanges();
+        }
 
-					_isDirty = true;
-				}
-			}
-		}
+        private void UndoAllCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            _dataSet.DebitPayGen.RejectChanges();//todo переделать
+            _dataSet.MonthPay.RejectChanges();//todo переделать
+            UndoItem.Clear();
+        }
 
-		private void FillDataCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			Cursor = Cursors.Wait;
-			try
-			{
-				FillData();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.Message);
-			}
-			Cursor = null;
-		}
+        private void UpdateCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            var tab1 = _dataSet.DebitPayGen.GetChanges();
+            var tab2 = _dataSet.MonthPay.GetChanges();
+            if (tab1 != null && tab2 != null)
+            {
+                var result = MessageBox.Show("Обновить базу данных?", "Информация.", MessageBoxButton.YesNo, MessageBoxImage.Information);
+                if (result == MessageBoxResult.Yes)
+                {
+                    _debitPayGenTableAdapter.Update(_dataSet.DebitPayGen);
+                    _monthPayTableAdapter.Update(_dataSet.MonthPay);
+                    AcceptChanges();
 
-		#region Загрузка новых данных в базу
+                    _isDirty = true;
+                }
+            }
+        }
 
-		private void DownloadCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			LabelInfo.Content = string.Empty;
-			var dialog = new OpenFileDialog
-				{
-					Title = "Выбор файлов",
-					Multiselect = false,
-					InitialDirectory = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль"
-				};
-			var result = dialog.ShowDialog();
-			if (result == true)
-			{
-				_argument.FilePath = dialog.FileName;
-				LabelInfo.Content = dialog.SafeFileName;
-				AddNewData();
-			}
-		}
+        private void FillDataCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            Cursor = Cursors.Wait;
+            try
+            {
+                int count = _dataSet.DebitPayGen.Rows.Count;
+                if (count == 0)
+                    FillData();
+                else
+                    throw new Exception("База данных уже загружена!");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            Cursor = null;
+        }
 
-		private void AddNewData()
-		{
-			if (_isDirty == false)
-			{
-				MessageBox.Show("Нажмите на кнопку сохранить, перед внесением новых данных в таблицу");
-				return;
-			}
-			if (_argument.FilePath.EndsWith(".xls") || _argument.FilePath.EndsWith(".xlsx"))
-			{
-				Cursor = Cursors.Wait;
-				try
-				{
+        #region Загрузка новых данных в базу
 
-					ValidateFromLoad(); //Проверка: загружен ли dataset, если нет, то загружаем
-					ValidFromCanges(); //Проверка: есть ли измененные строки в dataset, если да, то сохраняем и обновляем базу данных
+        private void DownloadCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            LabelInfo.Content = string.Empty;
+            var dialog = new OpenFileDialog
+            {
+                Title = "Выбор файлов",
+                Multiselect = false,
+                InitialDirectory = @"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Контроль"
+            };
+            var result = dialog.ShowDialog();
+            if (result == true)
+            {
+                _argument.FilePath = dialog.FileName;
+                LabelInfo.Content = dialog.SafeFileName;
+                AddNewData();
+            }
+        }
 
-					var payes = new FillTablesPayes1(_argument, _debitPaytable, _monthPayTable);
-					payes.UpdateSqlTableDebitPayGen();
+        private void AddNewData()
+        {
+            if (_isDirty == false)
+            {
+                MessageBox.Show("Нажмите на кнопку сохранить, перед внесением новых данных в таблицу");
+                return;
+            }
+            if (_argument.FilePath.EndsWith(".xls") || _argument.FilePath.EndsWith(".xlsx"))
+            {
+                Cursor = Cursors.Wait;
+                try
+                {
 
-					_asDataView.RowStateFilter = DataViewRowState.ModifiedCurrent;
-					int countModifRows = _asDataView.Count;
-					_asDataView.RowStateFilter = DataViewRowState.Added;
-					int countAddedRows = _asDataView.Count;
+                    ValidateFromLoad(); //Проверка: загружен ли dataset, если нет, то загружаем
+                    ValidFromCanges(); //Проверка: есть ли измененные строки в dataset, если да, то сохраняем и обновляем базу данных
 
-					if (countAddedRows + countModifRows == 0)
-					{
-						_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
-						MessageBox.Show("Новые и измененные данные отсутствуют");
-					}
-					else
-					{
-						MessageBox.Show("Добавлены и изменены следующие данные");
-						_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
-						_asDataView.Sort = string.Format("{0} DESC", _debitPaytable.Date_DecisColumn.ColumnName);
-						ItemAddAndModif.IsChecked = true;
-						NotReadonly();
-						_viewDpGn.View.MoveCurrentToFirst();
-						_viewMp.View.MoveCurrentToFirst();
-					}
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(ex.Message);
-				}
-			}
-			else
-			{
-				MessageBox.Show("Неверное расширение файла: " + LabelInfo.Content);
-			}
-			Cursor = null;
-		}
+                    var payes = new FillTablesPayes1(_argument, _dataSet.DebitPayGen, _dataSet.MonthPay);
+                    payes.UpdateSqlTableDebitPayGen();
 
-		private void ValidFromCanges()
-		{
-			if (_dataSet.HasChanges())
-			{
-				DataSet dsCnang = _dataSet.GetChanges();
-				if (dsCnang.Tables[_debitPaytable.TableName].Rows.Count > 0)
-				{
-					DataRow[] dataRows = dsCnang.Tables[_debitPaytable.TableName].GetErrors();
-					foreach (DataRow dataRow in dataRows)
-					{
-						dataRow.ClearErrors();
-						dataRow.RowError = string.Empty;
-					}
-					_debitPayGenTableAdapter.Update(_dataSet);
-				}
-				if (dsCnang.Tables[_monthPayTable.TableName].Rows.Count > 0)
-				{
-					DataRow[] dataRows = dsCnang.Tables[_monthPayTable.TableName].GetErrors();
-					foreach (DataRow dataRow in dataRows)
-					{
-						dataRow.ClearErrors();
-						dataRow.RowError = string.Empty;
-					}
-					_monthPayTableAdapter.Update(_dataSet);
-				}
-				AcceptChanges();
-			}
-		}
+                    _asDataView.RowStateFilter = DataViewRowState.ModifiedCurrent;
+                    int countModifRows = _asDataView.Count;
+                    _asDataView.RowStateFilter = DataViewRowState.Added;
+                    int countAddedRows = _asDataView.Count;
 
-		private void ValidateFromLoad()
-		{
-			if (_debitPaytable.Rows.Count == 0) //если не загружены таблицы загружаем
-			{
-				_debitPayGenTableAdapter.Fill(_debitPaytable);
-				_monthPayTableAdapter.Fill(_monthPayTable);
-				AcceptChanges();
-			}
-		}
+                    if (countAddedRows + countModifRows == 0)
+                    {
+                        _asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
+                        MessageBox.Show("Новые и измененные данные отсутствуют");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Добавлены и изменены следующие данные");
+                        _asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
+                        _asDataView.Sort = string.Format("{0} DESC", _dataSet.DebitPayGen.Date_DecisColumn.ColumnName);
+                        ItemAddAndModif.IsChecked = true;
+                        NotReadonly();
+                        _viewDpGn.View.MoveCurrentToFirst();
+                        _viewMp.View.MoveCurrentToFirst();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Неверное расширение файла: " + LabelInfo.Content);
+            }
+            Cursor = null;
+        }
 
-		#endregion
+        private void ValidFromCanges()
+        {
+            string namDeb = _dataSet.DebitPayGen.TableName;
+            string namMont = _dataSet.MonthPay.TableName;
+            if (_dataSet.HasChanges())
+            {
+                DataSet dsCnang = _dataSet.GetChanges();
+                var rowsMont = dsCnang.Tables[namMont].Rows;
+                if (dsCnang.Tables[namDeb].Rows.Count > 0)
+                {
+                    DataRow[] dataRows = dsCnang.Tables[namDeb].GetErrors();
+                    foreach (DataRow dataRow in dataRows)
+                    {
+                        dataRow.ClearErrors();
+                        dataRow.RowError = string.Empty;
+                    }
+                    _ = _debitPayGenTableAdapter.Update(_dataSet);
+                }
+                if (dsCnang.Tables[namMont].Rows.Count > 0)
+                {
+                    DataRow[] dataRows = dsCnang.Tables[namMont].GetErrors();
+                    foreach (DataRow dataRow in dataRows)
+                    {
+                        dataRow.ClearErrors();
+                        dataRow.RowError = string.Empty;
+                    }
+
+                    _monthPayTableAdapter.Update(_dataSet);
+                }
+                AcceptChanges();
+            }
+        }
+
+        private void ValidateFromLoad()
+        {
+            if (_dataSet.DebitPayGen.Rows.Count == 0) //если не загружены таблицы загружаем
+            {
+                _debitPayGenTableAdapter.Fill(_dataSet.DebitPayGen);
+                _monthPayTableAdapter.Fill(_dataSet.MonthPay);
+                AcceptChanges();
+            }
+        }
+
+        #endregion
+
+        private void CloseCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            CloseWindow();
+        }
+
+        #endregion
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (_asDataView == null)
+                return;
+
+            var item = (MenuItem)sender;
+            string name = item.Name;
+            switch (name)
+            {
+                case "ItemAll":
+                    _asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent | DataViewRowState.Unchanged;
+                    break;
+                case "ItemAddAndModif":
+                    _asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
+                    break;
+                case "ItemAdd":
+                    _asDataView.RowStateFilter = DataViewRowState.Added;
+                    break;
+                case "ItemDel":
+                    _asDataView.RowStateFilter = DataViewRowState.Deleted;
+                    break;
+                case "ItemCur":
+                    _asDataView.RowStateFilter = DataViewRowState.ModifiedCurrent;
+                    break;
+                case "ItemOrig":
+                    _asDataView.RowStateFilter = DataViewRowState.ModifiedOriginal;
+                    break;
+                case "ItemUnchang":
+                    _asDataView.RowStateFilter = DataViewRowState.Unchanged;
+                    break;
+            }
+        }
+
+        private void Item_OnChecked(object sender, RoutedEventArgs e)
+        {
+            var list = new List<MenuItem>
+                {
+                    ItemAll,
+                    ItemAddAndModif,
+                    ItemAdd,
+                    ItemDel,
+                    ItemCur,
+                    ItemOrig,
+                    ItemUnchang
+                };
+
+            var item = (MenuItem)sender;
+            foreach (MenuItem menuItem in list)
+            {
+                menuItem.IsChecked = ReferenceEquals(item, menuItem);
+            }
+        }
+
+        #region //todo удалить за ненадобностью
+
+        ////Фильтр по коду ГНИ
+        //private void TextBoxGni_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    _view.CustomFilter = ((TextBox) sender).Text == string.Empty
+        //                             ? string.Empty
+        //                             : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
+        //                                             ((TextBox) sender).Text);
+        //}
+
+        ////Фильтр по коду предприятия
+        //private void TextBoxKod_OnTextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    //_view.CustomFilter = ((TextBox) sender).Text.Length < 8
+        //    //                         ? string.Empty
+        //    //                         : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
+        //    //                                         ((TextBox) sender).Text);
+
+        //}
 
 
-		private void CleanCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
-		{
-			int rowCahng = _debitPaytable.GetChanges().Rows.Count;
-			if (rowCahng > 0)
-			{
-				var result = MessageBox.Show("В таблице имеются измененные данные. \rОбновить базу данных перед очисткой экрана?",
-				                "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-				if (result == MessageBoxResult.Yes)
-					_debitPayGenTableAdapter.Update(_dataSet);
+        #endregion
 
-			}
-			DataRelationCollection relationCollection = _debitPaytable.ChildRelations;
-			_dataSet.Clear();
-		}
+        private void TextBoxKod_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                e.Handled = true;
+            if (e.Key == Key.Enter)
+            {
+                _view.CustomFilter = ((TextBox)sender).Text.Length < 8
+                         ? string.Empty
+                         : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_PayerColumn.ColumnName,
+                                         ((TextBox)sender).Text);
+            }
+        }
 
+        private void TextBoxGni_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            short val;
+            if (!Int16.TryParse(e.Text, out val))
+                e.Handled = true;
+        }
 
-		#endregion
+        private void TextBoxGni_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                e.Handled = true;
+            if (e.Key == Key.Enter)
+            {
+                _view.CustomFilter = ((TextBox)sender).Text == string.Empty
+                                         ? string.Empty
+                                         : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
+                                                         ((TextBox)sender).Text);
+            }
 
-		private void MenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			if (_asDataView == null)
-				return;
+        }
 
-			var item = (MenuItem) sender;
-			string name = item.Name;
-			switch (name)
-			{
-				case "ItemAll":
-					_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent | DataViewRowState.Unchanged;
-					break;
-				case "ItemAddAndModif":
-					_asDataView.RowStateFilter = DataViewRowState.Added | DataViewRowState.ModifiedCurrent;
-					break;
-				case "ItemAdd":
-					_asDataView.RowStateFilter = DataViewRowState.Added;
-					break;
-				case "ItemDel":
-					_asDataView.RowStateFilter = DataViewRowState.Deleted;
-					break;
-				case "ItemCur":
-					_asDataView.RowStateFilter = DataViewRowState.ModifiedCurrent;
-					break;
-				case "ItemOrig":
-					_asDataView.RowStateFilter = DataViewRowState.ModifiedOriginal;
-					break;
-				case "ItemUnchang":
-					_asDataView.RowStateFilter = DataViewRowState.Unchanged;
-					break;
-			}
-		}
+        private void TextBoxName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            _view.CustomFilter = ((TextBox)sender).Text.Length < 3
+                                        ? string.Empty
+                                        : string.Format("{0} LIKE \'%{1}%\'", _dataSet.DebitPayGen.NameColumn.ColumnName,
+                                                        ((TextBox)sender).Text);
+        }
 
-		private void Item_OnChecked(object sender, RoutedEventArgs e)
-		{
-			var list = new List<MenuItem>
-				{
-					ItemAll,
-					ItemAddAndModif,
-					ItemAdd,
-					ItemDel,
-					ItemCur,
-					ItemOrig,
-					ItemUnchang
-				};
+        private void UndoSelectedRowsMenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (DebitPayGenDataGrid.SelectedItem != null)
+            {
+                IList selectedItems = DebitPayGenDataGrid.SelectedItems;
+                List<DataRow> rows = (from object selectedItem in selectedItems select ((DataRowView)selectedItem).Row).ToList();
+                foreach (var row in rows)
+                {
+                    row.RejectChanges();
+                    row.ClearErrors();
+                    row.RowError = "";
+                    UndoItem.Remote(row);
+                }
+            }
+        }
 
-			var item = (MenuItem)sender;
-			foreach (MenuItem menuItem in list)
-			{
-				if (ReferenceEquals(item, menuItem))
-					menuItem.IsChecked = true;
-				else
-					menuItem.IsChecked = false;
-			}
-		}
+        private void MenuItemReport_OnClick(object sender, RoutedEventArgs e)
+        {
+            string nameMenu = ((MenuItem)sender).Name;
+            int numFact = GetNumFact(nameMenu);//индекс фабрики
+            LabelInfo.Content = "";
+            Cursor = Cursors.Wait;
+            var bw = new BackgroundWorker();
+            bw.DoWork += BwOnDoWork;
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.RunWorkerAsync(numFact);
+        }
 
-		//Фильтр по коду ГНИ
-		private void TextBoxGni_OnTextChanged(object sender, TextChangedEventArgs e)
-		{
-			_view.CustomFilter = ((TextBox)sender).Text == string.Empty
-									 ? string.Empty
-									 : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
-													 ((TextBox)sender).Text);
-		}
+        private int GetNumFact(string nameMenu)
+        {
+            int numFact = 0;
+            switch (nameMenu)
+            {
+                case "MenuItemConsolid"://сводная таблица на определенную дату
+                    numFact = 0;
+                    break;
+                case "MenuItemForecast1"://прогноз поступлений на 1 число в разрезе плательщиков и платежей
+                    SetPeiod();
+                    numFact = 1;
+                    break;
+                case "MenuItemForecast20"://прогноз поступлений на 20 число в разрезе платежей
+                    SetPeiod();
+                    numFact = 2;
+                    break;
+            }
+            return numFact;
+        }
 
-		//Фильтр по коду предприятия
-		private void TextBoxKod_OnTextChanged(object sender, TextChangedEventArgs e)
-		{
-			//_view.CustomFilter = ((TextBox) sender).Text.Length < 8
-			//                         ? string.Empty
-			//                         : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
-			//                                         ((TextBox) sender).Text);
+        private void SetPeiod()
+        {
+            var winInform = new Window1();
+            var showDialog = winInform.ShowDialog();
+            if (showDialog != null && (bool)showDialog)
+            {
+                if (winInform.DatePicker1.SelectedDate != null)
+                    _argument.DateFirst = (DateTime)winInform.DatePicker1.SelectedDate;
+                if (winInform.DatePicker2.SelectedDate != null)
+                    _argument.DateEnd = (DateTime)winInform.DatePicker2.SelectedDate;
 
-		}
+                var dict = new DictMonth();
+                MonthName namesMonth;
+                dict.TryGetValue(_argument.DateEnd.Month, out namesMonth);
+                _argument.Monthname = namesMonth;
+            }
+        }
 
-		private void TextBoxKod_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Space)
-				e.Handled = true;
-			if (e.Key == Key.Enter)
-			{
-				_view.CustomFilter = ((TextBox)sender).Text.Length < 8
-						 ? string.Empty
-						 : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
-										 ((TextBox)sender).Text);
-			}
-		}
+        private void BwOnDoWork(object sender, DoWorkEventArgs e)
+        {
+            var numFactory = (int)e.Argument;
+            var factoriesList = new List<Lazy<AbstractFactory>>
+                {
+                    new Lazy<AbstractFactory>(() => new FactoryConsolid()),//0
+					new Lazy<AbstractFactory>(() => new FactoryForecast1()),//1
+					new Lazy<AbstractFactory>(() => new FactoryForecast20()),//2
+	            };
+            AbstractFactory abstractFactory = factoriesList[numFactory].Value;
+            var client = new Client(abstractFactory);
+            client.Run(_argument);
+        }
 
-		private void TextBoxGni_PreviewTextInput(object sender, TextCompositionEventArgs e)
-		{
-			short val;
-			if (!Int16.TryParse(e.Text, out val))
-				e.Handled = true;
-		}
+        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show(e.Error == null ? "Файл создан" : e.Error.Message);
+            Cursor = null;
+        }
 
-		private void TextBoxGni_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Space)
-				e.Handled = true;
-			if (e.Key == Key.Enter)
-			{
-				_view.CustomFilter = ((TextBox)sender).Text == string.Empty
-										 ? string.Empty
-										 : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
-														 ((TextBox)sender).Text);
-			}
+        private void CloseWindow()
+        {
+            if (_dataSet.HasChanges())
+                MessageBox.Show("Сохраните имеющиеся изменения данных перед закрытием программы!", "Предупреждение",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+            else
+                Close();
+        }
 
-		}
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (_dataSet.HasChanges())
+            {
+                e.Cancel = true;
+                MessageBox.Show("Сохраните имеющиеся изменения данных перед закрытием программы!", "Предупреждение",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
 
-		private void TextBoxName_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			_view.CustomFilter = ((TextBox)sender).Text.Length < 3
-										? string.Empty
-										: string.Format("{0} LIKE \'%{1}%\'", _debitPaytable.NameColumn.ColumnName,
-														((TextBox)sender).Text);
-		}
-
-		private void UndoSelectedRowsMenuItem_OnClick(object sender, RoutedEventArgs e)
-		{
-			if (DebitPayGenDataGrid.SelectedItem != null)
-			{
-				IList selectedItems = DebitPayGenDataGrid.SelectedItems;
-				List<DataRow> rows = (from object selectedItem in selectedItems select ((DataRowView)selectedItem).Row).ToList();
-				foreach (var row in rows)
-				{
-					row.RejectChanges();
-					row.ClearErrors();
-					row.RowError = "";
-					UndoItem.Remote(row);
-				}
-			}
-		}
-	}
+        }
+    }
 }
