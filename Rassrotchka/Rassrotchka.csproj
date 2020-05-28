@@ -61,13 +61,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BaseElementName.cs" />
-    <Compile Include="Client.cs" />
+    <Compile Include="FilesCommon\BaseElementName.cs" />
+    <Compile Include="FilesCommon\Client.cs" />
     <Compile Include="Commands\DataCommands.cs" />
-    <Compile Include="DictMonth.cs" />
-    <Compile Include="FactoryConsolid.cs" />
-    <Compile Include="FactoryForecast1.cs" />
-    <Compile Include="FactoryForecast20.cs" />
+    <Compile Include="FilesCommon\DictMonth.cs" />
+    <Compile Include="FilesCommon\FactoryConsolid.cs" />
+    <Compile Include="FilesCommon\FactoryForecast1.cs" />
+    <Compile Include="FilesCommon\FactoryForecast20.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -75,11 +75,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormattingRangeGemBox.cs" />
+    <Compile Include="FilesCommon\FormattingRangeGemBox.cs" />
     <Compile Include="NedoimkaDataSet.cs">
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="UndoMenuItem.cs" />
+    <Compile Include="FilesCommon\UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
     <Compile Include="WinSetPeriod.xaml.cs">
       <DependentUpon>WinSetPeriod.xaml</DependentUpon>

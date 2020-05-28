@@ -42,7 +42,7 @@ namespace Rassrotchka
             _monthPayTableAdapter = new MonthPayTableAdapter();
         }
 
-        void _debitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
+        private void DebitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
         {
             if (e.Row.RowState != DataRowState.Unchanged && e.Row.RowState != DataRowState.Detached)
             {
@@ -55,8 +55,8 @@ namespace Rassrotchka
             _argument = new ArgumentDebitPay();
 
             _dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
-            _dataSet.DebitPayGen.RowChanged += _debitPaytable_RowChanged;
-            _dataSet.MonthPay.RowChanged += _debitPaytable_RowChanged;
+            _dataSet.DebitPayGen.RowChanged += DebitPaytable_RowChanged;
+            _dataSet.MonthPay.RowChanged += DebitPaytable_RowChanged;
 
             _viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
             _viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
@@ -97,7 +97,7 @@ namespace Rassrotchka
 
         #region //обработка события перетаскивания файла
 
-        private void grid_PreviewDragEnter(object sender, DragEventArgs e)
+        private void Grid_PreviewDragEnter(object sender, DragEventArgs e)
         {
             e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
         }
@@ -287,7 +287,6 @@ namespace Rassrotchka
             if (_dataSet.HasChanges())
             {
                 DataSet dsCnang = _dataSet.GetChanges();
-                var rowsMont = dsCnang.Tables[namMont].Rows;
                 if (dsCnang.Tables[namDeb].Rows.Count > 0)
                 {
                     DataRow[] dataRows = dsCnang.Tables[namDeb].GetErrors();
@@ -296,7 +295,7 @@ namespace Rassrotchka
                         dataRow.ClearErrors();
                         dataRow.RowError = string.Empty;
                     }
-                    _ = _debitPayGenTableAdapter.Update(_dataSet);
+                    _debitPayGenTableAdapter.Update(_dataSet);
                 }
                 if (dsCnang.Tables[namMont].Rows.Count > 0)
                 {
@@ -424,8 +423,7 @@ namespace Rassrotchka
 
         private void TextBoxGni_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            short val;
-            if (!Int16.TryParse(e.Text, out val))
+            if (!Int16.TryParse(e.Text, out _))
                 e.Handled = true;
         }
 
@@ -475,7 +473,7 @@ namespace Rassrotchka
             Cursor = Cursors.Wait;
             var bw = new BackgroundWorker();
             bw.DoWork += BwOnDoWork;
-            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
             bw.RunWorkerAsync(numFact);
         }
 
@@ -511,8 +509,7 @@ namespace Rassrotchka
                     _argument.DateEnd = (DateTime)winInform.DatePicker2.SelectedDate;
 
                 var dict = new DictMonth();
-                MonthName namesMonth;
-                dict.TryGetValue(_argument.DateEnd.Month, out namesMonth);
+                dict.TryGetValue(_argument.DateEnd.Month, out MonthName namesMonth);
                 _argument.Monthname = namesMonth;
             }
         }
@@ -531,7 +528,7 @@ namespace Rassrotchka
             client.Run(_argument);
         }
 
-        void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             MessageBox.Show(e.Error == null ? "Файл создан" : e.Error.Message);
             Cursor = null;

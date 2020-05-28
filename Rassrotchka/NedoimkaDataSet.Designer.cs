@@ -440,6 +440,8 @@ namespace Rassrotchka {
             
             private global::System.Data.DataColumn columnTimeStamp;
             
+            private global::System.Data.DataColumn columnClose;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public DebitPayGenDataTable() {
@@ -611,6 +613,14 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CloseColumn {
+                get {
+                    return this.columnClose;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -663,7 +673,8 @@ namespace Rassrotchka {
                         string Type_Decis, 
                         System.DateTime Date_prolong, 
                         string Note, 
-                        byte[] TimeStamp) {
+                        byte[] TimeStamp, 
+                        bool Close) {
                 DebitPayGenRow rowDebitPayGenRow = ((DebitPayGenRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Id_dpg,
@@ -682,7 +693,8 @@ namespace Rassrotchka {
                         Type_Decis,
                         Date_prolong,
                         Note,
-                        TimeStamp};
+                        TimeStamp,
+                        Close};
                 rowDebitPayGenRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDebitPayGenRow);
                 return rowDebitPayGenRow;
@@ -729,6 +741,7 @@ namespace Rassrotchka {
                 this.columnDate_prolong = base.Columns["Date_prolong"];
                 this.columnNote = base.Columns["Note"];
                 this.columnTimeStamp = base.Columns["TimeStamp"];
+                this.columnClose = base.Columns["Close"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -768,6 +781,8 @@ namespace Rassrotchka {
                 base.Columns.Add(this.columnNote);
                 this.columnTimeStamp = new global::System.Data.DataColumn("TimeStamp", typeof(byte[]), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTimeStamp);
+                this.columnClose = new global::System.Data.DataColumn("Close", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnClose);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
                                 this.columnId_dpg}, true));
                 this.columnId_dpg.AllowDBNull = false;
@@ -793,6 +808,7 @@ namespace Rassrotchka {
                 this.columnNote.Caption = "Примечание";
                 this.columnNote.MaxLength = 255;
                 this.columnTimeStamp.ReadOnly = true;
+                this.columnClose.DefaultValue = ((bool)(false));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2317,6 +2333,22 @@ namespace Rassrotchka {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Close {
+                get {
+                    try {
+                        return ((bool)(this[this.tableDebitPayGen.CloseColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Close\' в таблице \'DebitPayGen\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableDebitPayGen.CloseColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public bool IsKod_GNINull() {
                 return this.IsNull(this.tableDebitPayGen.Kod_GNIColumn);
             }
@@ -2505,6 +2537,18 @@ namespace Rassrotchka {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public void SetTimeStampNull() {
                 this[this.tableDebitPayGen.TimeStampColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCloseNull() {
+                return this.IsNull(this.tableDebitPayGen.CloseColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCloseNull() {
+                this[this.tableDebitPayGen.CloseColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3525,6 +3569,7 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("Note", "Note");
             tableMapping.ColumnMappings.Add("Count_Mount", "Count_Mount");
             tableMapping.ColumnMappings.Add("TimeStamp", "TimeStamp");
+            tableMapping.ColumnMappings.Add("Close", "Close");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
@@ -3536,8 +3581,8 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TimeStamp", global::System.Data.SqlDbType.Timestamp, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TimeStamp", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [DebitPayGen] ([Id_dpg], [Kod_GNI], [Name], [Kod_Payer], [Date_Decis], [Numb_Decis], [GniOrGKNS], [Summa_Decis], [Kod_Paying], [Date_first], [Date_end], [Count_Mount], [Summa_Payer], [Type_Decis], [Date_prolong], [Note]) VALUES (@Id_dpg, @Kod_GNI, @Name, @Kod_Payer, @Date_Decis, @Numb_Decis, @GniOrGKNS, @Summa_Decis, @Kod_Paying, @Date_first, @Date_end, @Count_Mount, @Summa_Payer, @Type_Decis, @Date_prolong, @Note);
-SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, TimeStamp FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [DebitPayGen] ([Id_dpg], [Kod_GNI], [Name], [Kod_Payer], [Date_Decis], [Numb_Decis], [GniOrGKNS], [Summa_Decis], [Kod_Paying], [Date_first], [Date_end], [Count_Mount], [Summa_Payer], [Type_Decis], [Date_prolong], [Note], [Close]) VALUES (@Id_dpg, @Kod_GNI, @Name, @Kod_Payer, @Date_Decis, @Numb_Decis, @GniOrGKNS, @Summa_Decis, @Kod_Paying, @Date_first, @Date_end, @Count_Mount, @Summa_Payer, @Type_Decis, @Date_prolong, @Note, @Close);
+SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, TimeStamp, [Close] FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_GNI", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3555,10 +3600,11 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_prolong", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Close", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [DebitPayGen] SET [Id_dpg] = @Id_dpg, [Kod_GNI] = @Kod_GNI, [Name] = @Name, [Kod_Payer] = @Kod_Payer, [Date_Decis] = @Date_Decis, [Numb_Decis] = @Numb_Decis, [GniOrGKNS] = @GniOrGKNS, [Summa_Decis] = @Summa_Decis, [Kod_Paying] = @Kod_Paying, [Date_first] = @Date_first, [Date_end] = @Date_end, [Count_Mount] = @Count_Mount, [Summa_Payer] = @Summa_Payer, [Type_Decis] = @Type_Decis, [Date_prolong] = @Date_prolong, [Note] = @Note WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_TimeStamp = 1 AND [TimeStamp] IS NULL) OR ([TimeStamp] = @Original_TimeStamp)));
-SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, TimeStamp FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [DebitPayGen] SET [Id_dpg] = @Id_dpg, [Kod_GNI] = @Kod_GNI, [Name] = @Name, [Kod_Payer] = @Kod_Payer, [Date_Decis] = @Date_Decis, [Numb_Decis] = @Numb_Decis, [GniOrGKNS] = @GniOrGKNS, [Summa_Decis] = @Summa_Decis, [Kod_Paying] = @Kod_Paying, [Date_first] = @Date_first, [Date_end] = @Date_end, [Count_Mount] = @Count_Mount, [Summa_Payer] = @Summa_Payer, [Type_Decis] = @Type_Decis, [Date_prolong] = @Date_prolong, [Note] = @Note, [Close] = @Close WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_TimeStamp = 1 AND [TimeStamp] IS NULL) OR ([TimeStamp] = @Original_TimeStamp)));
+SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, TimeStamp, [Close] FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_GNI", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3576,6 +3622,7 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Date_prolong", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Close", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_TimeStamp", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TimeStamp", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_TimeStamp", global::System.Data.SqlDbType.Timestamp, 0, global::System.Data.ParameterDirection.Input, 0, 0, "TimeStamp", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -3594,9 +3641,9 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = @"SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, 
-                 Type_Decis, Date_prolong, Note, TimeStamp
-FROM    DebitPayGen
+            this._commandCollection[0].CommandText = @"SELECT   Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, 
+                Date_prolong, Note, TimeStamp, [Close]
+FROM      DebitPayGen
 ORDER BY Date_Decis DESC";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
@@ -3704,7 +3751,8 @@ ORDER BY Date_Decis DESC";
                     global::System.Nullable<decimal> Summa_Payer, 
                     string Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Date_prolong, 
-                    string Note) {
+                    string Note, 
+                    global::System.Nullable<bool> Close) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((long)(Id_dpg));
             if ((Kod_GNI.HasValue == true)) {
                 this.Adapter.InsertCommand.Parameters[1].Value = ((short)(Kod_GNI.Value));
@@ -3796,6 +3844,12 @@ ORDER BY Date_Decis DESC";
             else {
                 this.Adapter.InsertCommand.Parameters[15].Value = ((string)(Note));
             }
+            if ((Close.HasValue == true)) {
+                this.Adapter.InsertCommand.Parameters[16].Value = ((bool)(Close.Value));
+            }
+            else {
+                this.Adapter.InsertCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {
@@ -3833,6 +3887,7 @@ ORDER BY Date_Decis DESC";
                     string Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Date_prolong, 
                     string Note, 
+                    global::System.Nullable<bool> Close, 
                     long Original_Id_dpg, 
                     byte[] Original_TimeStamp) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((long)(Id_dpg));
@@ -3926,14 +3981,20 @@ ORDER BY Date_Decis DESC";
             else {
                 this.Adapter.UpdateCommand.Parameters[15].Value = ((string)(Note));
             }
-            this.Adapter.UpdateCommand.Parameters[16].Value = ((long)(Original_Id_dpg));
-            if ((Original_TimeStamp == null)) {
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[18].Value = global::System.DBNull.Value;
+            if ((Close.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[16].Value = ((bool)(Close.Value));
             }
             else {
-                this.Adapter.UpdateCommand.Parameters[17].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[18].Value = ((byte[])(Original_TimeStamp));
+                this.Adapter.UpdateCommand.Parameters[16].Value = global::System.DBNull.Value;
+            }
+            this.Adapter.UpdateCommand.Parameters[17].Value = ((long)(Original_Id_dpg));
+            if ((Original_TimeStamp == null)) {
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(1));
+                this.Adapter.UpdateCommand.Parameters[19].Value = global::System.DBNull.Value;
+            }
+            else {
+                this.Adapter.UpdateCommand.Parameters[18].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[19].Value = ((byte[])(Original_TimeStamp));
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -3971,9 +4032,10 @@ ORDER BY Date_Decis DESC";
                     string Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Date_prolong, 
                     string Note, 
+                    global::System.Nullable<bool> Close, 
                     long Original_Id_dpg, 
                     byte[] Original_TimeStamp) {
-            return this.Update(Original_Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, Original_Id_dpg, Original_TimeStamp);
+            return this.Update(Original_Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, Close, Original_Id_dpg, Original_TimeStamp);
         }
     }
     

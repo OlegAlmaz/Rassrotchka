@@ -150,7 +150,7 @@
         
     </Window.Resources>
     <Grid DataContext="{StaticResource DebitPayGenViewSource}" PreviewDrop="Grid_PreviewDrop"
-          PreviewDragEnter="grid_PreviewDragEnter" AllowDrop="True" Background="{StaticResource BackgroundGrid}">
+          PreviewDragEnter="Grid_PreviewDragEnter" AllowDrop="True" Background="{StaticResource BackgroundGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -347,7 +347,6 @@
                             <TextBlock Text="{Binding Path=Date_prolong, Mode=TwoWay, ValidatesOnDataErrors=True, StringFormat=\{0:d\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <DatePicker
@@ -355,6 +354,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
+                <DataGridCheckBoxColumn Header="Закр."  Width="SizeToCells" 
+                                        Binding="{Binding Path=Close, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <DataGridTextColumn Header="Примечание"
                                     ElementStyle="{StaticResource CellWrapStyle}"
                                     Binding="{Binding Path=Note, ValidatesOnDataErrors=True}"
