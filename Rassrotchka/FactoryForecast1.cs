@@ -1,8 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using Rassrotchka.FilesCommon;
-using Rassrotchka.Properties;
 
 namespace Rassrotchka
 {
@@ -25,34 +22,36 @@ namespace Rassrotchka
 
 	public class TableForecast1 : AbstractTable
 	{
-		public override DataSet SqlToDataSet(ArgumentDebitPay args)
+
+		protected override SqlDataAdapter SqlDataAdapter(SqlConnection sqlConnection)
 		{
-			var sqlConnection = new SqlConnection(Settings.Default.NedoimkaConnectionString);
-			using (var dataSet = new DataSet())
-			{
-				//заполнение сводной таблицы
-				var sqlCommand = new SqlCommand(args.ProcedureName, sqlConnection)
+			var adapter = new SqlDataAdapter(BaseElementName.ProcedPredicGenPay, sqlConnection)
 				{
-					CommandType = CommandType.StoredProcedure
+					SelectCommand = {CommandType = CommandType.StoredProcedure}
 				};
-				var sqlDataAdapter = new SqlDataAdapter(sqlCommand);
-				sqlDataAdapter.SelectCommand.Parameters.Add("@DateFirst", SqlDbType.Date);
-				sqlDataAdapter.SelectCommand.Parameters[0].SqlValue = args.DateFirst;
-				sqlDataAdapter.SelectCommand.Parameters.Add("@DateEnd", SqlDbType.Date);
-				sqlDataAdapter.SelectCommand.Parameters[0].SqlValue = args.DateEnd;
-				sqlDataAdapter.Fill(dataSet);
-				return dataSet;
-			}
+			adapter.SelectCommand.Parameters.Add("@DateFirst", SqlDbType.DateTime);
+			adapter.SelectCommand.Parameters[0].SqlValue = Args.DateFirst;
+			adapter.SelectCommand.Parameters.Add("@DateEnd", SqlDbType.DateTime);
+			adapter.SelectCommand.Parameters[1].SqlValue = Args.DateEnd;
+			return adapter;
 		}
+
 	}
 
 	public class FileForecast1 : AbstractFile
 	{
-		public override void Interact(object argument, AbstractTable tb)
+		public override void Interact(AbstractTable tb)
 		{
-			throw new NotImplementedException();
+			FilePath = "FilesTemplates\\Рассрочка_XX.xlsx";
+			NewFile = string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Рассрочка_{0}.xlsx",
+									tb.Args.Monthname.Imenit);
+			HeaderFile.NameCellHeader = "A1";
+			HeaderFile.Header = string.Format(@"Прогноз поступлений по рассроченным (отсроченным) суммам в {0} 2020 года",
+										tb.Args.Monthname.Roditel);
+			TableCellsNames.HeaderCollumns = "A2";
+			TableCellsNames.CellData = "A3";
+
+			DateToFile(tb);
 		}
 	}
-
-
 }
