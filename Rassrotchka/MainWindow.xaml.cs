@@ -30,6 +30,10 @@ namespace Rassrotchka
         private DataView _asDataView;
 
         public static UndoMenuItem<DataRow> UndoItem { get; private set; }
+
+        /// <summary>
+        /// элемент привязки BindingListCollectionView
+        /// </summary>
         private BindingListCollectionView _view;
 
         public MainWindow()
@@ -552,6 +556,16 @@ namespace Rassrotchka
                                 MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+
+            string contRb = ((RadioButton)sender).Content.ToString();
+            if (contRb == "Действующие")
+            {
+                _view.CustomFilter = "WHERE Close = False";
+            }
         }
     }
 }
