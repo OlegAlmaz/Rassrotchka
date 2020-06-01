@@ -561,11 +561,6 @@ namespace Rassrotchka
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
 
-            string contRb = ((RadioButton)sender).Content.ToString();
-            if (contRb == "Действующие")
-            {
-                _view.CustomFilter = "WHERE Close = False";
-            }
         }
     }
 }
