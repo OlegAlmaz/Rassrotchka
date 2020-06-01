@@ -388,30 +388,6 @@ namespace Rassrotchka
             }
         }
 
-        #region //todo удалить за ненадобностью
-
-        ////Фильтр по коду ГНИ
-        //private void TextBoxGni_OnTextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    _view.CustomFilter = ((TextBox) sender).Text == string.Empty
-        //                             ? string.Empty
-        //                             : string.Format("{0} = {1}", _debitPaytable.Kod_GNIColumn.ColumnName,
-        //                                             ((TextBox) sender).Text);
-        //}
-
-        ////Фильтр по коду предприятия
-        //private void TextBoxKod_OnTextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    //_view.CustomFilter = ((TextBox) sender).Text.Length < 8
-        //    //                         ? string.Empty
-        //    //                         : string.Format("{0} = {1}", _debitPaytable.Kod_PayerColumn.ColumnName,
-        //    //                                         ((TextBox) sender).Text);
-
-        //}
-
-
-        #endregion
-
         private void TextBoxKod_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)
