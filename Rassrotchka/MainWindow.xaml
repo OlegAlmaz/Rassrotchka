@@ -36,14 +36,14 @@
             <GradientStop Color="Black" Offset="0" />
             <GradientStop Color="White" Offset="1" />
         </LinearGradientBrush>
-       
+
         <my:NedoimkaDataSet x:Key="NedoimkaDataSet" />
         <CollectionViewSource x:Key="DebitPayGenViewSource"
                               Source="{Binding Path=DebitPayGen, Source={StaticResource NedoimkaDataSet}}" />
         <CollectionViewSource x:Key="DebitPayGenMonthPayViewSource"
                               Source="{Binding Path=FK_MonthPay_DebitPayGen_Id_dpg, 
                                         Source={StaticResource DebitPayGenViewSource}}" />
-        
+
         <Style x:Key="ErrorElementStyle" TargetType="TextBlock">
             <Style.Triggers>
                 <Trigger Property="Validation.HasError" Value="True">
@@ -69,7 +69,7 @@
         </Style>
 
         <Style x:Key="SummaCellStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource RigthCellStyle}">
-            <Setter Property="Text" Value="{Binding StringFormat=\{0:N\}, ValidatesOnDataErrors=True}"/>
+            <Setter Property="Text" Value="{Binding StringFormat=\{0:N\}}"/>
             <Setter Property="Padding" Value="1"></Setter>
         </Style>
 
@@ -89,7 +89,8 @@
             <Setter Property="AutoGenerateColumns" Value="False" />
             <Setter Property="ClipboardCopyMode" Value="IncludeHeader" />
             <Setter Property="Margin" Value="0.5" />
-            <Setter Property="CellStyle" Value="{StaticResource ErrorCellStyle}"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <!--<Setter Property="CellStyle" Value="{StaticResource ErrorCellStyle}"/>-->
             <!--<Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle1}"/>-->
         </Style>
 
@@ -147,7 +148,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
     </Window.Resources>
     <Grid DataContext="{StaticResource DebitPayGenViewSource}" PreviewDrop="Grid_PreviewDrop"
           PreviewDragEnter="Grid_PreviewDragEnter" AllowDrop="True" Background="{StaticResource BackgroundGrid}">
@@ -161,7 +162,7 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        
+
         <Menu Grid.Row="0" Grid.ColumnSpan="2" FontSize="12">
             <MenuItem Header="Файл">
                 <MenuItem Header="Открыть" />
@@ -215,7 +216,7 @@
                           ToolTip="Прогноз поступлений по рассрочкам в разрезе платежей на 20 число"/>
             </MenuItem>
         </Menu>
-        
+
         <ToolBar Grid.Row="1" Grid.ColumnSpan="2">
             <ToolBar.Resources>
                 <Style TargetType="Image">
@@ -246,10 +247,10 @@
                 <Image Source="/Rassrotchka;component/Images/DatabaseProject.ico" />
             </Button>
         </ToolBar>
-        <DataGrid Grid.Row="2" Name="DebitPayGenDataGrid" IsReadOnly="True"
+        <DataGrid Grid.Row="2" Name="DebitPayGenDataGrid"
                   ItemsSource="{Binding}"
                     Style="{StaticResource DataGridStyle1}"
-                    FrozenColumnCount="4" RowHeaderWidth="2">
+                    FrozenColumnCount="4" RowHeaderWidth="2" >
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="MenuItemContextUndo" Header="Отменить выделенные"
@@ -258,58 +259,50 @@
                             ToolTip="Отменить изменения в выделенных строках" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
-            <DataGrid.RowValidationErrorTemplate>
+            <!--<DataGrid.RowValidationErrorTemplate>
                 <ControlTemplate>
                     <Grid Margin="0,-2,0,-2" 
                           ToolTip="{Binding RelativeSource={RelativeSource FindAncestor, 
-                        AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}">
+                            AncestorType={x:Type DataGridRow}}, Path=(Validation.Errors)[0].ErrorContent}">
                         <Ellipse StrokeThickness="0" Fill="Red" 
-        Width="{TemplateBinding FontSize}" 
-        Height="{TemplateBinding FontSize}" />
+                                 Width="{TemplateBinding FontSize}" 
+                                 Height="{TemplateBinding FontSize}" />
                         <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
-        FontWeight="Bold" Foreground="White" 
-        HorizontalAlignment="Center"  />
+                                   FontWeight="Bold" Foreground="White" 
+                                   HorizontalAlignment="Center"  />
                     </Grid>
                 </ControlTemplate>
-            </DataGrid.RowValidationErrorTemplate>
+            </DataGrid.RowValidationErrorTemplate>-->
             <DataGrid.Columns>
-                <!--<DataGridTextColumn Binding="{Binding Path=Id_dpg, ValidatesOnDataErrors=True}" Header="Id"
-                                    Width="SizeToCells"/>-->
-                <DataGridTextColumn Binding="{Binding Path=Kod_GNI, ValidatesOnDataErrors=True}" Header="ГНИ"
+                <DataGridTextColumn Binding="{Binding Id_dpg}" Header="Id" Width="SizeToCells"/>
+                <DataGridTextColumn Binding="{Binding Kod_GNI}" Header="ГНИ"
                                     Width="SizeToCells" />
-                <DataGridTextColumn Binding="{Binding Path=Name, ValidatesOnDataErrors=True}" Header="Плательщик"
-                                    Width="200" />
-                <DataGridTextColumn Binding="{Binding Path=Kod_Payer, ValidatesOnDataErrors=True}"
-                                    Header="Код плател." Width="SizeToCells" />
+                <DataGridTextColumn Binding="{Binding Name}" Header="Плательщик" Width="200" />
+                <DataGridTextColumn Binding="{Binding Kod_Payer}" Header="Код плател." Width="SizeToCells" />
                 <DataGridTemplateColumn Header="Дата решения" Width="SizeToCells"
                          CanUserSort="True" SortMemberPath="Date_Decis">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Date_Decis, Mode=TwoWay, ValidatesOnDataErrors=True, StringFormat=\{0:d\}}"/>
+                            <TextBlock Text="{Binding Path=Date_Decis, StringFormat=\{0:d\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <DatePicker
-                                SelectedDate="{Binding Path=Date_Decis, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true, ValidatesOnDataErrors=True}" />
+                                SelectedDate="{Binding Path=Date_Decis, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn  Header="№ реш." Width="SizeToHeader" 
-                                        Binding="{Binding Path=Numb_Decis, ValidatesOnDataErrors=True}"/>
-                <DataGridTextColumn Binding="{Binding Path=GniOrGKNS, ValidatesOnDataErrors=True}" Header="Орган"
-                                    Width="SizeToHeader"/>
-                <DataGridTextColumn Header="Сумма реш." Width="SizeToCells"
-                    Binding="{Binding Path=Summa_Decis, StringFormat=\{0:N\}, ValidatesOnDataErrors=True}"
-                    ElementStyle="{StaticResource SummaCellStyle}" />
-                <DataGridTextColumn Binding="{Binding Path=Kod_Paying, ValidatesOnDataErrors=True}" Header="Платеж"
-                                    Width="SizeToCells" />
+                <DataGridTextColumn  Header="№ реш." Width="SizeToHeader" Binding="{Binding Numb_Decis}"/>
+                <DataGridTextColumn Binding="{Binding GniOrGKNS}" Header="Орган" Width="SizeToHeader"/>
+                <DataGridTextColumn Header="Сумма реш." Width="SizeToCells" Binding="{Binding Summa_Decis, StringFormat=\{0:N\}}"
+                                    ElementStyle="{StaticResource SummaCellStyle}" />
+                <DataGridTextColumn Binding="{Binding Kod_Paying}" Header="Платеж" Width="SizeToCells" />
                 <DataGridTemplateColumn Header="Дата 1 платежа" Width="SizeToCells" 
                                         CanUserSort="True" SortMemberPath="Date_first">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Date_first, Mode=TwoWay, ValidatesOnDataErrors=True,
-                                StringFormat=\{0:d\}}"/>
+                            <TextBlock Text="{Binding Path=Date_first, StringFormat=\{0:d\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -319,11 +312,10 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Дата последнего платежа" Width="SizeToCells" 
-                                        CanUserSort="True" SortMemberPath="Date_end">
+                <DataGridTemplateColumn Header="Дата последнего платежа" Width="SizeToCells" CanUserSort="True" SortMemberPath="Date_end">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Date_end, Mode=TwoWay, ValidatesOnDataErrors=True, StringFormat=\{0:d\}}"/>
+                            <TextBlock Text="{Binding Date_end, StringFormat=\{0:d\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -333,10 +325,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Path=Count_Mount, ValidatesOnDataErrors=True}"
-                                    Header="Count Mount" Width="SizeToCells"/>
-                <DataGridTextColumn Binding="{Binding Path=Summa_Payer, StringFormat=\{0:N\}}"
-                                    Header="Сумма ежем. платежа" Width="SizeToCells" 
+                <DataGridTextColumn Binding="{Binding Count_Mount}" Header="Count Mount" Width="SizeToCells"/>
+                <DataGridTextColumn Binding="{Binding Summa_Payer, StringFormat=\{0:N\}}" Header="Сумма ежем. платежа" Width="SizeToCells" 
                                     ElementStyle="{StaticResource SummaCellStyle}"/>
                 <DataGridTextColumn Binding="{Binding Path=Type_Decis}"
                                     Header="Тип решен." Width="SizeToCells" />
@@ -344,7 +334,7 @@
                                         CanUserSort="True" SortMemberPath="Date_prolong">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Path=Date_prolong, Mode=TwoWay, ValidatesOnDataErrors=True, StringFormat=\{0:d\}}"/>
+                            <TextBlock Text="{Binding Path=Date_prolong, StringFormat=\{0:d\}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
@@ -354,11 +344,8 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
-                <DataGridCheckBoxColumn Header="Закр."  Width="SizeToCells" 
-                                        Binding="{Binding Path=Close, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <DataGridTextColumn Header="Примечание"
-                                    ElementStyle="{StaticResource CellWrapStyle}"
-                                    Binding="{Binding Path=Note, ValidatesOnDataErrors=True}"
+                <DataGridCheckBoxColumn Header="Закр."  Width="SizeToCells" Binding="{Binding Close}"/>
+                <DataGridTextColumn Header="Примечание" ElementStyle="{StaticResource CellWrapStyle}" Binding="{Binding Note, ValidatesOnDataErrors=True}"
                                     Width="SizeToHeader" />
             </DataGrid.Columns>
         </DataGrid>
@@ -368,8 +355,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <DataGrid Name="MonthPayDataGrid" IsReadOnly="True"
-                        Style="{StaticResource DataGridStyle1}"
+            <DataGrid Name="MonthPayDataGrid" Style="{StaticResource DataGridStyle1}"
                         ItemsSource="{Binding Source={StaticResource DebitPayGenMonthPayViewSource}}"
                     VerticalScrollBarVisibility="Visible">
                 <DataGrid.Columns>
@@ -377,8 +363,7 @@
                                         Width="SizeToCells" />-->
                     <!--<DataGridTextColumn x:Name="id_dpgColumn1" Binding="{Binding Path=Id_dpg}" Header="Id решения"
                                         Width="SizeToCells" />-->
-                    <DataGridTemplateColumn Header="Дата" Width="SizeToCells"
-                                            CanUserSort="True" SortMemberPath="Date">
+                    <DataGridTemplateColumn Header="Дата" Width="SizeToCells" CanUserSort="True" SortMemberPath="Date">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Path=Date, StringFormat=\{0:d\}}"/>
@@ -387,11 +372,11 @@
                         <DataGridTemplateColumn.CellEditingTemplate>
                             <DataTemplate>
                                 <DatePicker
-                                    SelectedDate="{Binding Path=Date, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
+                                    SelectedDate="{Binding Date, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellEditingTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTextColumn Binding="{Binding Path=Summa_pay, StringFormat=\{0:N\}}" Header="Сумма"
+                    <DataGridTextColumn Binding="{Binding Summa_pay, StringFormat=\{0:N\}}" Header="Сумма"
                                         Width="SizeToCells" ElementStyle="{StaticResource SummaCellStyle}"/>
                 </DataGrid.Columns>
             </DataGrid>
@@ -416,11 +401,6 @@
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Margin="5,0">
-                    <RadioButton Content="Все" Checked="RadioButton_Checked"/>
-                    <RadioButton Content="Действующие" IsChecked="True" Checked="RadioButton_Checked"/>
-                    <RadioButton Content="Оконченные" Checked="RadioButton_Checked"/>
-                </StackPanel>
                 <Label Grid.Row="1" Content="ГНИ"/>
                 <TextBox Grid.Row="1" Grid.Column="1" Text="" Width="20"
                          PreviewTextInput="TextBoxGni_PreviewTextInput"
@@ -436,7 +416,12 @@
             </Grid>
         </Grid>
         <StatusBar Grid.Row="3" Grid.ColumnSpan="2" Height="Auto">
-            <Label Name="LabelInfo" Content="metka" />
+            <Label Name="LabelInfo" />
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <RadioButton Content="Все" />
+                <RadioButton Content="Действующие" IsChecked="True" />
+                <RadioButton Content="Оконченные"/>
+            </StackPanel>
         </StatusBar>
     </Grid>
 </Window>
