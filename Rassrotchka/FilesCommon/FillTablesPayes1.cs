@@ -176,7 +176,8 @@ namespace Rassrotchka.FilesCommon
 							//текущей даты на 35 дней и опережением на 6 дней
 							if (IsDecisDateNotRange((DateTime) rowExcel["4"]))
 							{
-								debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
+								string filter = $"[0] = {ident}";
+								debitPayTableGemBox.DefaultView.RowFilter = filter;
 								const string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
 								if (VisualErrorRow(debitPayTableGemBox.DefaultView, message)) //спрашиваем
 								{
