@@ -79,7 +79,7 @@ namespace Rassrotchka.FilesCommon
 			long index = _tableMontPay.Rows.Count == 0
 				             ? 0
 				             : _tableMontPay.Rows.Cast<object>()
-				                           .Select((t, i) => Convert.ToInt64(_tableMontPay.Rows[i][0]))
+				                           .Select((_, i) => Convert.ToInt64(_tableMontPay.Rows[i][0]))
 				                           .Concat(new long[] {1})
 				                           .Max();
 			index++;
@@ -104,7 +104,7 @@ namespace Rassrotchka.FilesCommon
 					}
 					else
 					{
-						rowMontPay.Summa_pay = genRow.Summa_Decis - genRow.Summa_Payer * (payCount - 1);
+						rowMontPay.Summa_pay = genRow.Summa_Decis - (genRow.Summa_Payer * (payCount - 1));
 						rowMontPay.Date = genRow.Date_end;
 					}
 					_tableMontPay.Rows.Add(rowMontPay);
@@ -116,7 +116,7 @@ namespace Rassrotchka.FilesCommon
 		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
 		{
 			int deltaYar = dateEnd.Year - dateFirst.Year;
-			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar * 12 + 1;
+			int paysCount = dateEnd.Month - dateFirst.Month + (deltaYar * 12) + 1;
 			return paysCount;
 		}
 
@@ -171,7 +171,7 @@ namespace Rassrotchka.FilesCommon
 						{
 							//Проверяем запись нового решения в интервале между отставанием от
 							//текущей даты на 35 дней и опережением на 6 дней
-							if (IsDecisDateNotRange((DateTime) rowExcel["4"]))
+							if (IsDecisDateNotRange((DateTime)rowExcel["4"]))
 							{
 								string filter = $"[0] = {ident}";
 								debitPayTableGemBox.DefaultView.RowFilter = filter;
@@ -231,7 +231,7 @@ namespace Rassrotchka.FilesCommon
 		/// </summary>
 		private void ValidateAndAddRow(DataRow rowExcel)
 		{
-			if (_validError.ValidationError(rowExcel) == false) //если ошибка в строке
+			if (!_validError.ValidationError(rowExcel)) //если ошибка в строке
 				return;
 			DataRow rowDeb = _tableDebitPay.NewRow();
 			for (int j = 0; j < rowExcel.ItemArray.Length; j++)
@@ -264,7 +264,7 @@ namespace Rassrotchka.FilesCommon
 			if (!obBase.Equals(obFile))
 			{
 				rowDeb[nmBs] = rowGemBox[nmEx];
-				rowDeb.SetColumnError(nmBs, @"Внесены изменения в данную ячейку");
+				rowDeb.SetColumnError(nmBs, "Внесены изменения в данную ячейку");
 			}
 
 			#region Старый код
