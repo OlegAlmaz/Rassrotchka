@@ -1,18 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Text;
 
-namespace TestProject1
+namespace Rassrotchka
 {
-    public class FilterTest
-    {
-
-    }
-
-    public class Filters
+    public class FilterClass
     {
         #region Поля фильтра
         private string _close;
@@ -32,9 +25,9 @@ namespace TestProject1
 
         private const string _whereStr = "WHERE ";
 
-        public string Close 
-        { 
-            get => _close; 
+        public string Close
+        {
+            get => _close;
             set
             {
                 if (_close != value)
