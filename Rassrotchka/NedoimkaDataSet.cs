@@ -7,7 +7,7 @@
 			set { CommandCollection[0].CommandText = value; }
 		}
 	}
-    
+
     
     public partial class DebitPayGenTableAdapter {
 	    public string SelectedCommandText
@@ -19,8 +19,6 @@
 }
 namespace Rassrotchka
 {
-
-
 	public partial class NedoimkaDataSet
 	{
 	}

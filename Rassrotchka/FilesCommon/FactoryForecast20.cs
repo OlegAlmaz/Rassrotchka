@@ -22,7 +22,6 @@ namespace Rassrotchka
 
 	public class TableForecast20 : AbstractTable
 	{
-
 		protected override SqlDataAdapter SqlDataAdapter(SqlConnection sqlConnection)
 		{
 			var adapter = new SqlDataAdapter(BaseElementName.ProcedGeNPayFromPlatej, sqlConnection)
@@ -35,12 +34,10 @@ namespace Rassrotchka
 			adapter.SelectCommand.Parameters[1].SqlValue = Args.DateEnd;
 			return adapter;
 		}
-
 	}
 
 	public class FileForecast20 : AbstractFile
 	{
-
 		public override void Interact(AbstractTable tb)
 		{
 			FilePath = "FilesTemplates\\Рассрочки_налоги.xlsx";

@@ -52,6 +52,5 @@ namespace Rassrotchka
 			//устанавливаем общую жирную рамку таблицы
 			ragTable.Style.Borders.SetBorders(MultipleBorders.Outside, SpreadsheetColor.FromName(ColorName.Black), LineStyle.Medium);
 		}
-
 	}
 }

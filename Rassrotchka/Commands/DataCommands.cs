@@ -17,7 +17,7 @@ namespace Rassrotchka.Commands
 			var inputs = new InputGestureCollection();
 			inputs.Add(new KeyGesture(Key.E, ModifierKeys.Control, "Ctrl+E"));
 			Edit = new RoutedCommand("Edit", typeof(DataCommands), inputs);
-			
+
 			inputs = new InputGestureCollection();
 			inputs.Add(new KeyGesture(Key.D, ModifierKeys.Control, "Ctrl+D"));
 			Delete = new RoutedCommand("Delete", typeof(DataCommands), inputs);
@@ -42,6 +42,5 @@ namespace Rassrotchka.Commands
 			inputs.Add(new KeyGesture(Key.J, ModifierKeys.Control, "Ctrl+J"));
 			Clean = new RoutedCommand("Clean", typeof(DataCommands), inputs);
 		}
-
 	}
 }

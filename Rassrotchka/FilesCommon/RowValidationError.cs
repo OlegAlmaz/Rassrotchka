@@ -19,7 +19,7 @@ namespace Rassrotchka.FilesCommon
 		private const string SumPay = "11"; //колонка cуммы ежемесячного платежа
 
 		#endregion
-		
+
 		/// <summary>
 		/// уведомление об отсутствии ошибки если значение равно true
 		/// </summary>
@@ -128,7 +128,6 @@ namespace Rassrotchka.FilesCommon
 				row.SetColumnError(CdPaer, @"Плательщик с таким кодом отсутствует в базе данных.");
 			}
 			return isNotError;
-
 		}
 
 		private DataTable GetCodes(string selectCommad)

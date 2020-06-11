@@ -85,7 +85,6 @@ namespace Rassrotchka.FilesCommon
 			index++;
 			foreach (var genRow in rowsDeb)
 			{
-
 				if (genRow.IsDate_firstNull() || genRow.IsDate_endNull())
 					continue;//если дата первой и последней уплаты не равны нолю
 
@@ -120,8 +119,6 @@ namespace Rassrotchka.FilesCommon
 			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar * 12 + 1;
 			return paysCount;
 		}
-
-
 
 		/// <summary>
 		/// Извлекает из Excel с помощью библиотеки GemBox и метода worksheet.CreateDataTable()
@@ -297,7 +294,6 @@ namespace Rassrotchka.FilesCommon
 			#endregion
 		}
 
-
 		/// <summary>
 		/// Метод, спрашивает о том, вносить ли в базу данных информацию о рассрочке либо отсрочке
 		/// </summary>
@@ -313,7 +309,6 @@ namespace Rassrotchka.FilesCommon
 				};
 			var showDialog = window.ShowDialog();
 			return showDialog != null && (bool)showDialog;
-			
 		}
 
 		public bool VisualErrorRow(DataView view, string mes)
@@ -490,7 +485,6 @@ namespace Rassrotchka.FilesCommon
 
 		#region Формирование списка платежей
 
-
 		//private static List<MonthPay> GetListMontPay(DebitPayGen debitPay)
 		//{
 		//    var list = new List<MonthPay>();
@@ -528,7 +522,6 @@ namespace Rassrotchka.FilesCommon
 		//    return list;
 
 		//}
-
 
 		//private static List<MonthPay> GetMonthPay(List<DebitPayGen> list)
 		//{

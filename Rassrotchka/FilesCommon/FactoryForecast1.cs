@@ -22,7 +22,6 @@ namespace Rassrotchka
 
 	public class TableForecast1 : AbstractTable
 	{
-
 		protected override SqlDataAdapter SqlDataAdapter(SqlConnection sqlConnection)
 		{
 			var adapter = new SqlDataAdapter(BaseElementName.ProcedPredicGenPay, sqlConnection)
@@ -35,7 +34,6 @@ namespace Rassrotchka
 			adapter.SelectCommand.Parameters[1].SqlValue = Args.DateEnd;
 			return adapter;
 		}
-
 	}
 
 	public class FileForecast1 : AbstractFile

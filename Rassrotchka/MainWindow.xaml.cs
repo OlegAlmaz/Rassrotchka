@@ -65,7 +65,7 @@ namespace Rassrotchka
 			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
 			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
 			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
-			_asDataView = _dataSet.DebitPayGen.DefaultView; 
+			_asDataView = _dataSet.DebitPayGen.DefaultView;
 
 			var binding = new Binding("IsEnabled")
 			{
@@ -78,7 +78,6 @@ namespace Rassrotchka
 
 		private void FillData()
 		{
-
 			// Загрузить данные в таблицу DebitPayGen. Можно изменить этот код как требуется.
 			_debitPayGenTableAdapter.Fill(_dataSet.DebitPayGen);
 			// Загрузить данные в таблицу MonthPay. Можно изменить этот код как требуется.
@@ -96,7 +95,6 @@ namespace Rassrotchka
 		}
 
 		#region Обработчики событий иных элементов управления
-
 
 		#region //обработка события перетаскивания файла
 
@@ -143,9 +141,7 @@ namespace Rassrotchka
 
 		private void SaveCommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
 		{
-
 			e.CanExecute = !_isDirty;
-
 		}
 
 		private void EditCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -165,7 +161,6 @@ namespace Rassrotchka
 			UndoItem.List[i].RowError = string.Empty;
 			UndoItem.List[i].ClearErrors();
 			UndoItem.RemoveAt(i);
-
 		}
 
 		private void UndoAllCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
@@ -242,7 +237,6 @@ namespace Rassrotchka
 				Cursor = Cursors.Wait;
 				try
 				{
-
 					ValidateFromLoad(); //Проверка: загружен ли dataset, если нет, то загружаем
 					ValidFromCanges(); //Проверка: есть ли измененные строки в dataset, если да, то сохраняем и обновляем базу данных
 
@@ -417,7 +411,6 @@ namespace Rassrotchka
 										 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
 														 ((TextBox)sender).Text);
 			}
-
 		}
 
 		private void TextBoxName_TextChanged(object sender, TextChangedEventArgs e)
@@ -507,7 +500,7 @@ namespace Rassrotchka
 			client.Run(_argument);
 		}
 
-		void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		private void Bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			MessageBox.Show(e.Error == null ? "Файл создан" : e.Error.Message);
 			Cursor = null;
@@ -530,7 +523,6 @@ namespace Rassrotchka
 				MessageBox.Show("Сохраните имеющиеся изменения данных перед закрытием программы!", "Предупреждение",
 								MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
-
 		}
 	}
 }

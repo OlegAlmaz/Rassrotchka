@@ -91,9 +91,6 @@
     </Compile>
     <Compile Include="FilesCommon\UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
-    <Compile Include="WindowTest.xaml.cs">
-      <DependentUpon>WindowTest.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WinSetPeriod.xaml.cs">
       <DependentUpon>WinSetPeriod.xaml</DependentUpon>
     </Compile>
@@ -115,10 +112,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WindowTest.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="WinSetPeriod.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
