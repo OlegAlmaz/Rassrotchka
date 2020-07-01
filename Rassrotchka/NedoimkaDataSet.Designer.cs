@@ -791,7 +791,7 @@ namespace Rassrotchka {
                 this.columnType_Decis.MaxLength = 9;
                 this.columnDate_prolong.Caption = "Дата пролонгации";
                 this.columnNote.Caption = "Примечание";
-                this.columnNote.MaxLength = 255;
+                this.columnNote.MaxLength = 400;
                 this.columnClose.DefaultValue = ((bool)(false));
             }
             
@@ -3528,26 +3528,7 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = "DELETE FROM [DebitPayGen] WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_Kod_" +
-                "GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI)) AND ((@IsNull" +
-                "_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Kod_Pa" +
-                "yer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod_Payer)) AND ((@" +
-                "IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis] = @Original_Dat" +
-                "e_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL) OR ([Numb_Decis" +
-                "] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniOrGKNS] IS NULL) " +
-                "OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Decis = 1 AND [Summa" +
-                "_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND ((@IsNull_Kod_P" +
-                "aying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original_Kod_Paying)) AN" +
-                "D ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_first] = @Origina" +
-                "l_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL) OR ([Date_end]" +
-                " = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count_Mount] IS NULL)" +
-                " OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa_Payer = 1 AND [" +
-                "Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)) AND ((@IsNull_" +
-                "Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Original_Type_Decis" +
-                ")) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR ([Date_prolong]" +
-                " = @Original_Date_prolong)) AND ((@IsNull_Note = 1 AND [Note] IS NULL) OR ([Note" +
-                "] = @Original_Note)) AND ((@IsNull_Close = 1 AND [Close] IS NULL) OR ([Close] = " +
-                "@Original_Close)))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [DebitPayGen] WHERE (([Id_dpg] = @Original_Id_dpg) AND ((@IsNull_Kod_GNI = 1 AND [Kod_GNI] IS NULL) OR ([Kod_GNI] = @Original_Kod_GNI)) AND ((@IsNull_Name = 1 AND [Name] IS NULL) OR ([Name] = @Original_Name)) AND ((@IsNull_Kod_Payer = 1 AND [Kod_Payer] IS NULL) OR ([Kod_Payer] = @Original_Kod_Payer)) AND ((@IsNull_Date_Decis = 1 AND [Date_Decis] IS NULL) OR ([Date_Decis] = @Original_Date_Decis)) AND ((@IsNull_Numb_Decis = 1 AND [Numb_Decis] IS NULL) OR ([Numb_Decis] = @Original_Numb_Decis)) AND ((@IsNull_GniOrGKNS = 1 AND [GniOrGKNS] IS NULL) OR ([GniOrGKNS] = @Original_GniOrGKNS)) AND ((@IsNull_Summa_Decis = 1 AND [Summa_Decis] IS NULL) OR ([Summa_Decis] = @Original_Summa_Decis)) AND ((@IsNull_Kod_Paying = 1 AND [Kod_Paying] IS NULL) OR ([Kod_Paying] = @Original_Kod_Paying)) AND ((@IsNull_Date_first = 1 AND [Date_first] IS NULL) OR ([Date_first] = @Original_Date_first)) AND ((@IsNull_Date_end = 1 AND [Date_end] IS NULL) OR ([Date_end] = @Original_Date_end)) AND ((@IsNull_Count_Mount = 1 AND [Count_Mount] IS NULL) OR ([Count_Mount] = @Original_Count_Mount)) AND ((@IsNull_Summa_Payer = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_Summa_Payer)) AND ((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_Decis] = @Original_Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong] IS NULL) OR ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Close = 1 AND [Close] IS NULL) OR ([Close] = @Original_Close)))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Kod_GNI", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
@@ -3578,8 +3559,6 @@ namespace Rassrotchka.NedoimkaDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_prolong", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_prolong", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Note", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Close", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Close", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
@@ -3628,12 +3607,11 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
                 "IsNull_Summa_Payer = 1 AND [Summa_Payer] IS NULL) OR ([Summa_Payer] = @Original_" +
                 "Summa_Payer)) AND ((@IsNull_Type_Decis = 1 AND [Type_Decis] IS NULL) OR ([Type_D" +
                 "ecis] = @Original_Type_Decis)) AND ((@IsNull_Date_prolong = 1 AND [Date_prolong]" +
-                " IS NULL) OR ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Note = 1 A" +
-                "ND [Note] IS NULL) OR ([Note] = @Original_Note)) AND ((@IsNull_Close = 1 AND [Cl" +
-                "ose] IS NULL) OR ([Close] = @Original_Close)));\r\nSELECT Id_dpg, Kod_GNI, Name, K" +
-                "od_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first" +
-                ", Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, [Close] FR" +
-                "OM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
+                " IS NULL) OR ([Date_prolong] = @Original_Date_prolong)) AND ((@IsNull_Close = 1 " +
+                "AND [Close] IS NULL) OR ([Close] = @Original_Close)));\r\nSELECT Id_dpg, Kod_GNI, " +
+                "Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Dat" +
+                "e_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, [Cl" +
+                "ose] FROM DebitPayGen WHERE (Id_dpg = @Id_dpg) ORDER BY Date_Decis DESC";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id_dpg", global::System.Data.SqlDbType.BigInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Id_dpg", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Kod_GNI", global::System.Data.SqlDbType.SmallInt, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Kod_GNI", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3681,8 +3659,6 @@ SELECT Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summ
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Type_Decis", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Type_Decis", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Date_prolong", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Date_prolong", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Date_prolong", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Note", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Note", global::System.Data.SqlDbType.VarChar, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Note", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@IsNull_Close", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Original, true, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_Close", global::System.Data.SqlDbType.Bit, 0, global::System.Data.ParameterDirection.Input, 0, 0, "Close", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
@@ -3780,7 +3756,6 @@ ORDER BY Date_Decis DESC";
                     global::System.Nullable<decimal> Original_Summa_Payer, 
                     string Original_Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Original_Date_prolong, 
-                    string Original_Note, 
                     global::System.Nullable<bool> Original_Close) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((long)(Original_Id_dpg));
             if ((Original_Kod_GNI.HasValue == true)) {
@@ -3895,21 +3870,13 @@ ORDER BY Date_Decis DESC";
                 this.Adapter.DeleteCommand.Parameters[27].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[28].Value = global::System.DBNull.Value;
             }
-            if ((Original_Note == null)) {
+            if ((Original_Close.HasValue == true)) {
+                this.Adapter.DeleteCommand.Parameters[29].Value = ((object)(0));
+                this.Adapter.DeleteCommand.Parameters[30].Value = ((bool)(Original_Close.Value));
+            }
+            else {
                 this.Adapter.DeleteCommand.Parameters[29].Value = ((object)(1));
                 this.Adapter.DeleteCommand.Parameters[30].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[29].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[30].Value = ((string)(Original_Note));
-            }
-            if ((Original_Close.HasValue == true)) {
-                this.Adapter.DeleteCommand.Parameters[31].Value = ((object)(0));
-                this.Adapter.DeleteCommand.Parameters[32].Value = ((bool)(Original_Close.Value));
-            }
-            else {
-                this.Adapter.DeleteCommand.Parameters[31].Value = ((object)(1));
-                this.Adapter.DeleteCommand.Parameters[32].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4099,7 +4066,6 @@ ORDER BY Date_Decis DESC";
                     global::System.Nullable<decimal> Original_Summa_Payer, 
                     string Original_Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Original_Date_prolong, 
-                    string Original_Note, 
                     global::System.Nullable<bool> Original_Close) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((long)(Id_dpg));
             if ((Kod_GNI.HasValue == true)) {
@@ -4311,21 +4277,13 @@ ORDER BY Date_Decis DESC";
                 this.Adapter.UpdateCommand.Parameters[44].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[45].Value = global::System.DBNull.Value;
             }
-            if ((Original_Note == null)) {
+            if ((Original_Close.HasValue == true)) {
+                this.Adapter.UpdateCommand.Parameters[46].Value = ((object)(0));
+                this.Adapter.UpdateCommand.Parameters[47].Value = ((bool)(Original_Close.Value));
+            }
+            else {
                 this.Adapter.UpdateCommand.Parameters[46].Value = ((object)(1));
                 this.Adapter.UpdateCommand.Parameters[47].Value = global::System.DBNull.Value;
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[46].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[47].Value = ((string)(Original_Note));
-            }
-            if ((Original_Close.HasValue == true)) {
-                this.Adapter.UpdateCommand.Parameters[48].Value = ((object)(0));
-                this.Adapter.UpdateCommand.Parameters[49].Value = ((bool)(Original_Close.Value));
-            }
-            else {
-                this.Adapter.UpdateCommand.Parameters[48].Value = ((object)(1));
-                this.Adapter.UpdateCommand.Parameters[49].Value = global::System.DBNull.Value;
             }
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4379,9 +4337,8 @@ ORDER BY Date_Decis DESC";
                     global::System.Nullable<decimal> Original_Summa_Payer, 
                     string Original_Type_Decis, 
                     global::System.Nullable<global::System.DateTime> Original_Date_prolong, 
-                    string Original_Note, 
                     global::System.Nullable<bool> Original_Close) {
-            return this.Update(Original_Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, Close, Original_Id_dpg, Original_Kod_GNI, Original_Name, Original_Kod_Payer, Original_Date_Decis, Original_Numb_Decis, Original_GniOrGKNS, Original_Summa_Decis, Original_Kod_Paying, Original_Date_first, Original_Date_end, Original_Count_Mount, Original_Summa_Payer, Original_Type_Decis, Original_Date_prolong, Original_Note, Original_Close);
+            return this.Update(Original_Id_dpg, Kod_GNI, Name, Kod_Payer, Date_Decis, Numb_Decis, GniOrGKNS, Summa_Decis, Kod_Paying, Date_first, Date_end, Count_Mount, Summa_Payer, Type_Decis, Date_prolong, Note, Close, Original_Id_dpg, Original_Kod_GNI, Original_Name, Original_Kod_Payer, Original_Date_Decis, Original_Numb_Decis, Original_GniOrGKNS, Original_Summa_Decis, Original_Kod_Paying, Original_Date_first, Original_Date_end, Original_Count_Mount, Original_Summa_Payer, Original_Type_Decis, Original_Date_prolong, Original_Close);
         }
     }
     
