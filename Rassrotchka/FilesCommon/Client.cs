@@ -21,7 +21,6 @@ namespace Rassrotchka
 			_table.Args = args;
 			_file.Interact(_table);
 		}
-
 	}
 
 	public abstract class AbstractFactory
@@ -88,7 +87,7 @@ namespace Rassrotchka
 		}
 
 		/// <summary>
-		/// Содержит имена ячеек, в которых помещаются названия колонок таблицы 
+		/// Содержит имена ячеек, в которых помещаются названия колонок таблицы
 		/// и непосредственно данные таблицы
 		/// </summary>
 		protected static class TableCellsNames
@@ -103,6 +102,4 @@ namespace Rassrotchka
 			public static string CellData = "A3";
 		}
 	}
-
-
 }

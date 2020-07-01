@@ -8,7 +8,7 @@ using System.Windows.Controls;
 namespace Rassrotchka.ValidationFiles
 {
 	/// <summary>
-	/// Осуществляет проверку даты решения на вхождение в интервал 
+	/// Осуществляет проверку даты решения на вхождение в интервал
 	///от -35 дней до +6 дней от текущей даты
 	/// </summary>
 	public class ValidDateDecis :ValidationRule
@@ -25,7 +25,6 @@ namespace Rassrotchka.ValidationFiles
 				if (s != null && s.Length > 0)
 				{
 					dateDecis = DateTime.Parse((string) value);
-
 				}
 			}
 			catch (Exception e)

@@ -79,13 +79,12 @@ namespace Rassrotchka.FilesCommon
 			long index = _tableMontPay.Rows.Count == 0
 				             ? 0
 				             : _tableMontPay.Rows.Cast<object>()
-				                           .Select((t, i) => Convert.ToInt64(_tableMontPay.Rows[i][0]))
+				                           .Select((_, i) => Convert.ToInt64(_tableMontPay.Rows[i][0]))
 				                           .Concat(new long[] {1})
 				                           .Max();
 			index++;
 			foreach (var genRow in rowsDeb)
 			{
-
 				if (genRow.IsDate_firstNull() || genRow.IsDate_endNull())
 					continue;//если дата первой и последней уплаты не равны нолю
 
@@ -105,7 +104,7 @@ namespace Rassrotchka.FilesCommon
 					}
 					else
 					{
-						rowMontPay.Summa_pay = genRow.Summa_Decis - genRow.Summa_Payer * (payCount - 1);
+						rowMontPay.Summa_pay = genRow.Summa_Decis - (genRow.Summa_Payer * (payCount - 1));
 						rowMontPay.Date = genRow.Date_end;
 					}
 					_tableMontPay.Rows.Add(rowMontPay);
@@ -117,11 +116,9 @@ namespace Rassrotchka.FilesCommon
 		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
 		{
 			int deltaYar = dateEnd.Year - dateFirst.Year;
-			int paysCount = dateEnd.Month - dateFirst.Month + deltaYar * 12 + 1;
+			int paysCount = dateEnd.Month - dateFirst.Month + (deltaYar * 12) + 1;
 			return paysCount;
 		}
-
-
 
 		/// <summary>
 		/// Извлекает из Excel с помощью библиотеки GemBox и метода worksheet.CreateDataTable()
@@ -174,9 +171,10 @@ namespace Rassrotchka.FilesCommon
 						{
 							//Проверяем запись нового решения в интервале между отставанием от
 							//текущей даты на 35 дней и опережением на 6 дней
-							if (IsDecisDateNotRange((DateTime) rowExcel["4"]))
+							if (IsDecisDateNotRange((DateTime)rowExcel["4"]))
 							{
-								debitPayTableGemBox.DefaultView.RowFilter = "[0] = " + ident;
+								string filter = $"[0] = {ident}";
+								debitPayTableGemBox.DefaultView.RowFilter = filter;
 								const string message = "Вы хотите добавить в базу данных это решение о рассрочке либо отсрочке?";
 								if (VisualErrorRow(debitPayTableGemBox.DefaultView, message)) //спрашиваем
 								{
@@ -233,7 +231,7 @@ namespace Rassrotchka.FilesCommon
 		/// </summary>
 		private void ValidateAndAddRow(DataRow rowExcel)
 		{
-			if (_validError.ValidationError(rowExcel) == false) //если ошибка в строке
+			if (!_validError.ValidationError(rowExcel)) //если ошибка в строке
 				return;
 			DataRow rowDeb = _tableDebitPay.NewRow();
 			for (int j = 0; j < rowExcel.ItemArray.Length; j++)
@@ -266,7 +264,7 @@ namespace Rassrotchka.FilesCommon
 			if (!obBase.Equals(obFile))
 			{
 				rowDeb[nmBs] = rowGemBox[nmEx];
-				rowDeb.SetColumnError(nmBs, @"Внесены изменения в данную ячейку");
+				rowDeb.SetColumnError(nmBs, "Внесены изменения в данную ячейку");
 			}
 
 			#region Старый код
@@ -296,7 +294,6 @@ namespace Rassrotchka.FilesCommon
 			#endregion
 		}
 
-
 		/// <summary>
 		/// Метод, спрашивает о том, вносить ли в базу данных информацию о рассрочке либо отсрочке
 		/// </summary>
@@ -312,7 +309,6 @@ namespace Rassrotchka.FilesCommon
 				};
 			var showDialog = window.ShowDialog();
 			return showDialog != null && (bool)showDialog;
-			
 		}
 
 		public bool VisualErrorRow(DataView view, string mes)
@@ -489,7 +485,6 @@ namespace Rassrotchka.FilesCommon
 
 		#region Формирование списка платежей
 
-
 		//private static List<MonthPay> GetListMontPay(DebitPayGen debitPay)
 		//{
 		//    var list = new List<MonthPay>();
@@ -527,7 +522,6 @@ namespace Rassrotchka.FilesCommon
 		//    return list;
 
 		//}
-
 
 		//private static List<MonthPay> GetMonthPay(List<DebitPayGen> list)
 		//{

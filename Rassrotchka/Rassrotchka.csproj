@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,8 +10,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rassrotchka</RootNamespace>
     <AssemblyName>Rassrotchka</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -25,6 +26,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -34,8 +36,15 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ClosedXML">
+      <HintPath>..\..\..\..\Мои документы\Visual Studio 2019\Libreries\ClosedXML.dll</HintPath>
+    </Reference>
     <Reference Include="GemBox.Spreadsheet, Version=39.3.30.1125, Culture=neutral, PublicKeyToken=5f90228d2ea763cf, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\GemBox.Spreadsheet.dll</HintPath>
@@ -61,25 +70,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BaseElementName.cs" />
-    <Compile Include="Client.cs" />
+    <Compile Include="FilesCommon\BaseElementName.cs" />
+    <Compile Include="FilesCommon\Client.cs" />
     <Compile Include="Commands\DataCommands.cs" />
-    <Compile Include="DictMonth.cs" />
-    <Compile Include="FactoryConsolid.cs" />
-    <Compile Include="FactoryForecast1.cs" />
-    <Compile Include="FactoryForecast20.cs" />
+    <Compile Include="FilesCommon\DictMonth.cs" />
+    <Compile Include="FilesCommon\FactoryConsolid.cs" />
+    <Compile Include="FilesCommon\FactoryForecast1.cs" />
+    <Compile Include="FilesCommon\FactoryForecast20.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
+    <Compile Include="FilesCommon\Filter.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormattingRangeGemBox.cs" />
+    <Compile Include="FilesCommon\FormattingRangeGemBox.cs" />
     <Compile Include="NedoimkaDataSet.cs">
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="UndoMenuItem.cs" />
+    <Compile Include="FilesCommon\UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
     <Compile Include="WinSetPeriod.xaml.cs">
       <DependentUpon>WinSetPeriod.xaml</DependentUpon>
