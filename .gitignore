@@ -3,3 +3,12 @@
 /.vs/Rassrotchka/v16/.suo
 /.vs/Rassrotchka/v16/Server/sqlite3
 /.vs
+/Rassrotchka.Tests/obj/Debug
+/Rassrotchka.Tests/Properties
+/RassrotchkaTests/obj/Debug
+/RassrotchkaTests/Properties
+/RassrotchkaTests1
+/RassrotchkaTests2
+/RassrotchkaTests/bin/Debug
+/Rassrotchka.Tests/Rassrotchka.Tests.csproj
+/RassrotchkaTests/RassrotchkaTests.csproj
