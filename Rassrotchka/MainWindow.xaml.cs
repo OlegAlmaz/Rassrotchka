@@ -28,6 +28,13 @@ namespace Rassrotchka
 		private CollectionViewSource _viewMp;
 		private ArgumentDebitPay _argument;
 		private DataView _asDataView;
+		private FilterClass _filter;
+
+		/// <summary>
+		/// строка фильтра по действующим рассрочкам
+		/// </summary>
+		private const string _fltrCl = "Close = False";
+		private const string V = "";
 
 		public static UndoMenuItem<DataRow> UndoItem { get; private set; }
 
@@ -65,7 +72,9 @@ namespace Rassrotchka
 			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
 			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
 			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
+			_view.CustomFilter = _fltrCl;
 			_asDataView = _dataSet.DebitPayGen.DefaultView;
+			_filter = new FilterClass();
 
 			var binding = new Binding("IsEnabled")
 			{
@@ -385,13 +394,13 @@ namespace Rassrotchka
 		{
 			if (e.Key == Key.Space)
 				e.Handled = true;
-			if (e.Key == Key.Enter)
-			{
-				_view.CustomFilter = ((TextBox)sender).Text.Length < 8
-						 ? string.Empty
-						 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_PayerColumn.ColumnName,
-										 ((TextBox)sender).Text);
-			}
+			//if (e.Key == Key.Enter)
+			//{
+			//	_view.CustomFilter = ((TextBox)sender).Text.Length < 8
+			//			 ? string.Empty
+			//			 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_PayerColumn.ColumnName,
+			//							 ((TextBox)sender).Text);
+			//}
 		}
 
 		private void TextBoxGni_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -404,21 +413,21 @@ namespace Rassrotchka
 		{
 			if (e.Key == Key.Space)
 				e.Handled = true;
-			if (e.Key == Key.Enter)
-			{
-				_view.CustomFilter = ((TextBox)sender).Text == string.Empty
-										 ? string.Empty
-										 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
-														 ((TextBox)sender).Text);
-			}
+			//if (e.Key == Key.Enter)
+			//{
+			//	_view.CustomFilter = ((TextBox)sender).Text == string.Empty
+			//							 ? string.Empty
+			//							 : string.Format("{0} = {1}", _dataSet.DebitPayGen.Kod_GNIColumn.ColumnName,
+			//											 ((TextBox)sender).Text);
+			//}
 		}
 
 		private void TextBoxName_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			_view.CustomFilter = ((TextBox)sender).Text.Length < 3
-										? string.Empty
-										: string.Format("{0} LIKE \'%{1}%\'", _dataSet.DebitPayGen.NameColumn.ColumnName,
-														((TextBox)sender).Text);
+			//_view.CustomFilter = ((TextBox)sender).Text.Length < 3
+			//							? string.Empty
+			//							: string.Format("{0} LIKE \'%{1}%\'", _dataSet.DebitPayGen.NameColumn.ColumnName,
+			//											((TextBox)sender).Text);
 		}
 
 		private void UndoSelectedRowsMenuItem_OnClick(object sender, RoutedEventArgs e)
@@ -523,6 +532,26 @@ namespace Rassrotchka
 				MessageBox.Show("Сохраните имеющиеся изменения данных перед закрытием программы!", "Предупреждение",
 								MessageBoxButton.OK, MessageBoxImage.Warning);
 			}
+		}
+
+		private void ButtonApplay_Click(object sender, RoutedEventArgs e)
+		{
+			//фильтр если действующие
+			_filter.Close = ChBoxClose.IsChecked == true ? "False" : string.Empty;
+			_filter.Kod_GNI = TextBoxGni.Text;
+			_filter.Kod_Payer = TextBoxKod.Text;
+			_filter.Name = TextBoxName.Text;
+			_view.CustomFilter = _filter.FilterString();
+		}
+
+		private void ButtonReset_Click(object sender, RoutedEventArgs e)
+		{
+			_filter.Filter = string.Empty;
+			_view.CustomFilter = string.Empty;
+			TextBoxGni.Text = V;
+			TextBoxKod.Text = V;
+			TextBoxName.Text = V;
+			ChBoxClose.IsChecked = false;
 		}
 	}
 }
