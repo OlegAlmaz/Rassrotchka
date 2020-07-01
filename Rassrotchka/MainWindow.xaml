@@ -354,6 +354,7 @@
                 <RowDefinition/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <DataGrid Name="MonthPayDataGrid" Style="{StaticResource DataGridStyle1}"
                         ItemsSource="{Binding Source={StaticResource DebitPayGenMonthPayViewSource}}"
@@ -381,7 +382,19 @@
                 </DataGrid.Columns>
             </DataGrid>
             <Label Content="Фильтр" Grid.Row="1" HorizontalAlignment="Center" />
-            <Grid Grid.Row="2" >
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="FontSize" Value="11"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="BorderBrush" Value="Blue"/>
+                    </Style>
+                </StackPanel.Resources>
+                <Button Name="ButtonApplay" Content="Применить"
+                        Click="ButtonApplay_Click" FontSize="11"/>
+                <Button Name="ButtonReset" Content="Сбросить" Click="ButtonReset_Click" FontSize="11"/>
+            </StackPanel>
+            <Grid Grid.Row="3" >
                 <Grid.Resources>
                     <Style TargetType="Label">
                         <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -401,27 +414,26 @@
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <CheckBox Grid.ColumnSpan="2" Name="ChBoxClose" Content="Действующие" 
+                          IsChecked="True" ToolTip="Отобразить только действующие рассрочки"/>
                 <Label Grid.Row="1" Content="ГНИ"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="" Width="20"
+                <TextBox Name="TextBoxGni" Grid.Row="1" Grid.Column="1" Width="20"
+                         ToolTip="Ввести код ГНИ, например: 1"
                          PreviewTextInput="TextBoxGni_PreviewTextInput"
                          PreviewKeyDown="TextBoxGni_PreviewKeyDown"/>
                 <Label Grid.Row="2" Content="Код"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Text="" Width="75"
+                <TextBox Name="TextBoxKod" Grid.Row="2" Grid.Column="1" Width="75"
+                         ToolTip="Введите код плательщика"
                          PreviewTextInput="TextBoxGni_PreviewTextInput"
                          PreviewKeyDown="TextBoxKod_PreviewKeyDown"/>
                 <Label Grid.Row="3" Content="Имя"/>
-                <TextBox Grid.Row="3" Grid.Column="1" Text="" 
+                <TextBox Name="TextBoxName" Grid.Row="3" Grid.Column="1"
                          ToolTip="Введите приблизительное имя плательщика не менее 3 знаков"
                         TextChanged="TextBoxName_TextChanged" MinWidth="75" />
             </Grid>
         </Grid>
         <StatusBar Grid.Row="3" Grid.ColumnSpan="2" Height="Auto">
             <Label Name="LabelInfo" />
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <RadioButton Content="Все" />
-                <RadioButton Content="Действующие" IsChecked="True" />
-                <RadioButton Content="Оконченные"/>
-            </StackPanel>
         </StatusBar>
     </Grid>
 </Window>
