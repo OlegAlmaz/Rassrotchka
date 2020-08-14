@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
+using StartupEventArgs = System.Windows.StartupEventArgs;
 
 namespace Rassrotchka
 {
@@ -12,5 +8,11 @@ namespace Rassrotchka
 	/// </summary>
 	public partial class App : Application
 	{
+		private void App_OnStartup(object sender, StartupEventArgs e)
+		{
+			Class1.NewMethod2(this);
+			Class1.NewMethod1(this);
+			Class1.NewMethod(this);
+		}
 	}
 }

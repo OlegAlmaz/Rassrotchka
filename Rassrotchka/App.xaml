@@ -3,6 +3,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="ErrorElementStyle" TargetType="TextBlock">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, 
+                            Path=(Validation.Errors)[0].ErrorContent}" />
+                    <Setter Property="Foreground" Value="OrangeRed" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CellWrapStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ErrorElementStyle}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="ToolTip"
+                            Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RigthCellStyle" TargetType="TextBlock" BasedOn="{StaticResource ErrorElementStyle}">
+            <Setter Property="TextAlignment" Value="Right"></Setter>
+        </Style>
+
+        <Style x:Key="SummaCellStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource RigthCellStyle}">
+            <Setter Property="Text" Value="{Binding StringFormat=\{0:N\}}"/>
+            <Setter Property="Padding" Value="1"></Setter>
+        </Style>
+
     </Application.Resources>
 </Application>

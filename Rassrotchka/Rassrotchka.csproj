@@ -38,8 +38,18 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
+    <StartupObject>Rassrotchka.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ClosedXML">
@@ -71,9 +81,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FilesCommon\BaseElementName.cs" />
+    <Compile Include="FilesCommon\Class1.cs" />
     <Compile Include="FilesCommon\Client.cs" />
     <Compile Include="Commands\DataCommands.cs" />
     <Compile Include="FilesCommon\DictMonth.cs" />
+    <Compile Include="FilesCommon\ErrorsClass.cs" />
     <Compile Include="FilesCommon\FactoryConsolid.cs" />
     <Compile Include="FilesCommon\FactoryForecast1.cs" />
     <Compile Include="FilesCommon\FactoryForecast20.cs" />
@@ -91,6 +103,9 @@
     </Compile>
     <Compile Include="FilesCommon\UndoMenuItem.cs" />
     <Compile Include="ValidationFiles\ValidDateDecis.cs" />
+    <Compile Include="WindowValidSumPayers.xaml.cs">
+      <DependentUpon>WindowValidSumPayers.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WinSetPeriod.xaml.cs">
       <DependentUpon>WinSetPeriod.xaml</DependentUpon>
     </Compile>
@@ -112,6 +127,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WindowValidSumPayers.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WinSetPeriod.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -168,6 +187,7 @@
     <None Include="NedoimkaDataSet.xss">
       <DependentUpon>NedoimkaDataSet.xsd</DependentUpon>
     </None>
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
