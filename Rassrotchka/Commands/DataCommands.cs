@@ -12,6 +12,11 @@ namespace Rassrotchka.Commands
 		public static RoutedCommand FillData { get; set; }
 		public static RoutedCommand Clean { get; set; }
 
+		/// <summary>
+		/// Проверка сумм платежей
+		/// </summary>
+		public static RoutedCommand Validate { get; set; }
+
 		static DataCommands()
 		{
 			var inputs = new InputGestureCollection();
@@ -41,6 +46,10 @@ namespace Rassrotchka.Commands
 			inputs = new InputGestureCollection();
 			inputs.Add(new KeyGesture(Key.J, ModifierKeys.Control, "Ctrl+J"));
 			Clean = new RoutedCommand("Clean", typeof(DataCommands), inputs);
+
+			inputs = new InputGestureCollection();
+			inputs.Add(new KeyGesture(Key.V, ModifierKeys.Control, "Ctrl+V"));
+			Validate = new RoutedCommand("Validate", typeof(DataCommands), inputs);
 		}
 	}
 }
