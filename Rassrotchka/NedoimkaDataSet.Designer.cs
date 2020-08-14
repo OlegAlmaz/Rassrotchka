@@ -32,6 +32,8 @@ namespace Rassrotchka {
         
         private MonthPayTestDataTable tableMonthPayTest;
         
+        private ProcedureValidSumPayersDataTable tableProcedureValidSumPayers;
+        
         private global::System.Data.DataRelation relationFK_MonthPay_DebitPayGen_Id_dpg;
         
         private global::System.Data.DataRelation relationFK_MonthPay_DebitPayGenTest_Id_dpg;
@@ -75,6 +77,9 @@ namespace Rassrotchka {
                 }
                 if ((ds.Tables["MonthPayTest"] != null)) {
                     base.Tables.Add(new MonthPayTestDataTable(ds.Tables["MonthPayTest"]));
+                }
+                if ((ds.Tables["ProcedureValidSumPayers"] != null)) {
+                    base.Tables.Add(new ProcedureValidSumPayersDataTable(ds.Tables["ProcedureValidSumPayers"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -131,6 +136,16 @@ namespace Rassrotchka {
         public MonthPayTestDataTable MonthPayTest {
             get {
                 return this.tableMonthPayTest;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Browsable(false)]
+        [global::System.ComponentModel.DesignerSerializationVisibility(global::System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ProcedureValidSumPayersDataTable ProcedureValidSumPayers {
+            get {
+                return this.tableProcedureValidSumPayers;
             }
         }
         
@@ -213,6 +228,9 @@ namespace Rassrotchka {
                 if ((ds.Tables["MonthPayTest"] != null)) {
                     base.Tables.Add(new MonthPayTestDataTable(ds.Tables["MonthPayTest"]));
                 }
+                if ((ds.Tables["ProcedureValidSumPayers"] != null)) {
+                    base.Tables.Add(new ProcedureValidSumPayersDataTable(ds.Tables["ProcedureValidSumPayers"]));
+                }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
                 this.Namespace = ds.Namespace;
@@ -270,6 +288,12 @@ namespace Rassrotchka {
                     this.tableMonthPayTest.InitVars();
                 }
             }
+            this.tableProcedureValidSumPayers = ((ProcedureValidSumPayersDataTable)(base.Tables["ProcedureValidSumPayers"]));
+            if ((initTable == true)) {
+                if ((this.tableProcedureValidSumPayers != null)) {
+                    this.tableProcedureValidSumPayers.InitVars();
+                }
+            }
             this.relationFK_MonthPay_DebitPayGen_Id_dpg = this.Relations["FK_MonthPay_DebitPayGen_Id_dpg"];
             this.relationFK_MonthPay_DebitPayGenTest_Id_dpg = this.Relations["FK_MonthPay_DebitPayGenTest_Id_dpg"];
         }
@@ -290,6 +314,8 @@ namespace Rassrotchka {
             base.Tables.Add(this.tableDebitPayGenTest);
             this.tableMonthPayTest = new MonthPayTestDataTable();
             base.Tables.Add(this.tableMonthPayTest);
+            this.tableProcedureValidSumPayers = new ProcedureValidSumPayersDataTable();
+            base.Tables.Add(this.tableProcedureValidSumPayers);
             global::System.Data.ForeignKeyConstraint fkc;
             fkc = new global::System.Data.ForeignKeyConstraint("FK_MonthPay_DebitPayGen_Id_dpg", new global::System.Data.DataColumn[] {
                         this.tableDebitPayGen.Id_dpgColumn}, new global::System.Data.DataColumn[] {
@@ -329,6 +355,12 @@ namespace Rassrotchka {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private bool ShouldSerializeMonthPayTest() {
+            return false;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private bool ShouldSerializeProcedureValidSumPayers() {
             return false;
         }
         
@@ -398,6 +430,9 @@ namespace Rassrotchka {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         public delegate void MonthPayTestRowChangeEventHandler(object sender, MonthPayTestRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public delegate void ProcedureValidSumPayersRowChangeEventHandler(object sender, ProcedureValidSumPayersRowChangeEvent e);
         
         /// <summary>
         ///Represents the strongly named DataTable class.
@@ -2035,6 +2070,542 @@ namespace Rassrotchka {
         }
         
         /// <summary>
+        ///Represents the strongly named DataTable class.
+        ///</summary>
+        [global::System.Serializable()]
+        [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
+        public partial class ProcedureValidSumPayersDataTable : global::System.Data.TypedTableBase<ProcedureValidSumPayersRow> {
+            
+            private global::System.Data.DataColumn columnId_dpg;
+            
+            private global::System.Data.DataColumn columnKod_GNI;
+            
+            private global::System.Data.DataColumn columnName;
+            
+            private global::System.Data.DataColumn columnKod_Payer;
+            
+            private global::System.Data.DataColumn columnDate_Decis;
+            
+            private global::System.Data.DataColumn columnNumb_Decis;
+            
+            private global::System.Data.DataColumn columnGniOrGKNS;
+            
+            private global::System.Data.DataColumn columnSumma_Decis;
+            
+            private global::System.Data.DataColumn columnKod_Paying;
+            
+            private global::System.Data.DataColumn columnDate_first;
+            
+            private global::System.Data.DataColumn columnDate_end;
+            
+            private global::System.Data.DataColumn columnCount_Mount;
+            
+            private global::System.Data.DataColumn columnSumma_Payer;
+            
+            private global::System.Data.DataColumn columnType_Decis;
+            
+            private global::System.Data.DataColumn columnDate_prolong;
+            
+            private global::System.Data.DataColumn columnNote;
+            
+            private global::System.Data.DataColumn columnClose;
+            
+            private global::System.Data.DataColumn columnSumma_Payers;
+            
+            private global::System.Data.DataColumn columnSumma_Delta;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersDataTable() {
+                this.TableName = "ProcedureValidSumPayers";
+                this.BeginInit();
+                this.InitClass();
+                this.EndInit();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal ProcedureValidSumPayersDataTable(global::System.Data.DataTable table) {
+                this.TableName = table.TableName;
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected ProcedureValidSumPayersDataTable(global::System.Runtime.Serialization.SerializationInfo info, global::System.Runtime.Serialization.StreamingContext context) : 
+                    base(info, context) {
+                this.InitVars();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Id_dpgColumn {
+                get {
+                    return this.columnId_dpg;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Kod_GNIColumn {
+                get {
+                    return this.columnKod_GNI;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Kod_PayerColumn {
+                get {
+                    return this.columnKod_Payer;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Date_DecisColumn {
+                get {
+                    return this.columnDate_Decis;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Numb_DecisColumn {
+                get {
+                    return this.columnNumb_Decis;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn GniOrGKNSColumn {
+                get {
+                    return this.columnGniOrGKNS;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Summa_DecisColumn {
+                get {
+                    return this.columnSumma_Decis;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Kod_PayingColumn {
+                get {
+                    return this.columnKod_Paying;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Date_firstColumn {
+                get {
+                    return this.columnDate_first;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Date_endColumn {
+                get {
+                    return this.columnDate_end;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Count_MountColumn {
+                get {
+                    return this.columnCount_Mount;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Summa_PayerColumn {
+                get {
+                    return this.columnSumma_Payer;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Type_DecisColumn {
+                get {
+                    return this.columnType_Decis;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Date_prolongColumn {
+                get {
+                    return this.columnDate_prolong;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn NoteColumn {
+                get {
+                    return this.columnNote;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn CloseColumn {
+                get {
+                    return this.columnClose;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Summa_PayersColumn {
+                get {
+                    return this.columnSumma_Payers;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataColumn Summa_DeltaColumn {
+                get {
+                    return this.columnSumma_Delta;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            [global::System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRow this[int index] {
+                get {
+                    return ((ProcedureValidSumPayersRow)(this.Rows[index]));
+                }
+            }
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event ProcedureValidSumPayersRowChangeEventHandler ProcedureValidSumPayersRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event ProcedureValidSumPayersRowChangeEventHandler ProcedureValidSumPayersRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event ProcedureValidSumPayersRowChangeEventHandler ProcedureValidSumPayersRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public event ProcedureValidSumPayersRowChangeEventHandler ProcedureValidSumPayersRowDeleted;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void AddProcedureValidSumPayersRow(ProcedureValidSumPayersRow row) {
+                this.Rows.Add(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRow AddProcedureValidSumPayersRow(
+                        long Id_dpg, 
+                        short Kod_GNI, 
+                        string Name, 
+                        long Kod_Payer, 
+                        System.DateTime Date_Decis, 
+                        string Numb_Decis, 
+                        string GniOrGKNS, 
+                        decimal Summa_Decis, 
+                        int Kod_Paying, 
+                        System.DateTime Date_first, 
+                        System.DateTime Date_end, 
+                        int Count_Mount, 
+                        decimal Summa_Payer, 
+                        string Type_Decis, 
+                        System.DateTime Date_prolong, 
+                        string Note, 
+                        bool Close, 
+                        decimal Summa_Payers, 
+                        decimal Summa_Delta) {
+                ProcedureValidSumPayersRow rowProcedureValidSumPayersRow = ((ProcedureValidSumPayersRow)(this.NewRow()));
+                object[] columnValuesArray = new object[] {
+                        Id_dpg,
+                        Kod_GNI,
+                        Name,
+                        Kod_Payer,
+                        Date_Decis,
+                        Numb_Decis,
+                        GniOrGKNS,
+                        Summa_Decis,
+                        Kod_Paying,
+                        Date_first,
+                        Date_end,
+                        Count_Mount,
+                        Summa_Payer,
+                        Type_Decis,
+                        Date_prolong,
+                        Note,
+                        Close,
+                        Summa_Payers,
+                        Summa_Delta};
+                rowProcedureValidSumPayersRow.ItemArray = columnValuesArray;
+                this.Rows.Add(rowProcedureValidSumPayersRow);
+                return rowProcedureValidSumPayersRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRow FindById_dpg(long Id_dpg) {
+                return ((ProcedureValidSumPayersRow)(this.Rows.Find(new object[] {
+                            Id_dpg})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public override global::System.Data.DataTable Clone() {
+                ProcedureValidSumPayersDataTable cln = ((ProcedureValidSumPayersDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataTable CreateInstance() {
+                return new ProcedureValidSumPayersDataTable();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal void InitVars() {
+                this.columnId_dpg = base.Columns["Id_dpg"];
+                this.columnKod_GNI = base.Columns["Kod_GNI"];
+                this.columnName = base.Columns["Name"];
+                this.columnKod_Payer = base.Columns["Kod_Payer"];
+                this.columnDate_Decis = base.Columns["Date_Decis"];
+                this.columnNumb_Decis = base.Columns["Numb_Decis"];
+                this.columnGniOrGKNS = base.Columns["GniOrGKNS"];
+                this.columnSumma_Decis = base.Columns["Summa_Decis"];
+                this.columnKod_Paying = base.Columns["Kod_Paying"];
+                this.columnDate_first = base.Columns["Date_first"];
+                this.columnDate_end = base.Columns["Date_end"];
+                this.columnCount_Mount = base.Columns["Count_Mount"];
+                this.columnSumma_Payer = base.Columns["Summa_Payer"];
+                this.columnType_Decis = base.Columns["Type_Decis"];
+                this.columnDate_prolong = base.Columns["Date_prolong"];
+                this.columnNote = base.Columns["Note"];
+                this.columnClose = base.Columns["Close"];
+                this.columnSumma_Payers = base.Columns["Summa_Payers"];
+                this.columnSumma_Delta = base.Columns["Summa_Delta"];
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            private void InitClass() {
+                this.columnId_dpg = new global::System.Data.DataColumn("Id_dpg", typeof(long), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnId_dpg);
+                this.columnKod_GNI = new global::System.Data.DataColumn("Kod_GNI", typeof(short), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKod_GNI);
+                this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnName);
+                this.columnKod_Payer = new global::System.Data.DataColumn("Kod_Payer", typeof(long), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKod_Payer);
+                this.columnDate_Decis = new global::System.Data.DataColumn("Date_Decis", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDate_Decis);
+                this.columnNumb_Decis = new global::System.Data.DataColumn("Numb_Decis", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNumb_Decis);
+                this.columnGniOrGKNS = new global::System.Data.DataColumn("GniOrGKNS", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnGniOrGKNS);
+                this.columnSumma_Decis = new global::System.Data.DataColumn("Summa_Decis", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSumma_Decis);
+                this.columnKod_Paying = new global::System.Data.DataColumn("Kod_Paying", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnKod_Paying);
+                this.columnDate_first = new global::System.Data.DataColumn("Date_first", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDate_first);
+                this.columnDate_end = new global::System.Data.DataColumn("Date_end", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDate_end);
+                this.columnCount_Mount = new global::System.Data.DataColumn("Count_Mount", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnCount_Mount);
+                this.columnSumma_Payer = new global::System.Data.DataColumn("Summa_Payer", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSumma_Payer);
+                this.columnType_Decis = new global::System.Data.DataColumn("Type_Decis", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnType_Decis);
+                this.columnDate_prolong = new global::System.Data.DataColumn("Date_prolong", typeof(global::System.DateTime), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnDate_prolong);
+                this.columnNote = new global::System.Data.DataColumn("Note", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnNote);
+                this.columnClose = new global::System.Data.DataColumn("Close", typeof(bool), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnClose);
+                this.columnSumma_Payers = new global::System.Data.DataColumn("Summa_Payers", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSumma_Payers);
+                this.columnSumma_Delta = new global::System.Data.DataColumn("Summa_Delta", typeof(decimal), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnSumma_Delta);
+                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
+                                this.columnId_dpg}, true));
+                this.columnId_dpg.AllowDBNull = false;
+                this.columnId_dpg.Unique = true;
+                this.columnName.MaxLength = 100;
+                this.columnNumb_Decis.MaxLength = 50;
+                this.columnGniOrGKNS.MaxLength = 4;
+                this.columnType_Decis.MaxLength = 9;
+                this.columnNote.MaxLength = 2147483647;
+                this.columnSumma_Payers.ReadOnly = true;
+                this.columnSumma_Delta.ReadOnly = true;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRow NewProcedureValidSumPayersRow() {
+                return ((ProcedureValidSumPayersRow)(this.NewRow()));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Data.DataRow NewRowFromBuilder(global::System.Data.DataRowBuilder builder) {
+                return new ProcedureValidSumPayersRow(builder);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override global::System.Type GetRowType() {
+                return typeof(ProcedureValidSumPayersRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ProcedureValidSumPayersRowChanged != null)) {
+                    this.ProcedureValidSumPayersRowChanged(this, new ProcedureValidSumPayersRowChangeEvent(((ProcedureValidSumPayersRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ProcedureValidSumPayersRowChanging != null)) {
+                    this.ProcedureValidSumPayersRowChanging(this, new ProcedureValidSumPayersRowChangeEvent(((ProcedureValidSumPayersRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ProcedureValidSumPayersRowDeleted != null)) {
+                    this.ProcedureValidSumPayersRowDeleted(this, new ProcedureValidSumPayersRowChangeEvent(((ProcedureValidSumPayersRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ProcedureValidSumPayersRowDeleting != null)) {
+                    this.ProcedureValidSumPayersRowDeleting(this, new ProcedureValidSumPayersRowChangeEvent(((ProcedureValidSumPayersRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void RemoveProcedureValidSumPayersRow(ProcedureValidSumPayersRow row) {
+                this.Rows.Remove(row);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public static global::System.Xml.Schema.XmlSchemaComplexType GetTypedTableSchema(global::System.Xml.Schema.XmlSchemaSet xs) {
+                global::System.Xml.Schema.XmlSchemaComplexType type = new global::System.Xml.Schema.XmlSchemaComplexType();
+                global::System.Xml.Schema.XmlSchemaSequence sequence = new global::System.Xml.Schema.XmlSchemaSequence();
+                NedoimkaDataSet ds = new NedoimkaDataSet();
+                global::System.Xml.Schema.XmlSchemaAny any1 = new global::System.Xml.Schema.XmlSchemaAny();
+                any1.Namespace = "http://www.w3.org/2001/XMLSchema";
+                any1.MinOccurs = new decimal(0);
+                any1.MaxOccurs = decimal.MaxValue;
+                any1.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any1);
+                global::System.Xml.Schema.XmlSchemaAny any2 = new global::System.Xml.Schema.XmlSchemaAny();
+                any2.Namespace = "urn:schemas-microsoft-com:xml-diffgram-v1";
+                any2.MinOccurs = new decimal(1);
+                any2.ProcessContents = global::System.Xml.Schema.XmlSchemaContentProcessing.Lax;
+                sequence.Items.Add(any2);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute1 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute1.Name = "namespace";
+                attribute1.FixedValue = ds.Namespace;
+                type.Attributes.Add(attribute1);
+                global::System.Xml.Schema.XmlSchemaAttribute attribute2 = new global::System.Xml.Schema.XmlSchemaAttribute();
+                attribute2.Name = "tableTypeName";
+                attribute2.FixedValue = "ProcedureValidSumPayersDataTable";
+                type.Attributes.Add(attribute2);
+                type.Particle = sequence;
+                global::System.Xml.Schema.XmlSchema dsSchema = ds.GetSchemaSerializable();
+                if (xs.Contains(dsSchema.TargetNamespace)) {
+                    global::System.IO.MemoryStream s1 = new global::System.IO.MemoryStream();
+                    global::System.IO.MemoryStream s2 = new global::System.IO.MemoryStream();
+                    try {
+                        global::System.Xml.Schema.XmlSchema schema = null;
+                        dsSchema.Write(s1);
+                        for (global::System.Collections.IEnumerator schemas = xs.Schemas(dsSchema.TargetNamespace).GetEnumerator(); schemas.MoveNext(); ) {
+                            schema = ((global::System.Xml.Schema.XmlSchema)(schemas.Current));
+                            s2.SetLength(0);
+                            schema.Write(s2);
+                            if ((s1.Length == s2.Length)) {
+                                s1.Position = 0;
+                                s2.Position = 0;
+                                for (; ((s1.Position != s1.Length) 
+                                            && (s1.ReadByte() == s2.ReadByte())); ) {
+                                    ;
+                                }
+                                if ((s1.Position == s1.Length)) {
+                                    return type;
+                                }
+                            }
+                        }
+                    }
+                    finally {
+                        if ((s1 != null)) {
+                            s1.Close();
+                        }
+                        if ((s2 != null)) {
+                            s2.Close();
+                        }
+                    }
+                }
+                xs.Add(dsSchema);
+                return type;
+            }
+        }
+        
+        /// <summary>
         ///Represents strongly named DataRow class.
         ///</summary>
         public partial class DebitPayGenRow : global::System.Data.DataRow {
@@ -3247,6 +3818,550 @@ namespace Rassrotchka {
         }
         
         /// <summary>
+        ///Represents strongly named DataRow class.
+        ///</summary>
+        public partial class ProcedureValidSumPayersRow : global::System.Data.DataRow {
+            
+            private ProcedureValidSumPayersDataTable tableProcedureValidSumPayers;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            internal ProcedureValidSumPayersRow(global::System.Data.DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableProcedureValidSumPayers = ((ProcedureValidSumPayersDataTable)(this.Table));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public long Id_dpg {
+                get {
+                    return ((long)(this[this.tableProcedureValidSumPayers.Id_dpgColumn]));
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Id_dpgColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public short Kod_GNI {
+                get {
+                    try {
+                        return ((short)(this[this.tableProcedureValidSumPayers.Kod_GNIColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Kod_GNI\' в таблице \'ProcedureValidSumPayers\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Kod_GNIColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Name {
+                get {
+                    try {
+                        return ((string)(this[this.tableProcedureValidSumPayers.NameColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Name\' в таблице \'ProcedureValidSumPayers\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.NameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public long Kod_Payer {
+                get {
+                    try {
+                        return ((long)(this[this.tableProcedureValidSumPayers.Kod_PayerColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Kod_Payer\' в таблице \'ProcedureValidSumPayers\' равно DBNull" +
+                                ".", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Kod_PayerColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime Date_Decis {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableProcedureValidSumPayers.Date_DecisColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Date_Decis\' в таблице \'ProcedureValidSumPayers\' равно DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Date_DecisColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Numb_Decis {
+                get {
+                    try {
+                        return ((string)(this[this.tableProcedureValidSumPayers.Numb_DecisColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Numb_Decis\' в таблице \'ProcedureValidSumPayers\' равно DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Numb_DecisColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string GniOrGKNS {
+                get {
+                    try {
+                        return ((string)(this[this.tableProcedureValidSumPayers.GniOrGKNSColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'GniOrGKNS\' в таблице \'ProcedureValidSumPayers\' равно DBNull" +
+                                ".", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.GniOrGKNSColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal Summa_Decis {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableProcedureValidSumPayers.Summa_DecisColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Summa_Decis\' в таблице \'ProcedureValidSumPayers\' равно DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Summa_DecisColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int Kod_Paying {
+                get {
+                    try {
+                        return ((int)(this[this.tableProcedureValidSumPayers.Kod_PayingColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Kod_Paying\' в таблице \'ProcedureValidSumPayers\' равно DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Kod_PayingColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime Date_first {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableProcedureValidSumPayers.Date_firstColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Date_first\' в таблице \'ProcedureValidSumPayers\' равно DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Date_firstColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime Date_end {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableProcedureValidSumPayers.Date_endColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Date_end\' в таблице \'ProcedureValidSumPayers\' равно DBNull." +
+                                "", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Date_endColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public int Count_Mount {
+                get {
+                    try {
+                        return ((int)(this[this.tableProcedureValidSumPayers.Count_MountColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Count_Mount\' в таблице \'ProcedureValidSumPayers\' равно DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Count_MountColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal Summa_Payer {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableProcedureValidSumPayers.Summa_PayerColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Summa_Payer\' в таблице \'ProcedureValidSumPayers\' равно DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Summa_PayerColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Type_Decis {
+                get {
+                    try {
+                        return ((string)(this[this.tableProcedureValidSumPayers.Type_DecisColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Type_Decis\' в таблице \'ProcedureValidSumPayers\' равно DBNul" +
+                                "l.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Type_DecisColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public System.DateTime Date_prolong {
+                get {
+                    try {
+                        return ((global::System.DateTime)(this[this.tableProcedureValidSumPayers.Date_prolongColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Date_prolong\' в таблице \'ProcedureValidSumPayers\' равно DBN" +
+                                "ull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Date_prolongColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public string Note {
+                get {
+                    try {
+                        return ((string)(this[this.tableProcedureValidSumPayers.NoteColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Note\' в таблице \'ProcedureValidSumPayers\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.NoteColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool Close {
+                get {
+                    try {
+                        return ((bool)(this[this.tableProcedureValidSumPayers.CloseColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Close\' в таблице \'ProcedureValidSumPayers\' равно DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.CloseColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal Summa_Payers {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableProcedureValidSumPayers.Summa_PayersColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Summa_Payers\' в таблице \'ProcedureValidSumPayers\' равно DBN" +
+                                "ull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Summa_PayersColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public decimal Summa_Delta {
+                get {
+                    try {
+                        return ((decimal)(this[this.tableProcedureValidSumPayers.Summa_DeltaColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("Значение для столбца \'Summa_Delta\' в таблице \'ProcedureValidSumPayers\' равно DBNu" +
+                                "ll.", e);
+                    }
+                }
+                set {
+                    this[this.tableProcedureValidSumPayers.Summa_DeltaColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsKod_GNINull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Kod_GNIColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetKod_GNINull() {
+                this[this.tableProcedureValidSumPayers.Kod_GNIColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsNameNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.NameColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetNameNull() {
+                this[this.tableProcedureValidSumPayers.NameColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsKod_PayerNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Kod_PayerColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetKod_PayerNull() {
+                this[this.tableProcedureValidSumPayers.Kod_PayerColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDate_DecisNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Date_DecisColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDate_DecisNull() {
+                this[this.tableProcedureValidSumPayers.Date_DecisColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsNumb_DecisNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Numb_DecisColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetNumb_DecisNull() {
+                this[this.tableProcedureValidSumPayers.Numb_DecisColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsGniOrGKNSNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.GniOrGKNSColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetGniOrGKNSNull() {
+                this[this.tableProcedureValidSumPayers.GniOrGKNSColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsSumma_DecisNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Summa_DecisColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetSumma_DecisNull() {
+                this[this.tableProcedureValidSumPayers.Summa_DecisColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsKod_PayingNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Kod_PayingColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetKod_PayingNull() {
+                this[this.tableProcedureValidSumPayers.Kod_PayingColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDate_firstNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Date_firstColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDate_firstNull() {
+                this[this.tableProcedureValidSumPayers.Date_firstColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDate_endNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Date_endColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDate_endNull() {
+                this[this.tableProcedureValidSumPayers.Date_endColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCount_MountNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Count_MountColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCount_MountNull() {
+                this[this.tableProcedureValidSumPayers.Count_MountColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsSumma_PayerNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Summa_PayerColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetSumma_PayerNull() {
+                this[this.tableProcedureValidSumPayers.Summa_PayerColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsType_DecisNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Type_DecisColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetType_DecisNull() {
+                this[this.tableProcedureValidSumPayers.Type_DecisColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsDate_prolongNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Date_prolongColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetDate_prolongNull() {
+                this[this.tableProcedureValidSumPayers.Date_prolongColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsNoteNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.NoteColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetNoteNull() {
+                this[this.tableProcedureValidSumPayers.NoteColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsCloseNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.CloseColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetCloseNull() {
+                this[this.tableProcedureValidSumPayers.CloseColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsSumma_PayersNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Summa_PayersColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetSumma_PayersNull() {
+                this[this.tableProcedureValidSumPayers.Summa_PayersColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public bool IsSumma_DeltaNull() {
+                return this.IsNull(this.tableProcedureValidSumPayers.Summa_DeltaColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public void SetSumma_DeltaNull() {
+                this[this.tableProcedureValidSumPayers.Summa_DeltaColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
         ///Row event argument class
         ///</summary>
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -3368,6 +4483,40 @@ namespace Rassrotchka {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             public MonthPayTestRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public class ProcedureValidSumPayersRowChangeEvent : global::System.EventArgs {
+            
+            private ProcedureValidSumPayersRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRowChangeEvent(ProcedureValidSumPayersRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+            public ProcedureValidSumPayersRow Row {
                 get {
                     return this.eventRow;
                 }
@@ -6027,6 +7176,192 @@ SELECT ID_MP, Id_dpg, Date, Summa_pay FROM MonthPayTest WHERE (ID_MP = @ID_MP)";
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
         public virtual int Update(global::System.Nullable<long> Id_dpg, global::System.Nullable<global::System.DateTime> Date, global::System.Nullable<decimal> Summa_pay, int Original_ID_MP, global::System.Nullable<long> Original_Id_dpg, global::System.Nullable<global::System.DateTime> Original_Date, global::System.Nullable<decimal> Original_Summa_pay) {
             return this.Update(Original_ID_MP, Id_dpg, Date, Summa_pay, Original_ID_MP, Original_Id_dpg, Original_Date, Original_Summa_pay);
+        }
+    }
+    
+    /// <summary>
+    ///Represents the connection and commands used to retrieve and save data.
+    ///</summary>
+    [global::System.ComponentModel.DesignerCategoryAttribute("code")]
+    [global::System.ComponentModel.ToolboxItem(true)]
+    [global::System.ComponentModel.DataObjectAttribute(true)]
+    [global::System.ComponentModel.DesignerAttribute("Microsoft.VSDesigner.DataSource.Design.TableAdapterDesigner, Microsoft.VSDesigner" +
+        ", Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")]
+    [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+    public partial class ProcedureValidSumPayersTableAdapter : global::System.ComponentModel.Component {
+        
+        private global::System.Data.SqlClient.SqlDataAdapter _adapter;
+        
+        private global::System.Data.SqlClient.SqlConnection _connection;
+        
+        private global::System.Data.SqlClient.SqlTransaction _transaction;
+        
+        private global::System.Data.SqlClient.SqlCommand[] _commandCollection;
+        
+        private bool _clearBeforeFill;
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public ProcedureValidSumPayersTableAdapter() {
+            this.ClearBeforeFill = true;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        protected internal global::System.Data.SqlClient.SqlDataAdapter Adapter {
+            get {
+                if ((this._adapter == null)) {
+                    this.InitAdapter();
+                }
+                return this._adapter;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        internal global::System.Data.SqlClient.SqlConnection Connection {
+            get {
+                if ((this._connection == null)) {
+                    this.InitConnection();
+                }
+                return this._connection;
+            }
+            set {
+                this._connection = value;
+                if ((this.Adapter.InsertCommand != null)) {
+                    this.Adapter.InsertCommand.Connection = value;
+                }
+                if ((this.Adapter.DeleteCommand != null)) {
+                    this.Adapter.DeleteCommand.Connection = value;
+                }
+                if ((this.Adapter.UpdateCommand != null)) {
+                    this.Adapter.UpdateCommand.Connection = value;
+                }
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    if ((this.CommandCollection[i] != null)) {
+                        ((global::System.Data.SqlClient.SqlCommand)(this.CommandCollection[i])).Connection = value;
+                    }
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        internal global::System.Data.SqlClient.SqlTransaction Transaction {
+            get {
+                return this._transaction;
+            }
+            set {
+                this._transaction = value;
+                for (int i = 0; (i < this.CommandCollection.Length); i = (i + 1)) {
+                    this.CommandCollection[i].Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.DeleteCommand != null))) {
+                    this.Adapter.DeleteCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.InsertCommand != null))) {
+                    this.Adapter.InsertCommand.Transaction = this._transaction;
+                }
+                if (((this.Adapter != null) 
+                            && (this.Adapter.UpdateCommand != null))) {
+                    this.Adapter.UpdateCommand.Transaction = this._transaction;
+                }
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        protected global::System.Data.SqlClient.SqlCommand[] CommandCollection {
+            get {
+                if ((this._commandCollection == null)) {
+                    this.InitCommandCollection();
+                }
+                return this._commandCollection;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        public bool ClearBeforeFill {
+            get {
+                return this._clearBeforeFill;
+            }
+            set {
+                this._clearBeforeFill = value;
+            }
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private void InitAdapter() {
+            this._adapter = new global::System.Data.SqlClient.SqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "ProcedureValidSumPayers";
+            tableMapping.ColumnMappings.Add("Id_dpg", "Id_dpg");
+            tableMapping.ColumnMappings.Add("Kod_GNI", "Kod_GNI");
+            tableMapping.ColumnMappings.Add("Name", "Name");
+            tableMapping.ColumnMappings.Add("Kod_Payer", "Kod_Payer");
+            tableMapping.ColumnMappings.Add("Date_Decis", "Date_Decis");
+            tableMapping.ColumnMappings.Add("Numb_Decis", "Numb_Decis");
+            tableMapping.ColumnMappings.Add("GniOrGKNS", "GniOrGKNS");
+            tableMapping.ColumnMappings.Add("Summa_Decis", "Summa_Decis");
+            tableMapping.ColumnMappings.Add("Kod_Paying", "Kod_Paying");
+            tableMapping.ColumnMappings.Add("Date_first", "Date_first");
+            tableMapping.ColumnMappings.Add("Date_end", "Date_end");
+            tableMapping.ColumnMappings.Add("Count_Mount", "Count_Mount");
+            tableMapping.ColumnMappings.Add("Summa_Payer", "Summa_Payer");
+            tableMapping.ColumnMappings.Add("Type_Decis", "Type_Decis");
+            tableMapping.ColumnMappings.Add("Date_prolong", "Date_prolong");
+            tableMapping.ColumnMappings.Add("Note", "Note");
+            tableMapping.ColumnMappings.Add("Close", "Close");
+            tableMapping.ColumnMappings.Add("Summa_Payers", "Summa_Payers");
+            tableMapping.ColumnMappings.Add("Summa_Delta", "Summa_Delta");
+            this._adapter.TableMappings.Add(tableMapping);
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private void InitConnection() {
+            this._connection = new global::System.Data.SqlClient.SqlConnection();
+            this._connection.ConnectionString = global::Rassrotchka.Properties.Settings.Default.NedoimkaConnectionString;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        private void InitCommandCollection() {
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
+            this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[0].Connection = this.Connection;
+            this._commandCollection[0].CommandText = "dbo.ProcedureValidSumPayers";
+            this._commandCollection[0].CommandType = global::System.Data.CommandType.StoredProcedure;
+            this._commandCollection[0].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@RETURN_VALUE", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.ReturnValue, 10, 0, null, global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Fill, true)]
+        public virtual int Fill(NedoimkaDataSet.ProcedureValidSumPayersDataTable dataTable) {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            if ((this.ClearBeforeFill == true)) {
+                dataTable.Clear();
+            }
+            int returnValue = this.Adapter.Fill(dataTable);
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, true)]
+        public virtual NedoimkaDataSet.ProcedureValidSumPayersDataTable GetData() {
+            this.Adapter.SelectCommand = this.CommandCollection[0];
+            NedoimkaDataSet.ProcedureValidSumPayersDataTable dataTable = new NedoimkaDataSet.ProcedureValidSumPayersDataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
         }
     }
     
