@@ -30,6 +30,8 @@
         <CommandBinding Command="Close"
                         Executed="CloseCommandBinding_OnExecuted"
                         CanExecute="EditCommandBinding_OnCanExecute"/>
+        <CommandBinding Command="command:DataCommands.Validate"
+                        Executed="ValidateCommandBinding_OnExecuted"/>
     </Window.CommandBindings>
     <Window.Resources>
         <LinearGradientBrush x:Key="BackgroundGrid" EndPoint="1,0.5" StartPoint="0,0.5">
@@ -43,17 +45,6 @@
         <CollectionViewSource x:Key="DebitPayGenMonthPayViewSource"
                               Source="{Binding Path=FK_MonthPay_DebitPayGen_Id_dpg, 
                                         Source={StaticResource DebitPayGenViewSource}}" />
-
-        <Style x:Key="ErrorElementStyle" TargetType="TextBlock">
-            <Style.Triggers>
-                <Trigger Property="Validation.HasError" Value="True">
-                    <Setter Property="ToolTip"
-                            Value="{Binding RelativeSource={RelativeSource Self}, 
-                            Path=(Validation.Errors)[0].ErrorContent}" />
-                    <Setter Property="Foreground" Value="OrangeRed" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
 
         <Style x:Key="CellWrapStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ErrorElementStyle}">
             <Style.Triggers>
@@ -168,6 +159,8 @@
                 <MenuItem Header="Открыть" />
                 <Separator />
                 <MenuItem Header="Закрыть" Command="Close" ToolTip="Закрыть программу" />
+                <Separator/>
+                <MenuItem Header="Проверка.." ToolTip="Проверка сумм платежей" Command="command:DataCommands.Validate"/>
             </MenuItem>
             <MenuItem Header="Правка">
                 <MenuItem Header="Редактировать" Command="command:DataCommands.Edit"/>

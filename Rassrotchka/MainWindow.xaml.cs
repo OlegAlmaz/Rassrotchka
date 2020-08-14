@@ -553,5 +553,11 @@ namespace Rassrotchka
 			TextBoxName.Text = V;
 			ChBoxClose.IsChecked = false;
 		}
+
+		private void ValidateCommandBinding_OnExecuted(object sender, ExecutedRoutedEventArgs e)
+		{
+			var windowValidate = new WindowValidSumPayers();
+			windowValidate.Show();
+		}
 	}
 }
