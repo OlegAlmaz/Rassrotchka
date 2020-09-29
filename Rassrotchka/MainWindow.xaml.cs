@@ -48,6 +48,8 @@ namespace Rassrotchka
 			UndoItem = new UndoMenuItem<DataRow>();
 			InitializeComponent();
 			_dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
+			_dataSet.DebitPayGen.RowChanged += DebitPaytable_RowChanged;
+			_dataSet.MonthPay.RowChanged += DebitPaytable_RowChanged;
 		}
 
 		private void DebitPaytable_RowChanged(object sender, DataRowChangeEventArgs e)
@@ -65,10 +67,7 @@ namespace Rassrotchka
 
 			_argument = new ArgumentDebitPay();
 
-			_dataSet = ((NedoimkaDataSet)(FindResource("NedoimkaDataSet")));
-			_dataSet.DebitPayGen.RowChanged += DebitPaytable_RowChanged;
-			_dataSet.MonthPay.RowChanged += DebitPaytable_RowChanged;
-
+			
 			_viewMp = ((CollectionViewSource)(FindResource("DebitPayGenMonthPayViewSource")));
 			_viewDpGn = ((CollectionViewSource)(FindResource("DebitPayGenViewSource")));
 			_view = CollectionViewSource.GetDefaultView(_viewDpGn.View) as BindingListCollectionView;
@@ -92,7 +91,7 @@ namespace Rassrotchka
 			// Загрузить данные в таблицу MonthPay. Можно изменить этот код как требуется.
 			_monthPayTableAdapter.Fill(_dataSet.MonthPay);
 			_viewDpGn.View.MoveCurrentToFirst();
-
+			
 			AcceptChanges();
 		}
 

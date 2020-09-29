@@ -89,6 +89,7 @@
     <Compile Include="FilesCommon\FactoryConsolid.cs" />
     <Compile Include="FilesCommon\FactoryForecast1.cs" />
     <Compile Include="FilesCommon\FactoryForecast20.cs" />
+    <Compile Include="FilesCommon\OperationWithDate.cs" />
     <Compile Include="FilesCommon\RowValidationError.cs" />
     <Compile Include="FilesCommon\Filter.cs" />
     <Compile Include="Form1.cs">

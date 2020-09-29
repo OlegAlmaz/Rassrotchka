@@ -15,7 +15,7 @@ namespace Rassrotchka.FilesCommon
 		private readonly NedoimkaDataSet.DebitPayGenDataTable _tableDebitPay;
 		private readonly NedoimkaDataSet.MonthPayDataTable _tableMontPay;
 		private readonly DictPropName _dict;
-		private readonly RowValidationError _validError;
+		private RowValidationError _validError;
 		public ArgumentDebitPay Argument { get; set; }
 
 		//Конструктор
@@ -25,7 +25,6 @@ namespace Rassrotchka.FilesCommon
 			_tableDebitPay = tableDebitPay;
 			_tableMontPay = tableMontPay;
 			_dict = new DictPropName();
-			_validError = new RowValidationError();
 		}
 
 		//Конструктор
@@ -35,7 +34,6 @@ namespace Rassrotchka.FilesCommon
 			_tableDebitPay = new NedoimkaDataSet.DebitPayGenDataTable();
 			_tableMontPay = new NedoimkaDataSet.MonthPayDataTable();
 			_dict = new DictPropName();
-			_validError = new RowValidationError();
 		}
 
 		/// <summary>
@@ -89,7 +87,7 @@ namespace Rassrotchka.FilesCommon
 					continue;//если дата первой и последней уплаты не равны нолю
 
 				//Количество платежей
-				int payCount = GetPay(genRow.Date_first, genRow.Date_end);
+				int payCount = OperationWithDate.GetPay(genRow.Date_first, genRow.Date_end);
 
 				//заполняем список платежей
 				for (int j = 0; j < payCount; j++)
@@ -113,13 +111,6 @@ namespace Rassrotchka.FilesCommon
 			}
 		}
 
-		public static int GetPay(DateTime dateFirst, DateTime dateEnd)
-		{
-			int deltaYar = dateEnd.Year - dateFirst.Year;
-			int paysCount = dateEnd.Month - dateFirst.Month + (deltaYar * 12) + 1;
-			return paysCount;
-		}
-
 		/// <summary>
 		/// Извлекает из Excel с помощью библиотеки GemBox и метода worksheet.CreateDataTable()
 		/// </summary>
@@ -135,6 +126,7 @@ namespace Rassrotchka.FilesCommon
 			// Select the first worksheet from the file.
 			int worksheetNumvber = Argument.WorksheetNummber;
 			var worksheet = workbook.Worksheets[worksheetNumvber];
+
 
 			// Create DataTable from an Excel worksheet.
 			var dataTable = worksheet.CreateDataTable(new CreateDataTableOptions
@@ -194,6 +186,11 @@ namespace Rassrotchka.FilesCommon
 							UpdateDates(rowDebPay, rowExcel);
 						}
 					}
+					else
+					{
+						rowExcel.SetColumnError(0, "Ошибка кода идентификатора! Он имеет значение: " + rowExcel["0"].ToString());
+						rowExcel.SetAdded();
+					}
 				}
 
 				if (debitPayTableGemBox.HasErrors)//выводим ошибки при наличии
@@ -231,7 +228,8 @@ namespace Rassrotchka.FilesCommon
 		/// </summary>
 		private void ValidateAndAddRow(DataRow rowExcel)
 		{
-			if (!_validError.ValidationError(rowExcel)) //если ошибка в строке
+			_validError = new RowValidationError(rowExcel);
+			if (!_validError.ValidationError()) //если ошибка в строке
 				return;
 			DataRow rowDeb = _tableDebitPay.NewRow();
 			for (int j = 0; j < rowExcel.ItemArray.Length; j++)
