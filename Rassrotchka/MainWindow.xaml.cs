@@ -536,11 +536,19 @@ namespace Rassrotchka
 		private void ButtonApplay_Click(object sender, RoutedEventArgs e)
 		{
 			//фильтр если действующие
-			_filter.Close = ChBoxClose.IsChecked == true ? "False" : string.Empty;
-			_filter.Kod_GNI = TextBoxGni.Text;
-			_filter.Kod_Payer = TextBoxKod.Text;
-			_filter.Name = TextBoxName.Text;
-			_view.CustomFilter = _filter.FilterString();
+			try
+			{
+				_filter.Close = ChBoxClose.IsChecked == true ? "False" : string.Empty;
+				_filter.Kod_GNI = TextBoxGni.Text;
+				_filter.Kod_Payer = TextBoxKod.Text;
+				_filter.Name = TextBoxName.Text;
+				_filter.FilterString();
+				_view.CustomFilter = _filter.Filter;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+			}
 		}
 
 		private void ButtonReset_Click(object sender, RoutedEventArgs e)

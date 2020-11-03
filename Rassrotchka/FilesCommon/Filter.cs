@@ -50,7 +50,8 @@ namespace Rassrotchka
 
         public string Kod_Payer
         {
-            get => _kod_Payer; set
+            get => _kod_Payer; 
+            set
             {
                 if (_kod_Payer != value)
                 {
@@ -63,11 +64,11 @@ namespace Rassrotchka
         public string Name
         {
             get => _name;
-            set 
+            set
             { if (_name != value)
                 {
                     _name = value;
-                    _arrCond[3] = _name != string.Empty ? $"Name LIKE %{_name}%" : string.Empty;
+                    _arrCond[3] = _name != string.Empty ? $"Name LIKE '%{_name}%'" : string.Empty;
                 }
             }
         }

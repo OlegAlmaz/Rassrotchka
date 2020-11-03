@@ -405,24 +405,25 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="9*"/>
+                    <ColumnDefinition Width="68*"/>
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.ColumnSpan="2" Name="ChBoxClose" Content="Действующие" 
-                          IsChecked="True" ToolTip="Отобразить только действующие рассрочки"/>
-                <Label Grid.Row="1" Content="ГНИ"/>
+                <CheckBox Grid.ColumnSpan="3" Name="ChBoxClose" Content="Действующие" 
+                          IsChecked="True" ToolTip="Отобразить только действующие рассрочки" Margin="0,0,-0.076,0.302"/>
+                <Label Content="ГНИ" Grid.ColumnSpan="2" Margin="0,16,8.358,25.83" Grid.RowSpan="3"/>
                 <TextBox Name="TextBoxGni" Grid.Row="1" Grid.Column="1" Width="20"
                          ToolTip="Ввести код ГНИ, например: 1"
                          PreviewTextInput="TextBoxGni_PreviewTextInput"
-                         PreviewKeyDown="TextBoxGni_PreviewKeyDown"/>
-                <Label Grid.Row="2" Content="Код"/>
+                         PreviewKeyDown="TextBoxGni_PreviewKeyDown" Grid.ColumnSpan="2" Margin="0.151,1.698,0,2.566"/>
+                <Label Grid.Row="2" Content="Код" Grid.ColumnSpan="2" Margin="0,0.434,8.358,26.094" Grid.RowSpan="2"/>
                 <TextBox Name="TextBoxKod" Grid.Row="2" Grid.Column="1" Width="75"
                          ToolTip="Введите код плательщика"
                          PreviewTextInput="TextBoxGni_PreviewTextInput"
-                         PreviewKeyDown="TextBoxKod_PreviewKeyDown"/>
-                <Label Grid.Row="3" Content="Имя"/>
+                         PreviewKeyDown="TextBoxKod_PreviewKeyDown" Grid.ColumnSpan="2" Margin="0.151,2.434,0,1.83"/>
+                <Label Grid.Row="3" Content="Имя" Grid.ColumnSpan="2" Margin="0,0.17,8.358,0.094"/>
                 <TextBox Name="TextBoxName" Grid.Row="3" Grid.Column="1"
                          ToolTip="Введите приблизительное имя плательщика не менее 3 знаков"
-                        TextChanged="TextBoxName_TextChanged" MinWidth="75" />
+                        TextChanged="TextBoxName_TextChanged" MinWidth="75" Grid.ColumnSpan="2" Margin="0.151,2.17,0,2.094" />
             </Grid>
         </Grid>
         <StatusBar Grid.Row="3" Grid.ColumnSpan="2" Height="Auto">

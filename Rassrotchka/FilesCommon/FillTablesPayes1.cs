@@ -127,6 +127,8 @@ namespace Rassrotchka.FilesCommon
 			int worksheetNumvber = Argument.WorksheetNummber;
 			var worksheet = workbook.Worksheets[worksheetNumvber];
 
+			//установление колличества извлекаемых строк
+			Argument.ExcelParametrs.NumberOfRows = FindEndRow(worksheet);
 
 			// Create DataTable from an Excel worksheet.
 			var dataTable = worksheet.CreateDataTable(new CreateDataTableOptions
@@ -141,11 +143,38 @@ namespace Rassrotchka.FilesCommon
 			return dataTable;
 		}
 
-		/// <summary>
-		/// Добавляет новые данные и обновляет старые в случае изменения
-		/// </summary>
-		/// <param name="debitPayTableGemBox"></param>
-		private bool ReoderTable(DataTable debitPayTableGemBox)
+        //
+        private int FindEndRow(ExcelWorksheet worksheet)
+        {
+            int numbOfRows;
+            int i = Argument.ExcelParametrs.StartRow + 1;
+            string nmCell = "D" + i;//имя ячейки, где должен указываться код плательщика
+            object cellKodPayer = worksheet.Cells[nmCell].Value;
+            while (cellKodPayer != null)
+            {
+				i += 5;
+				nmCell = "D" + i;
+				cellKodPayer = worksheet.Cells[nmCell].Value;
+            }
+            //если найдена строка с пустой ячейкой
+            //начинаем поиск в обратном порядке 
+            do
+            {
+                --i;
+                nmCell = "D" + i;
+                cellKodPayer = worksheet.Cells[nmCell].Value;
+            } while (cellKodPayer == null);
+
+
+            numbOfRows = i - Argument.ExcelParametrs.StartRow;
+            return numbOfRows;
+        }
+
+        /// <summary>
+        /// Добавляет новые данные и обновляет старые в случае изменения
+        /// </summary>
+        /// <param name="debitPayTableGemBox"></param>
+        private bool ReoderTable(DataTable debitPayTableGemBox)
 		{
 			int i = 0;//индекс строки
 			try
@@ -188,8 +217,11 @@ namespace Rassrotchka.FilesCommon
 					}
 					else
 					{
-						rowExcel.SetColumnError(0, "Ошибка кода идентификатора! Он имеет значение: " + rowExcel["0"].ToString());
-						rowExcel.SetAdded();
+						if (rowExcel["3"] != null)
+						{
+							rowExcel.SetColumnError(0, "Ошибка кода идентификатора! Он имеет значение: " + rowExcel["0"].ToString());
+							rowExcel.SetAdded();
+						}
 					}
 				}
 
