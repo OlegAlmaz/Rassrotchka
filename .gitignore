@@ -18,3 +18,8 @@
 /RassrotchkaTests1/Properties
 *.csproj
 *.cache
+/RassrotchkaTests/bin/Release
+/RassrotchkaTests/obj/Release/RassrotchkaTests.pdb
+/RassrotchkaTests/obj/Release/RassrotchkaTests.dll
+/RassrotchkaTests/obj/Release/RassrotchkaTests.csproj.FileListAbsolute.txt
+/RassrotchkaTests/obj/Release/RassrotchkaTests.csproj.CopyComplete
