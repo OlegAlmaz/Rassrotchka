@@ -44,8 +44,8 @@ namespace Rassrotchka
 			NewFile = string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\Рассрочка_{0}.xlsx",
 									tb.Args.Monthname.Imenit);
 			HeaderFile.NameCellHeader = "A1";
-			HeaderFile.Header = string.Format(@"Прогноз поступлений по рассроченным (отсроченным) суммам в {0} 2020 года",
-										tb.Args.Monthname.Roditel);
+			HeaderFile.Header = string.Format(@"Прогноз поступлений по рассроченным (отсроченным) суммам в {0} {1} года",
+										tb.Args.Monthname.Roditel, tb.Args.DateEnd.Year);
 			TableCellsNames.HeaderCollumns = "A2";
 			TableCellsNames.CellData = "A3";
 

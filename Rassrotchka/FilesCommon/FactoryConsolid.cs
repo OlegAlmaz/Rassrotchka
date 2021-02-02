@@ -82,8 +82,8 @@ namespace Rassrotchka
 			FormattingRangeGemBox.FormattingUsedRange(ws, TableCellsNames.CellData);//форматируем строки с данными
 
 			//сохраняем файл
-			NewFile = string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\рассрочки_2020_{0}.xlsx",
-									numMonth);
+			NewFile = string.Format(@"d:\Мои документы\Рассрочки\!Учет поступлений по рассрочке\рассрочки_{1}_{0}.xlsx",
+									numMonth, maxData.Year);
 			workbook.Save(NewFile);
 		}
 	}
