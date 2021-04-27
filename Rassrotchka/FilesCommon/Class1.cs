@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Windows;
 
 namespace Rassrotchka
@@ -23,6 +20,9 @@ namespace Rassrotchka
             {
                 numberString = File.ReadAllText(fullFileName);
             }
+
+            var ap = AppDomain.CurrentDomain;
+            ap.SetData("help", true);
             int.TryParse(numberString, out int number);
             if (number != 5)
                 app.Shutdown();
@@ -61,7 +61,7 @@ namespace Rassrotchka
             if (string.IsNullOrEmpty(datesString))
                 datesString = DateTime.Now.ToShortDateString();
             var date = DateTime.Parse(datesString);
-            var dateEnd = new DateTime(2020, 09, 24);
+            var dateEnd = new DateTime(2021, 06, 24);
             if (date > dateEnd)
                 MessageBox.Show("Вы правильно выставили системную дату на компьютере?");
             if (DateTime.Now >= dateEnd || DateTime.Now < date)
