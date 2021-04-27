@@ -66,7 +66,7 @@
                                        FontSize="4" FontWeight="Bold"
                                        ToolTip="{Binding ElementName=adornerPlaceholder, 
                                        Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" >*</TextBlock>
-                                    <Border BorderBrush="Green" BorderThickness="l">
+                                    <Border BorderBrush="Green" BorderThickness="1">
                                         <AdornedElementPlaceholder Name="adornerPlaceholder"></AdornedElementPlaceholder>
                                     </Border>
                                 </DockPanel>
